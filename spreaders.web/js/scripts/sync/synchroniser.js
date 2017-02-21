@@ -37,7 +37,7 @@
       if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
         this.ProcessResponse(xmlhttp.responseText)
       }
-    }
+    }.bind(this)
     xmlhttp.open("POST", "http://localhost:7000/api/sync", true)
     xmlhttp.setRequestHeader("Content-type", "application/json");
     xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
@@ -50,7 +50,7 @@
 
   synchroniser.prototype.ProcessResponseGroups = function (groups) {
     for (var i = 0; i < groups.length; i++) {
-      this.storage.getGroup(groups[i])
+      this.storage.getGroup(groups[i].ClientId)
     }
   }
 

@@ -29,7 +29,7 @@
     }
   }
 
-  storage.prototype.getFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
+  storage.prototype.getAllOfEntity = function (callback, parameters, tableName, successCallback) {
     if (!this.db) {
       this.addCallback(callback, parameters)
       return
@@ -38,7 +38,7 @@
 
     var transaction = this.createReadTransaction(tableName)
     var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.index(indexName).openCursor(indexValue)
+    var request = objectStore.openCursor()
 
     request.onerror = this.handleError
 
@@ -55,7 +55,7 @@
     }
   }
 
-  storage.prototype.getAllOfEntity = function (callback, parameters, tableName, successCallback) {
+  storage.prototype.getFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
     if (!this.db) {
       this.addCallback(callback, parameters)
       return
@@ -64,7 +64,7 @@
 
     var transaction = this.createReadTransaction(tableName)
     var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.openCursor()
+    var request = objectStore.index(indexName).openCursor(indexValue)
 
     request.onerror = this.handleError
 
