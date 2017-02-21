@@ -1,0 +1,36 @@
+﻿@model spreaders.web.Models.GroupsIndexViewModel
+
+@{
+  Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="/css/main.css">
+  <title>Groups</title>
+</head>
+
+<body>
+
+  <section class="groupContainer"></section>
+  <section class="addGroup">
+    <label>
+      group name
+      <input type="text" name="groupName">
+    </label>
+    <button type="button" class="createGroupButton">create group</button>
+  </section>
+
+  <script src="/js/scripts/namespaces.js"></script>
+  <script src="/js/scripts/model/group.js"></script>
+
+  <script src="/js/scripts/urlService.js"></script>
+  <script src="/js/scripts/pageContext.js"></script>
+  <script src="/js/scripts/storageIndexedDb.js"></script>
+  <script src="/js/scripts/storage.js"></script>
+
+  <script src="/js/pages/groups.js"></script>
+</body>
+</html>

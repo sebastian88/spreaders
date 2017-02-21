@@ -1,0 +1,70 @@
+﻿@model spreaders.web.Models.TransactionAddEditViewModel
+
+@{
+  Layout = null;
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="/css/main.css">
+  <title>Transaction</title>
+</head>
+
+<body>
+
+  <div class="addTransaction">
+    <form>
+      <section>
+        <h1>Add Person</h1>
+        <div class="addPerson"></div>
+        <h1>Payer</h1>
+        <div class="payers">
+          <div class="payerRadios"></div>
+          <div class="payerAdd"></div>
+        </div>
+      </section>
+      <section>
+        <h1>Payee</h1>
+        <div class="payees">
+          <div class="payeeCheckboxs"></div>
+          <div class="payeeAdd"></div>
+        </div>
+      </section>
+      <section>
+        <h1>Amount</h1>
+        <input type="number" min="0.01" step="0.01" name="amount" />
+        <div class="error error_amount" style="display:none;">This field is required</div>
+      </section>
+      <section>
+        <h1>Description</h1>
+        <textarea name="description"></textarea>
+      </section>
+      <section>
+        <button type="submit" class="submit">Add</button>
+      </section>
+
+    </form>
+  </div>
+
+  <script src="/js/scripts/namespaces.js"></script>
+  <script src="/js/scripts/model/group.js"></script>
+  <script src="/js/scripts/model/transaction.js"></script>
+  <script src="/js/scripts/model/person.js"></script>
+               
+  <script src="/js/scripts/view/personFormList.js"></script>
+  <script src="/js/scripts/view/payerRadio.js"></script>
+  <script src="/js/scripts/view/payeeCheckboxes.js"></script>
+  <script src="/js/scripts/view/addPerson.js"></script>
+               
+  <script src="/js/scripts/urlService.js"></script>
+  <script src="/js/scripts/pageContext.js"></script>
+  <script src="/js/scripts/storageIndexedDb.js"></script>
+  <script src="/js/scripts/storage.js"></script>
+  <script src="/js/scripts/observer.js"></script>
+               
+  <script src="/js/pages/transaction.js"></script>
+
+</body>
+
+<html>
