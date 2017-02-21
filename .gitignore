@@ -3,6 +3,7 @@
 ###################
 *.com
 *.class
+*.config
 *.dll
 *.exe
 *.pdb
