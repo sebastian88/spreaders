@@ -113,11 +113,6 @@
       callback)
   }
 
-  storage.prototype.getGroupsToBeSynced = function (callback) {
-    this.getFromIndexStore(this.getGroupsToBeSynced.bind(this), [callback], this.dbSchema.groupsTable.tableName, "isSyncNeeded", "true", callback)
-  }
-
-
   storage.prototype.addPerson = function (person, callback) {
     if (!this.db) {
       this.addCallback(this.addPerson, [person, callback])
