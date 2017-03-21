@@ -38,7 +38,9 @@ spreaders.view.addPerson = (function () {
 	}
 	
 	addPerson.prototype.processAddPersonClickEvent = function() {
-		if(this.addPersonInput.value) {
+	  if (this.addPersonInput.value) {
+      // get the group from storage. 
+      // TODO update this so it uses the group.externalId if it is there. 
 		  var newPerson = new spreaders.model.person(this.currentGroupId, this.addPersonInput.value)
 		  this.storage.addPerson(newPerson, this.processAddPersonClickEventCallback.bind(this))
 			this.addPersonInput.value = ""

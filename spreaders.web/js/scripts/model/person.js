@@ -4,6 +4,7 @@ spreaders.model.person = (function () {
     this.id
     this.externalId
     this.groupId = groupId
+    this.externalGroupId
 		this.name = name
 		this.deleted = false
 		this.isSyncNeeded = false

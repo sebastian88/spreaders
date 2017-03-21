@@ -8,15 +8,15 @@ namespace spreaders.lib.Models.Dtos.Json
 {
   public class ApiUpdateJsonReturnModel
   {
-    public List<CreatedId> AddedGroups { get; set; }
-    public List<CreatedId> AddedPeople { get; set; }
-    public List<CreatedId> AddedTransactions { get; set; }
+    public List<JsonGroup> GroupsToUpdate { get; set; }
+    public List<JsonPerson> PeopleToUpdate { get; set; }
+    public List<JsonTransaction> TransactionsToUpdate { get; set; }
 
     public ApiUpdateJsonReturnModel()
     {
-      AddedGroups = new List<CreatedId>();
-      AddedPeople = new List<CreatedId>();
-      AddedTransactions = new List<CreatedId>();
+      GroupsToUpdate = new List<JsonGroup>();
+      PeopleToUpdate = new List<JsonPerson>();
+      TransactionsToUpdate = new List<JsonTransaction>();
     }
   }
 

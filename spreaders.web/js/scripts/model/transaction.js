@@ -4,6 +4,7 @@ spreaders.model.transaction = (function () {
 	  this.id
 	  this.externalId
 	  this.groupId = groupId
+	  this.externalGroupId
 		if(payees)
 			this.payees = payees
 		else

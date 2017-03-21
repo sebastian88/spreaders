@@ -11,5 +11,11 @@ namespace spreaders.lib.Models.Dtos.General
   {
     public int ClientId { get; set; }
     public T Entity { get; set; }
+
+    public AddedEntity(T entity, int clientId)
+    {
+      Entity = entity;
+      ClientId = clientId;
+    }
   }
 }

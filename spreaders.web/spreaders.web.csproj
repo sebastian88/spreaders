@@ -155,6 +155,7 @@
     <Content Include="js\scripts\pageContext.js" />
     <Content Include="js\scripts\storage.js" />
     <Content Include="js\scripts\storage_LOCALSTORAGE.js" />
+    <Content Include="js\scripts\sync\entityUpdater.js" />
     <Content Include="js\scripts\sync\synchroniser.js" />
     <Content Include="js\scripts\urlService.js" />
     <Content Include="js\scripts\view\addPerson.js" />

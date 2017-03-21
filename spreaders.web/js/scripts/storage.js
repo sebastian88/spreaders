@@ -81,6 +81,26 @@
     }
   }
 
+  storage.prototype.updateEntity = function (callback, tableName, entityToBeUpdated, isSyncNeeded, successCallback) {
+    if (!this.db) {
+      this.addCallback(callback, [entityToBeUpdated, isSyncNeeded, successCallback])
+      return
+    }
+
+    if (isSyncNeeded && isSyncNeeded !== false)
+      isSyncNeeded = true
+
+    entityToBeUpdated.isSyncNeeded = isSyncNeeded
+    var dbTransaction = this.createReadWriteTransaction(tableName)
+    var objectStore = this.getObjectStore(dbTransaction, tableName)
+    var response = objectStore.put(entityToBeUpdated)
+
+    response.onsuccess = function (e) {
+      if (successCallback && typeof successCallback === "function")
+        successCallback(e.target.result)
+    }
+  }
+
   storage.prototype.addGroup = function (group, callback) {
     if (!this.db) {
       this.addCallback(this.addGroup, [group, callback])
@@ -94,6 +114,15 @@
     response.onsuccess = function (e) {
       callback(e.target.result)
     }
+  }
+
+  storage.prototype.updateGroup = function (group, callback, isSyncNeeded) {
+    this.updateEntity(
+      this.updateGroup.bind(this),
+      this.dbSchema.groupsTable.tableName,
+      group,
+      isSyncNeeded,
+      callback)
   }
 
   storage.prototype.getAllGroups = function (callback) {
@@ -132,6 +161,15 @@
     }
   }
 
+  storage.prototype.updatePerson = function (person, callback, isSyncNeeded) {
+    this.updateEntity(
+      this.updatePerson.bind(this),
+      this.dbSchema.peopleTable.tableName,
+      person,
+      isSyncNeeded,
+      callback)
+  }
+
   storage.prototype.getPeople = function (groupId, callback)
   {
     if (!this.db) {
@@ -165,6 +203,23 @@
     };
   }
 
+  storage.prototype.getPerson = function (personId, callback) {
+    this.getById(
+      this.getPerson.bind(this),
+      [personId, callback],
+      this.dbSchema.peopleTable.tableName,
+      personId,
+      callback)
+  }
+
+  storage.prototype.getAllPeople = function (callback) {
+    this.getAllOfEntity(
+      this.getAllPeople.bind(this),
+      [callback],
+      this.dbSchema.peopleTable.tableName,
+      callback)
+  }
+
   storage.prototype.addTransaction = function (transaction, callback) {
     if (!this.db) {
       this.addCallback(this.addTransaction, [transaction, callback])
@@ -184,21 +239,13 @@
     }
   }
 
-  storage.prototype.updateTransaction = function (transaction, callback) {
-    if (!this.db) {
-      this.addCallback(this.addTransaction, [transaction, callback])
-      return
-    }
-
-    transaction.isSyncNeeded = true
-    var dbTransaction = this.createReadWriteTransaction(this.dbSchema.transactionsTable.tableName)
-    var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.transactionsTable.tableName)
-    var response = objectStore.put(transaction)
-
-    response.onsuccess = function (e) {
-      if (callback && typeof callback === "function")
-        callback(e.target.result)
-    }
+  storage.prototype.updateTransaction = function (transaction, callback, isSyncNeeded) {
+    this.updateEntity(
+      this.updateTransaction.bind(this),
+      this.dbSchema.transactionsTable.tableName,
+      transaction,
+      isSyncNeeded,
+      callback)
   }
 
   storage.prototype.getTransaction = function (transactionId, callback) {
@@ -241,6 +288,14 @@
     //    callback(transactions)
     //  }
     //}
+  }
+
+  storage.prototype.getAllTransactions = function (callback) {
+    this.getAllOfEntity(
+      this.getAllTransactions.bind(this),
+      [callback],
+      this.dbSchema.transactionsTable.tableName,
+      callback)
   }
 
   return storage;

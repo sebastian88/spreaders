@@ -19,9 +19,9 @@ namespace spreaders.lib.Services
     TransactionService _transactionService;
 
     ApiUpdateJsonModel _model;
-    List<AddedEntity<Group>> _addedGroups;
-    List<AddedEntity<Person>> _addedPeople;
-    List<AddedEntity<Transaction>> _addedTransactions;
+    List<AddedEntity<Group>> _groupsToUpdate;
+    List<AddedEntity<Person>> _peopleToUpdate;
+    List<AddedEntity<Transaction>> _transactionsToUpdate;
     ApiUpdateJsonReturnModel _returnModel;
 
     public ApiService(IUnitOfWork unitOfWork, ApiUpdateJsonModel model)
@@ -32,9 +32,9 @@ namespace spreaders.lib.Services
       _transactionService = new TransactionService(_unitOfWork);
 
       _model = model;
-      _addedGroups = new List<AddedEntity<Group>>();
-      _addedPeople = new List<AddedEntity<Person>>();
-      _addedTransactions = new List<AddedEntity<Transaction>>();
+      _groupsToUpdate = new List<AddedEntity<Group>>();
+      _peopleToUpdate = new List<AddedEntity<Person>>();
+      _transactionsToUpdate = new List<AddedEntity<Transaction>>();
       _returnModel = new ApiUpdateJsonReturnModel();
     }
 
@@ -53,9 +53,9 @@ namespace spreaders.lib.Services
 
       ProcessTransactions();
 
-      _returnModel.AddedGroups = GenerateEntityInReturnList(_addedGroups);
-      _returnModel.AddedPeople = GenerateEntityInReturnList(_addedPeople);
-      _returnModel.AddedTransactions = GenerateEntityInReturnList(_addedTransactions);
+      _returnModel.GroupsToUpdate = GenerateGroupsInReturnList(_groupsToUpdate);
+      _returnModel.PeopleToUpdate = GeneratePeopleInReturnList(_peopleToUpdate);
+      _returnModel.TransactionsToUpdate = GenerateTransactionsInReturnList(_transactionsToUpdate);
 
       return _returnModel;
     }
@@ -91,7 +91,7 @@ namespace spreaders.lib.Services
       {
         Group group = _groupService.PopulateGroup(new Group(), jsonGroup);
         _groupService.Add(group);
-        _addedGroups.Add(new AddedEntity<Group>() {
+        _groupsToUpdate.Add(new AddedEntity<Group>() {
           ClientId = jsonGroup.ClientId,
           Entity = group
         });
@@ -117,9 +117,10 @@ namespace spreaders.lib.Services
     {
       if (person.GroupId == Guid.Empty)
       {
-        AddedEntity<Group> addedGroup = _addedGroups.Where(x => x.ClientId == person.GroupClientId).FirstOrDefault();
+        AddedEntity<Group> addedGroup = _groupsToUpdate.Where(x => x.ClientId == person.GroupClientId).FirstOrDefault();
         if (addedGroup != null)
           person.GroupId = addedGroup.Entity.Id;
+        // TODO Add person to
       }
     }
 
@@ -136,7 +137,7 @@ namespace spreaders.lib.Services
     {
       if (transaction.GroupId == Guid.Empty)
       {
-        AddedEntity<Group> addedGroup = _addedGroups.Where(x => x.ClientId == transaction.GroupClientId).FirstOrDefault();
+        AddedEntity<Group> addedGroup = _groupsToUpdate.Where(x => x.ClientId == transaction.GroupClientId).FirstOrDefault();
         if (addedGroup != null)
           transaction.GroupId = addedGroup.Entity.Id;
       }
@@ -146,13 +147,9 @@ namespace spreaders.lib.Services
     {
       foreach (JsonPerson jsonPerson in _model.CreatedObjects.People)
       {
-        Person person = _personService.PopulatePerson(new Person(),jsonPerson);
+        Person person = _personService.PopulatePerson(new Person(), jsonPerson);
         _personService.Add(person);
-        _addedPeople.Add(new AddedEntity<Person>()
-        {
-          Entity = person,
-          ClientId = jsonPerson.ClientId
-        });
+        _peopleToUpdate.Add(new AddedEntity<Person>(person, jsonPerson.ClientId));
       }
     }
 
@@ -169,12 +166,12 @@ namespace spreaders.lib.Services
     {
       foreach (int payeeClientId in transaction.PayeesClientIds)
       {
-        AddedEntity<Person> payee = _addedPeople.Where(x => x.ClientId == payeeClientId).FirstOrDefault();
+        AddedEntity<Person> payee = _peopleToUpdate.Where(x => x.ClientId == payeeClientId).FirstOrDefault();
         if (payee != null && payee.Entity != null)
           transaction.Payees.Add(payee.Entity.Id);
       }
 
-      AddedEntity<Person> payer = _addedPeople.Where(x => x.ClientId == transaction.PayerClientId).FirstOrDefault();
+      AddedEntity<Person> payer = _peopleToUpdate.Where(x => x.ClientId == transaction.PayerClientId).FirstOrDefault();
       if (payer != null && payer.Entity != null)
         transaction.PayerId = payer.Entity.Id;
     }
@@ -187,7 +184,7 @@ namespace spreaders.lib.Services
         {
           Transaction transaction = _transactionService.PopulateTransaction(new Transaction(), jsonTransaction);
           _unitOfWork.StorageContext.Transactions.Add(transaction);
-          _addedTransactions.Add(new AddedEntity<Transaction>()
+          _transactionsToUpdate.Add(new AddedEntity<Transaction>()
           {
             Entity = transaction,
             ClientId = jsonTransaction.ClientId
@@ -200,18 +197,53 @@ namespace spreaders.lib.Services
       }
     }
 
-    private List<CreatedId> GenerateEntityInReturnList<T>(List<AddedEntity<T>> addedEntities) where T : IEntity
+    private List<JsonGroup> GenerateGroupsInReturnList(List<AddedEntity<Group>> addedEntities)
     {
-      List<CreatedId> createdIds = new List<CreatedId>();
-      foreach(AddedEntity<T> addedEntity in addedEntities)
+      List<JsonGroup> createdGroups = new List<JsonGroup>();
+      foreach (AddedEntity<Group> addedEntity in addedEntities.Distinct())
       {
-        createdIds.Add(new CreatedId()
+        createdGroups.Add(new JsonGroup()
         {
           ClientId = addedEntity.ClientId,
-          Id = addedEntity.Entity.Id
+          Id = addedEntity.Entity.Id,
+          Name = addedEntity.Entity.Name
         });
       }
-      return createdIds;
+      return createdGroups;
+    }
+
+    private List<JsonPerson> GeneratePeopleInReturnList(List<AddedEntity<Person>> addedEntities)
+    {
+      List<JsonPerson> createdPeople = new List<JsonPerson>();
+      foreach (AddedEntity<Person> addedEntity in addedEntities.Distinct())
+      {
+        createdPeople.Add(new JsonPerson()
+        {
+          ClientId = addedEntity.ClientId,
+          Id = addedEntity.Entity.Id,
+          Name = addedEntity.Entity.Name,
+          Deleted = addedEntity.Entity.Deleted,
+          GroupId = addedEntity.Entity.GroupId
+        });
+      }
+      return createdPeople;
+    }
+
+    private List<JsonTransaction> GenerateTransactionsInReturnList(List<AddedEntity<Transaction>> addedEntities)
+    {
+      List<JsonTransaction> createdTransactions = new List<JsonTransaction>();
+      foreach (AddedEntity<Transaction> addedEntity in addedEntities.Distinct())
+      {
+        createdTransactions.Add(new JsonTransaction()
+        {
+          ClientId = addedEntity.ClientId,
+          Id = addedEntity.Entity.Id,
+          GroupId = addedEntity.Entity.GroupId,
+          Payees = addedEntity.Entity.Payees.Select(x => x.Id).ToList<Guid>(),
+          PayerId = addedEntity.Entity.PayerId
+        });
+      }
+      return createdTransactions;
     }
   }
 }
