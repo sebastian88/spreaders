@@ -22,7 +22,6 @@ namespace spreaders.lib.Services
     List<AddedEntity<Group>> _groupsToUpdate;
     List<AddedEntity<Person>> _peopleToUpdate;
     List<AddedEntity<Transaction>> _transactionsToUpdate;
-    ApiUpdateJsonReturnModel _returnModel;
 
     public ApiService(IUnitOfWork unitOfWork, ApiUpdateJsonModel model)
     {
@@ -35,13 +34,12 @@ namespace spreaders.lib.Services
       _groupsToUpdate = new List<AddedEntity<Group>>();
       _peopleToUpdate = new List<AddedEntity<Person>>();
       _transactionsToUpdate = new List<AddedEntity<Transaction>>();
-      _returnModel = new ApiUpdateJsonReturnModel();
     }
 
-    public ApiUpdateJsonReturnModel ProcessCreatedObjects()
+    public void ProcessCreatedObjects()
     {
       if (_model == null || _model.CreatedObjects == null)
-        return null;
+        return;
 
       ProcessGroups();
       _unitOfWork.Commit();
@@ -52,12 +50,6 @@ namespace spreaders.lib.Services
       UpdateModelWithNewPeopleIds();
 
       ProcessTransactions();
-
-      _returnModel.GroupsToUpdate = GenerateGroupsInReturnList(_groupsToUpdate);
-      _returnModel.PeopleToUpdate = GeneratePeopleInReturnList(_peopleToUpdate);
-      _returnModel.TransactionsToUpdate = GenerateTransactionsInReturnList(_transactionsToUpdate);
-
-      return _returnModel;
     }
 
     public void ProcessUpdatedObjects()
@@ -69,20 +61,34 @@ namespace spreaders.lib.Services
       {
         Group group = _groupService.Get(jsonGroup.Id);
         group = _groupService.PopulateGroup(group, jsonGroup);
+        _groupsToUpdate.Add(new AddedEntity<Group>(group, jsonGroup.ClientId));
       }
 
       foreach (JsonPerson jsonPerson in _model.UpdatedObjects.People)
       {
         Person person = _personService.Get(jsonPerson.Id);
         person = _personService.PopulatePerson(person, jsonPerson);
+        _peopleToUpdate.Add(new AddedEntity<Person>(person, jsonPerson.ClientId));
       }
 
       foreach (JsonTransaction jsonTransaction in _model.UpdatedObjects.Transactions)
       {
         Transaction transaction = _transactionService.Get(jsonTransaction.Id);
         transaction = _transactionService.PopulateTransaction(transaction, jsonTransaction);
+        _transactionsToUpdate.Add(new AddedEntity<Transaction>(transaction, jsonTransaction.ClientId));
       }
       _unitOfWork.Commit();
+    }
+
+    public ApiUpdateJsonReturnModel GenerateReturnModel()
+    {
+      ApiUpdateJsonReturnModel returnModel = returnModel = new ApiUpdateJsonReturnModel();
+
+      returnModel.GroupsToUpdate = GenerateGroupsInReturnList(_groupsToUpdate);
+      returnModel.PeopleToUpdate = GeneratePeopleInReturnList(_peopleToUpdate);
+      returnModel.TransactionsToUpdate = GenerateTransactionsInReturnList(_transactionsToUpdate);
+
+      return returnModel;
     }
 
     private void ProcessGroups()
@@ -91,10 +97,7 @@ namespace spreaders.lib.Services
       {
         Group group = _groupService.PopulateGroup(new Group(), jsonGroup);
         _groupService.Add(group);
-        _groupsToUpdate.Add(new AddedEntity<Group>() {
-          ClientId = jsonGroup.ClientId,
-          Entity = group
-        });
+        _groupsToUpdate.Add(new AddedEntity<Group>(group, jsonGroup.ClientId));
       }
     }
 
@@ -119,8 +122,9 @@ namespace spreaders.lib.Services
       {
         AddedEntity<Group> addedGroup = _groupsToUpdate.Where(x => x.ClientId == person.GroupClientId).FirstOrDefault();
         if (addedGroup != null)
+        {
           person.GroupId = addedGroup.Entity.Id;
-        // TODO Add person to
+        }
       }
     }
 
@@ -184,13 +188,9 @@ namespace spreaders.lib.Services
         {
           Transaction transaction = _transactionService.PopulateTransaction(new Transaction(), jsonTransaction);
           _unitOfWork.StorageContext.Transactions.Add(transaction);
-          _transactionsToUpdate.Add(new AddedEntity<Transaction>()
-          {
-            Entity = transaction,
-            ClientId = jsonTransaction.ClientId
-          });
+          _transactionsToUpdate.Add(new AddedEntity<Transaction>(transaction, jsonTransaction.ClientId));
         }
-        catch(Exception e)
+        catch
         {
           //log error
         }
@@ -240,7 +240,10 @@ namespace spreaders.lib.Services
           Id = addedEntity.Entity.Id,
           GroupId = addedEntity.Entity.GroupId,
           Payees = addedEntity.Entity.Payees.Select(x => x.Id).ToList<Guid>(),
-          PayerId = addedEntity.Entity.PayerId
+          PayerId = addedEntity.Entity.PayerId,
+          Deleted = addedEntity.Entity.Deleted,
+          Amount = addedEntity.Entity.Amount,
+          Description = addedEntity.Entity.Description
         });
       }
       return createdTransactions;

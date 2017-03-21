@@ -41,10 +41,10 @@ namespace spreaders.web.Controllers
     {
       ApiService apiService = new ApiService(_unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+      apiService.ProcessCreatedObjects();
       apiService.ProcessUpdatedObjects();
 
-      return returnModel;
+      return apiService.GenerateReturnModel();
     }
 
     //// PUT api/<controller>/5
