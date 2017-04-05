@@ -45,14 +45,28 @@
 
   synchroniser.prototype.ProcessResponse = function (responseText) {
     var responseJson = JSON.parse(responseText)
-    this.ProcessResponseGroups(responseJson.AddedGroups)
+		this.ProcessResponseGroups(responseJson.AddedGroups)
+		this.ProcessResponsePeople(responseJson.AddedPeople)
+		this.ProcessResponseTransactions(responseJson.AddedTransactions)
   }
 
   synchroniser.prototype.ProcessResponseGroups = function (groups) {
     for (var i = 0; i < groups.length; i++) {
-      this.storage.getGroup(groups[i])
+			this.storage.updateGroup(groups[i].entity)
     }
-  }
+	}
+
+	synchroniser.prototype.ProcessResponsePeople = function (people) {
+		for (var i = 0; i < people.length; i++) {
+			this.storage.updatePerson(people[i].entity)
+		}
+	}
+
+	synchroniser.prototype.ProcessResponseTransactions = function (transactions) {
+		for (var i = 0; i < transactions.length; i++) {
+			this.storage.updateTransaction(transactions[i].entity)
+		}
+	}
 
   synchroniser.prototype.createGroupsJson = function (groups) {
     groupsJson = []

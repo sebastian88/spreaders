@@ -81,6 +81,18 @@
     }
   }
 
+	storage.prototype.updateEntity = function (entity, tableName, successCallback) {
+		var dbTransaction = this.createReadWriteTransaction(tableName)
+		var objectStore = this.getObjectStore(dbTransaction, tableName)
+		var response = objectStore.put(entity)
+
+		response.onsuccess = function (e) {
+			if (successCallback && typeof successCallback === "function")
+				successCallback(e.target.result)
+		}
+	}
+
+
   storage.prototype.addGroup = function (group, callback) {
     if (!this.db) {
       this.addCallback(this.addGroup, [group, callback])
@@ -117,10 +129,18 @@
     this.getFromIndexStore(this.getGroupsToBeSynced.bind(this), [callback], this.dbSchema.groupsTable.tableName, "isSyncNeeded", "true", callback)
   }
 
+	storage.prototype.updateGroup = function (group, callback) {
+		if (!this.db) {
+			this.addCallback(this.updateGroup, [group, callback])
+			return
+		}
+
+		this.updateEntity(group, this.dbSchema.groupsTable.tableName, callback)
+	}
 
   storage.prototype.addPerson = function (person, callback) {
     if (!this.db) {
-      this.addCallback(this.addPerson, [person, callback])
+			this.addCallback(this.addPerson.bind(this), [person, callback])
       return
     }
 
@@ -170,6 +190,25 @@
     };
   }
 
+	storage.prototype.getPerson = function (personId, callback) {
+		this.getById(
+			this.getPerson.bind(this),
+			[personId, callback],
+			this.dbSchema.peopleTable.tableName,
+			personId,
+			callback)
+	}
+
+	storage.prototype.updatePerson = function (person, callback) {
+		if (!this.db) {
+			this.addCallback(this.updateGroup.bind(this), [person, callback])
+			return
+		}
+
+		this.updateEntity(person, this.dbSchema.peopleTable.tableName, callback)
+	}
+
+
   storage.prototype.addTransaction = function (transaction, callback) {
     if (!this.db) {
       this.addCallback(this.addTransaction, [transaction, callback])
@@ -190,20 +229,12 @@
   }
 
   storage.prototype.updateTransaction = function (transaction, callback) {
-    if (!this.db) {
-      this.addCallback(this.addTransaction, [transaction, callback])
+		if (!this.db) {
+			this.addCallback(this.updateTransaction.bind(this), [transaction, callback])
       return
     }
 
-    transaction.isSyncNeeded = true
-    var dbTransaction = this.createReadWriteTransaction(this.dbSchema.transactionsTable.tableName)
-    var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.transactionsTable.tableName)
-    var response = objectStore.put(transaction)
-
-    response.onsuccess = function (e) {
-      if (callback && typeof callback === "function")
-        callback(e.target.result)
-    }
+		this.updateEntity(transaction, this.dbSchema.transactionsTable.tableName, callback)
   }
 
   storage.prototype.getTransaction = function (transactionId, callback) {
@@ -216,36 +247,13 @@
   }
 
   storage.prototype.getTransactions = function (groupId, callback) {
-    this.getFromIndexStore(this.getTransactions.bind(this), [groupId, callback], this.dbSchema.transactionsTable.tableName, "groupId", groupId, callback)
-    //if (!this.db) {
-    //  this.addCallback(this.getTransactions, [groupId, callback])
-    //  return
-    //}
-
-    //var transactions = []
-
-    //var transaction = this.createReadTransaction(this.dbSchema.transactionsTable.tableName)
-    //var objectStore = this.getObjectStore(transaction, this.dbSchema.transactionsTable.tableName)
-
-    //var index = objectStore.index("groupId")
-    //var cursorRequest = index.openCursor(groupId)
-
-    //cursorRequest.onerror = function (error) {
-    //  alert(error);
-    //}
-
-
-    //cursorRequest.onsuccess = function (event) {
-    //  var cursor = event.target.result;
-    //  if (cursor) {
-    //    if (!cursor.value.deleted)
-    //      transactions.push(cursor.value);
-    //    cursor.continue();
-    //  }
-    //  else {
-    //    callback(transactions)
-    //  }
-    //}
+		this.getFromIndexStore(
+			this.getTransactions.bind(this),
+			[groupId, callback],
+			this.dbSchema.transactionsTable.tableName,
+			"groupId",
+			groupId,
+			callback)
   }
 
   return storage;
