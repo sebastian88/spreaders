@@ -259,35 +259,6 @@
 
   storage.prototype.getTransactions = function (groupId, callback) {
     this.getFromIndexStore(this.getTransactions.bind(this), [groupId, callback], this.dbSchema.transactionsTable.tableName, "groupId", groupId, callback)
-    //if (!this.db) {
-    //  this.addCallback(this.getTransactions, [groupId, callback])
-    //  return
-    //}
-
-    //var transactions = []
-
-    //var transaction = this.createReadTransaction(this.dbSchema.transactionsTable.tableName)
-    //var objectStore = this.getObjectStore(transaction, this.dbSchema.transactionsTable.tableName)
-
-    //var index = objectStore.index("groupId")
-    //var cursorRequest = index.openCursor(groupId)
-
-    //cursorRequest.onerror = function (error) {
-    //  alert(error);
-    //}
-
-
-    //cursorRequest.onsuccess = function (event) {
-    //  var cursor = event.target.result;
-    //  if (cursor) {
-    //    if (!cursor.value.deleted)
-    //      transactions.push(cursor.value);
-    //    cursor.continue();
-    //  }
-    //  else {
-    //    callback(transactions)
-    //  }
-    //}
   }
 
   storage.prototype.getAllTransactions = function (callback) {

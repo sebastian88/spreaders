@@ -30,24 +30,24 @@
 
   synchroniser.prototype.processGroups = function (groups) {
     var splitGroups = this.split(groups)
-    this.apiUpdateJsonModel.createdObjects.groups = this.createEntitiesJson(splitGroups.created)
-    this.apiUpdateJsonModel.updatedObjects.groups = this.createEntitiesJson(splitGroups.updated)
+		this.apiUpdateJsonModel.createdObjects.groups = this.createGroupsJson(splitGroups.created)
+		this.apiUpdateJsonModel.updatedObjects.groups = this.createGroupsJson(splitGroups.updated)
     this.groupsAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processPeople = function (people) {
     var splitPeople = this.split(people)
-    this.apiUpdateJsonModel.createdObjects.people = this.createEntitiesJson(splitPeople.created)
-    this.apiUpdateJsonModel.updatedObjects.people = this.createEntitiesJson(splitPeople.updated)
+    //this.apiUpdateJsonModel.createdObjects.people = this.createEntitiesJson(splitPeople.created)
+    //this.apiUpdateJsonModel.updatedObjects.people = this.createEntitiesJson(splitPeople.updated)
     this.peopleAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processTransactions = function (transactions) {
     var splitTransactions = this.split(transactions)
-    this.apiUpdateJsonModel.createdObjects.transactions = this.createEntitiesJson(splitTransactions.created)
-    this.apiUpdateJsonModel.updatedObjects.transactions = this.createEntitiesJson(splitTransactions.updated)
+		this.apiUpdateJsonModel.createdObjects.transactions = this.createTransactionsJson(splitTransactions.created)
+		this.apiUpdateJsonModel.updatedObjects.transactions = this.createTransactionsJson(splitTransactions.updated)
     this.transactionsAddedToJson = true
     this.makeRequest()
   }
@@ -66,23 +66,40 @@
     return { "created": created, "updated": updated }
   }
 
-  synchroniser.prototype.createEntitiesJson = function (groups) {
+  synchroniser.prototype.createGroupsJson = function (groups) {
     groupsJson = []
     for (var i = 0; i < groups.length; i++)
       groupsJson.push({ "ClientId": groups[i].id, "Name": groups[i].name })
     return groupsJson
-  }
+	}
 
-  synchroniser.prototype.createEntitiesJson = function (transactions) {
+	synchroniser.prototype.createPeopleJson = function (people) {
+		groupsJson = []
+		for (var i = 0; i < groups.length; i++)
+			groupsJson.push({
+				"ClientId": people[i].id,
+				"Id": people[i].externalId,
+				"Name": people[i].name,
+				"Deleted": people[i].Deleted,
+				"GroupClientId": people[i].groupId,
+				"GroupId": people[i].externalGroupId
+
+			})
+		return groupsJson
+	}
+
+  synchroniser.prototype.createTransactionsJson = function (transactions) {
     transactionJson = []
     for (var i = 0; i < transactions.length; i++)
       transactionJson.push({
-        "ClientId": groups[i].id,
-        "Id": groups[i].externalId,
-        "Name": groups[i].name,
-        "Deleted": groups[i].Deleted,
-        "GroupClientId": groups[i].groupId,
-        "GroupId": groups[i].externalGroupId
+				"ClientId": transactions[i].id,
+				"Id": transactions[i].externalId,
+				"Amount": transactions[i].amount,
+				"Description": transactions[i].description,
+				// need to figure out payer and payees
+				"Deleted": transactions[i].Deleted,
+				"GroupClientId": transactions[i].groupId,
+				"GroupId": transactions[i].externalGroupId
       })
     return transactionJson
   }
@@ -97,7 +114,7 @@
         this.ProcessResponse(xmlhttp.responseText)
       }
     }.bind(this)
-    xmlhttp.open("POST", "http://localhost:7000/api/sync", true)
+		xmlhttp.open("POST", "http://localhost:27754/api/sync", true)
     xmlhttp.setRequestHeader("Content-type", "application/json")
     xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
   }
