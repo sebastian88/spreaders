@@ -38,8 +38,8 @@
 
   synchroniser.prototype.processPeople = function (people) {
     var splitPeople = this.split(people)
-    //this.apiUpdateJsonModel.createdObjects.people = this.createEntitiesJson(splitPeople.created)
-    //this.apiUpdateJsonModel.updatedObjects.people = this.createEntitiesJson(splitPeople.updated)
+		this.apiUpdateJsonModel.createdObjects.people = this.createPeopleJson(splitPeople.created)
+		this.apiUpdateJsonModel.updatedObjects.people = this.createPeopleJson(splitPeople.updated)
     this.peopleAddedToJson = true
     this.makeRequest()
   }
@@ -74,9 +74,9 @@
 	}
 
 	synchroniser.prototype.createPeopleJson = function (people) {
-		groupsJson = []
-		for (var i = 0; i < groups.length; i++)
-			groupsJson.push({
+		peopleJson = []
+		for (var i = 0; i < people.length; i++)
+			peopleJson.push({
 				"ClientId": people[i].id,
 				"Id": people[i].externalId,
 				"Name": people[i].name,
@@ -85,7 +85,7 @@
 				"GroupId": people[i].externalGroupId
 
 			})
-		return groupsJson
+		return peopleJson
 	}
 
   synchroniser.prototype.createTransactionsJson = function (transactions) {
@@ -96,13 +96,55 @@
 				"Id": transactions[i].externalId,
 				"Amount": transactions[i].amount,
 				"Description": transactions[i].description,
-				// need to figure out payer and payees
+
+				// reference objects
+				"PayerClientId": this.GetInternalId(transactions[i].payer),
+				"PayerId": this.GetExternalId(transactions[i].payer),
+				"PayeesClientIds": this.GetInternalIds(transactions[i].payees),
+				"Payees": this.GetExternalIds(transactions[i].payees),
+
 				"Deleted": transactions[i].Deleted,
 				"GroupClientId": transactions[i].groupId,
 				"GroupId": transactions[i].externalGroupId
       })
     return transactionJson
-  }
+	}
+
+	synchroniser.prototype.GetInternalIds = function (idsList) {
+		var matchedIds = []
+		for (var i = 0; i < idsList.length; i++) {
+			if (!String(idsList[i]).match(/[a-z]/i)) {
+				matchedIds.push(idsList[i])
+			}
+		}
+		return matchedIds
+	}
+
+	synchroniser.prototype.GetInternalId = function (id) {
+		if (!String(id).match(/[a-z]/i))
+			return id
+		else
+			return null;
+	}
+
+	synchroniser.prototype.GetExternalIds = function (idsList) {
+		var matchedIds = []
+		for (var i = 0; i < idsList.length; i++) {
+			if (String(idsList[i]).match(/[a-z]/i)) {
+				matchedIds.push(idsList[i])
+			}
+		}
+		return matchedIds
+	}
+
+	synchroniser.prototype.GetExternalId = function (id) {
+		if (String(id).match(/[a-z]/i))
+			return id
+		else
+			return null;
+	}
+
+
 
   synchroniser.prototype.makeRequest = function (apiUpdateJsonModel) {
     if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)
@@ -114,28 +156,16 @@
         this.ProcessResponse(xmlhttp.responseText)
       }
     }.bind(this)
-		xmlhttp.open("POST", "http://localhost:27754/api/sync", true)
+		xmlhttp.open("POST", "http://localhost:54321/api/sync", true)
     xmlhttp.setRequestHeader("Content-type", "application/json")
     xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
   }
 
   synchroniser.prototype.ProcessResponse = function (responseText) {
     var responseJson = JSON.parse(responseText)
-    this.processAddedGroups(responseJson.AddedGroups)
-    this.ProcessResponseEntities(responseJson.AddedPeople, this.storage.getPerson, this.storage.updatePerson.bind(this.storage))
-    this.ProcessResponseEntities(responseJson.AddedTransactions, this.storage.getTransaction, this.storage.updateTransaction.bind(this.storage))
-  }
-
-  synchroniser.prototype.processAddedGroups = function(groups) {
-    for (var i = 0; i < groups.length; i++) {
-      var entityUpdater = new spreaders.entityUpdater()
-      entityUpdater.externalId = entities[i].Id
-      entityUpdater.updateFunction = this.storage.updateGroup.bind(this.storage)
-      this.storage.getGroup(entities[i].ClientId, entityUpdater.updateExternalId.bind(entityUpdater))
-      // get people with groupId = group[i].id and update the people.externalGroupId
-      // get transactions with groupId = group[i].id and update the people.externalGroupId
-      // update add transactions and add person to use groups.externalId instead of group.Id when it is available
-    }
+		this.ProcessResponseEntities(responseJson.GroupsToUpdate, this.storage.getGroup.bind(this.storage), this.storage.updateGroup.bind(this.storage))
+		this.ProcessResponseEntities(responseJson.PeopleToUpdate, this.storage.getPerson.bind(this.storage), this.storage.updatePerson.bind(this.storage))
+		this.ProcessResponseEntities(responseJson.TransactionsToUpdate, this.storage.getTransaction.bind(this.storage), this.storage.updateTransaction.bind(this.storage))
   }
 
   synchroniser.prototype.ProcessResponseEntities = function (entities, getEntityFunction, callback) {
@@ -143,7 +173,7 @@
       var entityUpdater = new spreaders.entityUpdater()
       entityUpdater.externalId = entities[i].Id
       entityUpdater.updateFunction = callback
-      getEntityFunction(entities[i].ClientId, entityUpdater.update.bind(entityUpdater))
+			getEntityFunction(entities[i].ClientId, entityUpdater.updateExternalId.bind(entityUpdater))
     }
   }
 

@@ -1,10 +1,10 @@
 spreaders.model.transaction = (function () {
 	
-	var transaction = function (groupId, payer, payees, amount, description) {
+	var transaction = function (group, payer, payees, amount, description) {
 	  this.id
 	  this.externalId
-	  this.groupId = groupId
-	  this.externalGroupId
+		this.groupId = group.id
+		this.externalGroupId = group.externalId
 		if(payees)
 			this.payees = payees
 		else
@@ -16,5 +16,5 @@ spreaders.model.transaction = (function () {
 		this.isSyncNeeded = false
 	};
 	
-	return transaction;
+	return transaction
 })();

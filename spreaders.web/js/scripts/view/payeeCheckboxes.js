@@ -1,14 +1,14 @@
 spreaders.view.payeeCheckboxes = (function () {
 
 	
-  var payeeCheckboxes = function (currentGroupId,
+  var payeeCheckboxes = function (currentGroup,
     radioContainer,
 		storage,
 		observer
 		) {
 			
     spreaders.view.personFormList.call(this,
-      currentGroupId,
+      currentGroup,
 			radioContainer, 
 			storage,
 			"checkbox",

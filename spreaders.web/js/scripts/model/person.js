@@ -1,10 +1,10 @@
 spreaders.model.person = (function () {
 	
-  var person = function (groupId, name) {
+  var person = function (group, name) {
     this.id
     this.externalId
-    this.groupId = groupId
-    this.externalGroupId
+		this.groupId = group.id
+		this.externalGroupId = group.externalId
 		this.name = name
 		this.deleted = false
 		this.isSyncNeeded = false

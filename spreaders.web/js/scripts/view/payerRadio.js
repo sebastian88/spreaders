@@ -1,14 +1,14 @@
 spreaders.view.payerRadio = (function () {
 
 	
-  var payerRadio = function (currentGroupId,
+  var payerRadio = function (currentGroup,
     radioContainer,
 		storage,
 		observer
 		) {
 			
 		spreaders.view.personFormList.call(this, 
-      currentGroupId,
+      currentGroup,
       radioContainer,
 			storage,
 			"radio",

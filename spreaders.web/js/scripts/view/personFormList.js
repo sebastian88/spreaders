@@ -1,14 +1,14 @@
 spreaders.view.personFormList = (function () {
 
 	
-  var personFormList = function (currentGroupId,
+  var personFormList = function (currentGroup,
     radioContainer, 
 		storage,
 		inputType,
 		inputName,
     callback
 	) {
-    this.currentGroupId = currentGroupId
+    this.currentGroup = currentGroup
 		this.radioContainer = radioContainer
 		this.storage = storage
 		this.inputs = []
@@ -20,7 +20,7 @@ spreaders.view.personFormList = (function () {
 	}
 	
 	personFormList.prototype.createRadios = function() {
-	  var payers = this.storage.getPeople(this.currentGroupId, this.createRadiosCallback.bind(this))
+	  var payers = this.storage.getPeople(this.currentGroup.id, this.createRadiosCallback.bind(this))
 	  this.createErrorElement()
 	}
 	
@@ -37,7 +37,7 @@ spreaders.view.personFormList = (function () {
 		var input = document.createElement("input")
 		input.setAttribute('type', this.inputType);
 		input.setAttribute('name', this.inputName);
-		input.setAttribute('value', person.id);
+		input.setAttribute('value', this.getPersonId(person));
 		label.appendChild(input)
 		
 		div = document.createElement("div")
@@ -49,6 +49,13 @@ spreaders.view.personFormList = (function () {
 		div.appendChild(span)
 		
 		this.inputs[this.inputs.length] = input
+	}
+
+	personFormList.prototype.getPersonId = function (person) {
+		if (person.externalId)
+			return person.externalId
+		else
+			return person.id
 	}
 	
 	personFormList.prototype.createErrorElement = function() {

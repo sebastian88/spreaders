@@ -247,9 +247,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      
-      Assert.IsNotNull(returnModel);
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
+
+			Assert.IsNotNull(returnModel);
     }
 
     [TestMethod]
@@ -259,9 +260,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.IsNotNull(returnModel.GroupsToUpdate.First().Id);
+			Assert.IsNotNull(returnModel.GroupsToUpdate.First().Id);
     }
 
     [TestMethod]
@@ -271,9 +273,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(1, returnModel.GroupsToUpdate.Count);
+			Assert.AreEqual(1, returnModel.GroupsToUpdate.Count);
     }
 
     [TestMethod]
@@ -283,9 +286,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1", "test2" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(2, returnModel.GroupsToUpdate.Count);
+			Assert.AreEqual(2, returnModel.GroupsToUpdate.Count);
     }
 
     [TestMethod]
@@ -295,9 +299,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(unitOfWork.StorageContext.Groups.First().Id, returnModel.GroupsToUpdate.First().Id);
+			Assert.AreEqual(unitOfWork.StorageContext.Groups.First().Id, returnModel.GroupsToUpdate.First().Id);
     }
 
     [TestMethod]
@@ -307,10 +312,11 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1", "test2" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
 
-      Assert.AreEqual(unitOfWork.StorageContext.Groups.Skip(1).First().Id, returnModel.GroupsToUpdate.Skip(1).First().Id);
+			Assert.AreEqual(unitOfWork.StorageContext.Groups.Skip(1).First().Id, returnModel.GroupsToUpdate.Skip(1).First().Id);
     }
 
     [TestMethod]
@@ -395,9 +401,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(unitOfWork.StorageContext.People.First().Id, returnModel.PeopleToUpdate.First().Id);
+			Assert.AreEqual(unitOfWork.StorageContext.People.First().Id, returnModel.PeopleToUpdate.First().Id);
     }
 
     [TestMethod]
@@ -407,9 +414,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1", "test2" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(unitOfWork.StorageContext.People.First().Id, returnModel.PeopleToUpdate.First().Id);
+			Assert.AreEqual(unitOfWork.StorageContext.People.First().Id, returnModel.PeopleToUpdate.First().Id);
     }
 
     [TestMethod]
@@ -419,9 +427,10 @@ namespace spreaders.lib.tests
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1", "test2" });
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(unitOfWork.StorageContext.People.Skip(1).First().Id, returnModel.PeopleToUpdate.Skip(1).First().Id);
+			Assert.AreEqual(unitOfWork.StorageContext.People.Skip(1).First().Id, returnModel.PeopleToUpdate.Skip(1).First().Id);
     }
 
     [TestMethod]
@@ -620,9 +629,10 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      var returnedModel = apiService.ProcessCreatedObjects();
+			apiService.ProcessCreatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Assert.AreEqual(1, returnedModel.TransactionsToUpdate.Count);
+			Assert.AreEqual(1, returnModel.TransactionsToUpdate.Count);
     }
 
     [TestMethod]
@@ -787,10 +797,11 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
+			apiService.ProcessCreatedObjects();
+			apiService.ProcessUpdatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Guid createdGroupId = returnModel.GroupsToUpdate.First().Id;
+			Guid createdGroupId = returnModel.GroupsToUpdate.First().Id;
       Assert.AreEqual(createdGroupId, unitOfWork.StorageContext.People.First().GroupId);
     }
 
@@ -817,10 +828,11 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
+			apiService.ProcessCreatedObjects();
+			apiService.ProcessUpdatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Guid createdGroupId = returnModel.GroupsToUpdate.First().Id;
+			Guid createdGroupId = returnModel.GroupsToUpdate.First().Id;
       Assert.AreEqual(createdGroupId, unitOfWork.StorageContext.Transactions.First().GroupId);
     }
 
@@ -847,10 +859,11 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
+			apiService.ProcessCreatedObjects();
+			apiService.ProcessUpdatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
+			Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
       Assert.AreEqual(createdPersonId, unitOfWork.StorageContext.Transactions.First().PayerId);
     }
 
@@ -906,10 +919,11 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
+			apiService.ProcessCreatedObjects();
+			apiService.ProcessUpdatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
+			Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
       Assert.AreEqual(createdPersonId, unitOfWork.StorageContext.Transactions.First().Payees.First().Id);
     }
 
@@ -967,10 +981,11 @@ namespace spreaders.lib.tests
 
       ApiService apiService = new ApiService(unitOfWork, model);
 
-      ApiUpdateJsonReturnModel returnModel = apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
+			apiService.ProcessCreatedObjects();
+			apiService.ProcessUpdatedObjects();
+			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
 
-      Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
+			Guid createdPersonId = returnModel.PeopleToUpdate.First().Id;
       IEnumerable<Guid> payeeGuids = unitOfWork.StorageContext.Transactions.First().Payees.Select(x => x.Id).ToList();
       Assert.IsTrue(payeeGuids.Contains(createdPersonId));
     }

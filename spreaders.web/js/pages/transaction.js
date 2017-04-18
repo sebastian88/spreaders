@@ -7,31 +7,39 @@ spreaders.pages.transaction = (function () {
 		observer
 	) {
     this.pageContext = pageContext
-    this.currentGroupId = pageContext.getCurrentGroupId()
     this.urlService = urlService
     this.storage = storage
     this.observer = observer
     this.isPayeeCheckboxesRendered = false
-    this.isPayerRadiosRendered = false
+		this.isPayerRadiosRendered = false
+		this.currentGroup
+		this.storage.getGroup(pageContext.getCurrentGroupId(), this.populateForm.bind(this))
 
     this.observer.subscribe("payeeCheckboxesRendered", this.payeeCheckboxesRendered, this)
     this.observer.subscribe("payerRadiosRendered", this.payerRadiosRendered, this)
-
-    this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
-    this.payerRadios = new spreaders.view.addPerson(this.currentGroupId, this.addPersonContainer, this.storage, this.observer)
-
-    this.radiosContainer = document.getElementsByClassName("payerRadios")[0]
-    this.payerRadios = new spreaders.view.payerRadio(this.currentGroupId, this.radiosContainer, this.storage, this.observer)
-
-    this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
-    this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroupId, this.checkboxsContainer, this.storage, this.observer)
-
-    this.amountInput = document.getElementsByName("amount")[0]
-    this.amountInputError = document.getElementsByClassName("error_amount")[0]
-    this.descriptionInput = document.getElementsByName("description")[0]
-    this.submitButton = document.getElementsByClassName("submit")[0]
-    this.addSubmitEvent()
   }
+
+	transaction.prototype.populateForm = function (group) {
+
+		this.currentGroup = group
+
+		this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
+		this.payerRadios = new spreaders.view.addPerson(this.currentGroup, this.addPersonContainer, this.storage, this.observer)
+
+		this.radiosContainer = document.getElementsByClassName("payerRadios")[0]
+		this.payerRadios = new spreaders.view.payerRadio(this.currentGroup, this.radiosContainer, this.storage, this.observer)
+
+		this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
+		this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroup, this.checkboxsContainer, this.storage, this.observer)
+
+		this.amountInput = document.getElementsByName("amount")[0]
+		this.amountInputError = document.getElementsByClassName("error_amount")[0]
+		this.descriptionInput = document.getElementsByName("description")[0]
+		this.submitButton = document.getElementsByClassName("submit")[0]
+		this.addSubmitEvent()
+
+	}
+
 
   transaction.prototype.payeeCheckboxesRendered = function () {
     this.isPayeeCheckboxesRendered = true
@@ -101,7 +109,7 @@ spreaders.pages.transaction = (function () {
       this.storage.updateTransaction(this.transactionBeingEdited)
     }
     else {
-      var transaction = new spreaders.model.transaction(this.currentGroupId, payer, payees, amount, description)
+      var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)
       this.storage.addTransaction(transaction)
     }
     window.location.href = this.urlService.getTransactionsPage(pageContext.getCurrentGroupId())
