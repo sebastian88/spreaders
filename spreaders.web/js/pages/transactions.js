@@ -1,8 +1,8 @@
 spreaders.pages.transactions = (function(){
 	
-	var transactions = function(pageContext,urlService,storage, observer){
+	var transactions = function (pageContext, urlService, storage, observer) {
+		this.group
 	  this.pageContext = pageContext
-	  this.currentGroupId = pageContext.getCurrentGroupId()
     // we need to get the groupd from storage if not get from web service
 		this.urlService = urlService
 		this.storage = storage
@@ -17,17 +17,29 @@ spreaders.pages.transactions = (function(){
 
 		this.personTotalsContainer = document.getElementsByClassName("personTotals")[0];
 		this.transactionContainer = document.getElementsByClassName("transactions")[0];
-		
 
-		if (this.currentGroupId) {
+		this.storage.getGroup(pageContext.getCurrentGroupId(), this.populatePage.bind(this))
+	}
 
-		  this.storage.getPeople(this.currentGroupId, this.getPeopleCallback.bind(this))
-		  this.storage.getTransactions(this.currentGroupId, this.getTransactionsCallback.bind(this))
+	transactions.prototype.populatePage = function (group) {
+		// If no group then try from web service
+		if (group) {
+			this.group = group
+			var groupId = this.getGroupId(this.group)
+			this.storage.getPeopleForGroup(group, this.getPeopleCallback.bind(this))
+			this.storage.getTransactionsForGroup(group, this.getTransactionsCallback.bind(this))
 
-
-		  this.observer.subscribe("deleteTransaction", this.updateTotals, this)
+			this.observer.subscribe("deleteTransaction", this.updateTotals, this)
 		}
 	}
+
+	transactions.prototype.getGroupId = function(group) {
+		//if (group.externalId)
+			//return group.externalId
+		//else
+			return group.id
+	}
+
 
 	transactions.prototype.getPeopleCallback = function (people) {
 	  this.people = people
@@ -84,10 +96,10 @@ spreaders.pages.transactions = (function(){
 	    for (var j = 0; j < this.transactions.length; j++) {
 	      var transaction = this.transactions[j]
 	      // payer
-	      if (transaction.payer == personTotal.person.id)
+				if (transaction.payer == personTotal.person.id || transaction.payer == personTotal.person.externalId)
 	        personTotal.total -= transaction.amount
-	      //payees
-	      if (transaction.payees.includes(personTotal.person.id) == true)
+				//payees
+				if (transaction.payees.includes(personTotal.person.id) == true || transaction.payees.includes(personTotal.person.externalId) == true)
 	        personTotal.total += (transaction.amount / transaction.payees.length)
 	    }
 	    totals.push(personTotal)

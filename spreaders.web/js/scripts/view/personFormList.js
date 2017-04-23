@@ -84,8 +84,15 @@ spreaders.view.personFormList = (function () {
 		var values = []
 		for(var i = 0; i < this.inputs.length; i++)
 			if(this.inputs[i].checked)
-				values.push(parseInt(this.inputs[i].value))
+				values.push(this.getId(this.inputs[i].value))
 		return values
+	}
+
+	personFormList.prototype.getId = function (value) {
+		if (!String(value).match(/[a-z]/i))
+			return parseInt(value)
+		else
+			return value
 	}
 	
 	return personFormList;

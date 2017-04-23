@@ -6,7 +6,7 @@
 
     this.dbSchema = {
       name: "SpreadersDb",
-      version: 2,
+      version: 3,
       groupsTable: {
         tableName: "groups",
         keyPath: "id",
@@ -18,14 +18,14 @@
         tableName: "people",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
+				index: ["externalId", "groupId", "externalGroupId", "deleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       },
       transactionsTable: {
         tableName: "transactions",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
+        index: ["externalId", "groupId", "externalGroupId", "deleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       }
     }

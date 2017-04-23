@@ -55,7 +55,7 @@ spreaders.view.transaction = (function () {
 	{
 	  for(var i = 0; i < this.people.length; i++)
 	  {
-	    if(this.people[i].id == personId)
+			if (this.people[i].id == personId || this.people[i].externalId == personId)
         return this.people[i]
 	  }
 	}

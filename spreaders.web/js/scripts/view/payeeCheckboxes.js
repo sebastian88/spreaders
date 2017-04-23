@@ -27,8 +27,10 @@ spreaders.view.payeeCheckboxes = (function () {
 	}
 
 	payeeCheckboxes.prototype.addSelectedValues = function(values) {
-		for(var i = 0; i < this.inputs.length; i++) {
-			if(values.indexOf(parseInt(this.inputs[i].value)) > -1) {
+		for (var i = 0; i < this.inputs.length; i++) {
+
+			if (values.indexOf(parseInt(this.inputs[i].value)) > -1
+				|| values.indexOf(this.inputs[i].value) > -1) {
 				this.inputs[i].setAttribute('checked', 'checked')
 			}
 		}

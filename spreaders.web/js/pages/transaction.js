@@ -98,15 +98,15 @@ spreaders.pages.transaction = (function () {
   transaction.prototype.saveTransactionAndRedirect = function () {
     var payer = this.payerRadios.getValues()[0]
     var payees = this.payeeCheckboxes.getValues()
-    var amount = parseFloat(this.amountInput.value).toFixed(2);
-    var description = this.descriptionInput.value;
+    var amount = parseFloat(this.amountInput.value).toFixed(2)
+    var description = this.descriptionInput.value
 
     if (this.transactionBeingEditedId > 0) {
       this.transactionBeingEdited.payer = payer
       this.transactionBeingEdited.payees = payees
       this.transactionBeingEdited.amount = amount
       this.transactionBeingEdited.description = description
-      this.storage.updateTransaction(this.transactionBeingEdited)
+      this.storage.updateTransaction(this.transactionBeingEdited, null, true)
     }
     else {
       var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)

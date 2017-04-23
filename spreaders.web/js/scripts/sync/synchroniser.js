@@ -153,7 +153,7 @@
     var xmlhttp = new XMLHttpRequest()
     xmlhttp.onreadystatechange = function () {
       if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
-        this.ProcessResponse(xmlhttp.responseText)
+        this.processResponse(xmlhttp.responseText)
       }
     }.bind(this)
 		xmlhttp.open("POST", "http://localhost:54321/api/sync", true)
@@ -161,21 +161,55 @@
     xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
   }
 
-  synchroniser.prototype.ProcessResponse = function (responseText) {
+  synchroniser.prototype.processResponse = function (responseText) {
     var responseJson = JSON.parse(responseText)
-		this.ProcessResponseEntities(responseJson.GroupsToUpdate, this.storage.getGroup.bind(this.storage), this.storage.updateGroup.bind(this.storage))
-		this.ProcessResponseEntities(responseJson.PeopleToUpdate, this.storage.getPerson.bind(this.storage), this.storage.updatePerson.bind(this.storage))
-		this.ProcessResponseEntities(responseJson.TransactionsToUpdate, this.storage.getTransaction.bind(this.storage), this.storage.updateTransaction.bind(this.storage))
+
+		this.processResponseEntities(
+			responseJson.GroupsToUpdate,
+			this.storage.getGroup.bind(this.storage),
+			this.storage.updateGroup.bind(this.storage),
+			this.mapGroup)
+
+		this.processResponseEntities(
+			responseJson.PeopleToUpdate,
+			this.storage.getPerson.bind(this.storage),
+			this.storage.updatePerson.bind(this.storage),
+			this.mapPerson)
+
+		this.processResponseEntities(
+			responseJson.TransactionsToUpdate,
+			this.storage.getTransaction.bind(this.storage),
+			this.storage.updateTransaction.bind(this.storage),
+			this.mapTransaction)
   }
 
-  synchroniser.prototype.ProcessResponseEntities = function (entities, getEntityFunction, callback) {
+	synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
     for (var i = 0; i < entities.length; i++) {
       var entityUpdater = new spreaders.entityUpdater()
-      entityUpdater.externalId = entities[i].Id
-      entityUpdater.updateFunction = callback
-			getEntityFunction(entities[i].ClientId, entityUpdater.updateExternalId.bind(entityUpdater))
+			entityUpdater.externalEntity = entities[i]
+			entityUpdater.updateFunction = callback
+			entityUpdater.mapper = mapper
+			getEntityFunction(entities[i].ClientId, entityUpdater.update.bind(entityUpdater))
     }
-  }
+	}
 
+	synchroniser.prototype.mapGroup = function (existingGroup, newGroup) {
+		existingGroup.externalId = newGroup.Id
+		return existingGroup
+	}
+
+	synchroniser.prototype.mapPerson = function (existingPerson, newPerson) {
+		existingPerson.externalId = newPerson.Id
+		existingPerson.externalGroupId = newPerson.GroupId
+		return existingPerson
+	}
+
+	synchroniser.prototype.mapTransaction = function (existingTransaction, newTransaction) {
+		existingTransaction.externalId = newTransaction.Id
+		existingTransaction.payees = newTransaction.Payees
+		existingTransaction.payer = newTransaction.PayerId
+		return existingTransaction
+	}
+	
   return synchroniser
 })()

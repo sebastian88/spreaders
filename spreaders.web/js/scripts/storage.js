@@ -201,8 +201,15 @@
         callback(people)
       }
     };
-  }
+	}
 
+	storage.prototype.getPeopleForGroup = function (group, callback) {
+		if (group.externalId)
+			this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "externalGroupId", group.externalId, callback)
+		else
+			this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "groupId", group.id, callback)
+	}
+	
   storage.prototype.getPerson = function (personId, callback) {
     this.getById(
       this.getPerson.bind(this),
@@ -259,7 +266,14 @@
 
   storage.prototype.getTransactions = function (groupId, callback) {
     this.getFromIndexStore(this.getTransactions.bind(this), [groupId, callback], this.dbSchema.transactionsTable.tableName, "groupId", groupId, callback)
-  }
+	}
+
+	storage.prototype.getTransactionsForGroup = function (group, callback) {
+		if (group.externalId)
+			this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "externalGroupId", group.externalId, callback)
+		else
+			this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "groupId", group.id, callback)
+	}
 
   storage.prototype.getAllTransactions = function (callback) {
     this.getAllOfEntity(

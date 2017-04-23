@@ -1,12 +1,13 @@
 ﻿spreaders.entityUpdater = (function () {
 
   var entityUpdater = function () {
-    this.externalId
-    this.updateFunction
+    this.externalEntity
+		this.updateFunction
+		this.mapper
   }
 
-  entityUpdater.prototype.updateExternalId = function (entity) {
-    entity.externalId = this.externalId
+  entityUpdater.prototype.update = function (entity) {
+		entity = this.mapper(entity, this.externalEntity)
     this.updateFunction(entity, null, false)
   }
 
