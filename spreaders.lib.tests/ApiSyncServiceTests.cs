@@ -14,7 +14,7 @@ using spreaders.lib.Models.Dtos.Json;
 namespace spreaders.lib.tests
 {
   [TestClass]
-  public class ApiServiceTests
+  public class ApiSyncServiceTests
   {
 
     private IUnitOfWork Setup()
@@ -28,8 +28,7 @@ namespace spreaders.lib.tests
       mockContext.Setup(m => m.People).Returns(CreateMockDbSet<Person>(people));
       mockContext.Setup(m => m.Transactions).Returns(CreateMockDbSet<Transaction>(transactions));
 
-      var mockRep = new Mock<UnitOfWork>(mockContext.Object)
-                     .As<IUnitOfWork>();
+      var mockRep = new Mock<UnitOfWork>(mockContext.Object).As<IUnitOfWork>();
 
       mockRep.CallBase = true;
       mockRep.Setup(x => x.Commit()).Callback(() => {
@@ -161,9 +160,9 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_NullModel_DoesNotError()
+    public void ApiSyncService_ProcessCreatedObjects_NullModel_DoesNotError()
     {
-      ApiService apiService = new ApiService(null, null);
+      ApiSyncService apiService = new ApiSyncService(null, null);
 
       try
       {
@@ -176,10 +175,10 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_EmptyModel_DoesNotError()
+    public void ApiSyncService_ProcessCreatedObjects_EmptyModel_DoesNotError()
     {
       IUnitOfWork unitOfWork = Setup();
-      ApiService apiService = new ApiService(unitOfWork, new ApiUpdateJsonModel());
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, new ApiUpdateJsonModel());
 
       try
       {
@@ -192,11 +191,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_ModelWithOneGroup_GroupAddedToStorage()
+    public void ApiSyncService_ProcessCreatedObjects_ModelWithOneGroup_GroupAddedToStorage()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "one" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -204,11 +203,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_ModelWithTwoGroup_GroupsAddedToStorage()
+    public void ApiSyncService_ProcessCreatedObjects_ModelWithTwoGroup_GroupsAddedToStorage()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "one", "two" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -216,11 +215,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddGroupWithName_NameOfGroupIsSaved()
+    public void ApiSyncService_ProcessCreatedObjects_AddGroupWithName_NameOfGroupIsSaved()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -228,11 +227,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTwoGroupsWithNames_NamesOfGroupsAreSaved()
+    public void ApiSyncService_ProcessCreatedObjects_AddTwoGroupsWithNames_NamesOfGroupsAreSaved()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -241,11 +240,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddGroup_ReturnedObjectNotNull()
+    public void ApiSyncService_ProcessCreatedObjects_AddGroup_ReturnedObjectNotNull()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -254,11 +253,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddGroup_CreatedIdInReturnedObject()
+    public void ApiSyncService_ProcessCreatedObjects_AddGroup_CreatedIdInReturnedObject()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -267,11 +266,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddGroup_ReturnedObjectGroupCountIs1()
+    public void ApiSyncService_ProcessCreatedObjects_AddGroup_ReturnedObjectGroupCountIs1()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -280,11 +279,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_Add2Groups_ReturnedObjectGroupCountIs2()
+    public void ApiSyncService_ProcessCreatedObjects_Add2Groups_ReturnedObjectGroupCountIs2()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -293,11 +292,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddGroup_ReturnedObjectContaineNewGroupId()
+    public void ApiSyncService_ProcessCreatedObjects_AddGroup_ReturnedObjectContaineNewGroupId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -306,11 +305,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_Add2Groups_ReturnedObjectContainsSecondNewGroupId()
+    public void ApiSyncService_ProcessCreatedObjects_Add2Groups_ReturnedObjectContainsSecondNewGroupId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupGroupsForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -320,11 +319,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_ModelWithOnePerson_PersonAddedToStorage()
+    public void ApiSyncService_ProcessCreatedObjects_ModelWithOnePerson_PersonAddedToStorage()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "one" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -332,11 +331,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_ModelWithTwoPeople_PeopleStorageCountEquals2()
+    public void ApiSyncService_ProcessCreatedObjects_ModelWithTwoPeople_PeopleStorageCountEquals2()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "one", "two" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -344,11 +343,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddPersonWithName_NameOfPersonIsSaved()
+    public void ApiSyncService_ProcessCreatedObjects_AddPersonWithName_NameOfPersonIsSaved()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -357,11 +356,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddPeopleWithNames_NamesOfPeopleAreSaved()
+    public void ApiSyncService_ProcessCreatedObjects_AddPeopleWithNames_NamesOfPeopleAreSaved()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -370,7 +369,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddPeopleWithGroupId_GroupIdSaved()
+    public void ApiSyncService_ProcessCreatedObjects_AddPeopleWithGroupId_GroupIdSaved()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -385,7 +384,7 @@ namespace spreaders.lib.tests
         Name = "Person1"
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -395,11 +394,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddPerson_PersonIdIsAddedToReturnModel()
+    public void ApiSyncService_ProcessCreatedObjects_AddPerson_PersonIdIsAddedToReturnModel()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -408,11 +407,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_Add2Peple_2stPersonAddedToReturnModel()
+    public void ApiSyncService_ProcessCreatedObjects_Add2Peple_2stPersonAddedToReturnModel()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -421,11 +420,11 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_Add2Peple_2ndPersonAddedToReturnModel()
+    public void ApiSyncService_ProcessCreatedObjects_Add2Peple_2ndPersonAddedToReturnModel()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = SetupPeopleForAdd(new List<string>() { "test1", "test2" });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -434,12 +433,12 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTrasaction_TransactionAddedToStorage()
+    public void ApiSyncService_ProcessCreatedObjects_AddTrasaction_TransactionAddedToStorage()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       AddTransactionToModel(model);
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -447,12 +446,12 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectAmount()
+    public void ApiSyncService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectAmount()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       AddTransactionToModel(model, amount: 10);
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -460,12 +459,12 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectDescription()
+    public void ApiSyncService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectDescription()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       AddTransactionToModel(model, description: "test");
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -473,13 +472,13 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectPayerId()
+    public void ApiSyncService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectPayerId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       Guid payerId = Guid.NewGuid();
       AddTransactionToModel(model, payerId: payerId);
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -487,7 +486,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectPayee()
+    public void ApiSyncService_ProcessCreatedObjects_AddTrasaction_TransactionInStorageHasCorrectPayee()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -504,7 +503,7 @@ namespace spreaders.lib.tests
         Name = "Person2"
       });
       AddTransactionToModel(model, payeesIds: new List<Guid>() { id1, id2 });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -512,7 +511,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransactionWithCientIds_TransactionInStorageHas2Payees()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransactionWithCientIds_TransactionInStorageHas2Payees()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -527,7 +526,7 @@ namespace spreaders.lib.tests
         ClientId = id2
       });
       AddTransactionToModel(model, payeesClientIds: new List<int>() { id1, id2 });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
       
@@ -535,7 +534,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransactionWithCientIds_TransactionInStorageHasCorrectPayeeId()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransactionWithCientIds_TransactionInStorageHasCorrectPayeeId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -550,7 +549,7 @@ namespace spreaders.lib.tests
         ClientId = id2
       });
       AddTransactionToModel(model, payeesClientIds: new List<int>() { id1, id2 });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -559,7 +558,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransactionWithSameCientIds_TransactionInStorageHasCorrectPayeeId()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransactionWithSameCientIds_TransactionInStorageHasCorrectPayeeId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -569,7 +568,7 @@ namespace spreaders.lib.tests
         ClientId = id1
       });
       AddTransactionToModel(model, payeesClientIds: new List<int>() { id1, id1 });
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -578,7 +577,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransactionWithPayerCientIds_TransactionInStorageHasCorrectPayerId()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransactionWithPayerCientIds_TransactionInStorageHasCorrectPayerId()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -588,7 +587,7 @@ namespace spreaders.lib.tests
         ClientId = id1
       });
       AddTransactionToModel(model, payerClientId: id1);
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -597,7 +596,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransactionWithGroupId_GroupIdSavedOnTransaction()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransactionWithGroupId_GroupIdSavedOnTransaction()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
@@ -611,7 +610,7 @@ namespace spreaders.lib.tests
         GroupClientId = 2
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
 
@@ -621,13 +620,13 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessCreatedObjects_AddTransaction_NewIdAddedToReturnModel()
+    public void ApiSyncService_ProcessCreatedObjects_AddTransaction_NewIdAddedToReturnModel()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       AddTransactionToModel(model);
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			ApiUpdateJsonReturnModel returnModel = apiService.GenerateReturnModel();
@@ -636,10 +635,10 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_NullModel_DoesNotError()
+    public void ApiSyncService_ProcessUpdatedObjects_NullModel_DoesNotError()
     {
       IUnitOfWork unitOfWork = Setup();
-      ApiService apiService = new ApiService(unitOfWork, null);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, null);
 
       try
       {
@@ -652,12 +651,12 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_NullUpdatedObjects_DoesNotError()
+    public void ApiSyncService_ProcessUpdatedObjects_NullUpdatedObjects_DoesNotError()
     {
       IUnitOfWork unitOfWork = Setup();
       ApiUpdateJsonModel model = new ApiUpdateJsonModel();
       model.UpdatedObjects = null;
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       try
       {
@@ -670,10 +669,10 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_EmptyModel_DoesNotError()
+    public void ApiSyncService_ProcessUpdatedObjects_EmptyModel_DoesNotError()
     {
       IUnitOfWork unitOfWork = Setup();
-      ApiService apiService = new ApiService(unitOfWork, new ApiUpdateJsonModel());
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, new ApiUpdateJsonModel());
 
       try
       {
@@ -686,7 +685,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdateGroupName_NameIsUpdated()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdateGroupName_NameIsUpdated()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid GroupId = new Guid("88888888-4444-4444-4444-222222222222");
@@ -699,7 +698,7 @@ namespace spreaders.lib.tests
         Name = "test2"
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessUpdatedObjects();
 
@@ -707,7 +706,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdatePersonName_NameIsUpdated()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdatePersonName_NameIsUpdated()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid personId = new Guid("88888888-4444-4444-4444-222222222222");
@@ -720,7 +719,7 @@ namespace spreaders.lib.tests
         Name = "test2"
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessUpdatedObjects();
 
@@ -728,7 +727,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdatePersonsGroup_GroupIsUpdated()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdatePersonsGroup_GroupIsUpdated()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid personId = new Guid("88888888-4444-4444-4444-222222222222");
@@ -746,7 +745,7 @@ namespace spreaders.lib.tests
         GroupId = group2Id
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessUpdatedObjects();
 
@@ -754,7 +753,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdateTransacionsAmount_AmountIsUpdated()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdateTransacionsAmount_AmountIsUpdated()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transactionId = new Guid("88888888-4444-4444-4444-222222222222");
@@ -766,7 +765,7 @@ namespace spreaders.lib.tests
         Amount = 2
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessUpdatedObjects();
 
@@ -774,7 +773,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_CreateGroupAndUpdatePerson_PersonHasCorrectGroupId()
+    public void ApiSyncService_ProcessUpdatedObjects_CreateGroupAndUpdatePerson_PersonHasCorrectGroupId()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid person1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -795,7 +794,7 @@ namespace spreaders.lib.tests
         GroupClientId = 1
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			apiService.ProcessUpdatedObjects();
@@ -806,7 +805,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_CreateGroupAndUpdateTransaction_TransactionHasCorrectGroupId()
+    public void ApiSyncService_ProcessUpdatedObjects_CreateGroupAndUpdateTransaction_TransactionHasCorrectGroupId()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -826,7 +825,7 @@ namespace spreaders.lib.tests
         GroupClientId = 1
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			apiService.ProcessUpdatedObjects();
@@ -837,7 +836,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionHasCorrectPayerId()
+    public void ApiSyncService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionHasCorrectPayerId()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -857,7 +856,7 @@ namespace spreaders.lib.tests
         PayerClientId = 1
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			apiService.ProcessUpdatedObjects();
@@ -868,7 +867,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionHasPayeeCountOf1()
+    public void ApiSyncService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionHasPayeeCountOf1()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -888,7 +887,7 @@ namespace spreaders.lib.tests
         PayeesClientIds = new List<int>() { 1 }
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
       apiService.ProcessUpdatedObjects();
@@ -897,7 +896,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionCorrectPayeeId()
+    public void ApiSyncService_ProcessUpdatedObjects_CreatePersonAndUpdateTransaction_TransactionCorrectPayeeId()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -917,7 +916,7 @@ namespace spreaders.lib.tests
         PayeesClientIds = new List<int>() { 1 }
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			apiService.ProcessUpdatedObjects();
@@ -928,7 +927,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasPayeeCountOf2()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasPayeeCountOf2()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -949,7 +948,7 @@ namespace spreaders.lib.tests
         PayeesClientIds = new List<int>() { 1 }
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
       apiService.ProcessUpdatedObjects();
@@ -958,7 +957,7 @@ namespace spreaders.lib.tests
     }
     
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasIdOfDbPayee()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasIdOfDbPayee()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -979,7 +978,7 @@ namespace spreaders.lib.tests
         PayeesClientIds = new List<int>() { 1 }
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
 			apiService.ProcessCreatedObjects();
 			apiService.ProcessUpdatedObjects();
@@ -991,7 +990,7 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
-    public void ApiService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasIdOfClientPayee()
+    public void ApiSyncService_ProcessUpdatedObjects_UpdateTransactionMixOfClientAndDbIds_TransactionHasIdOfClientPayee()
     {
       IUnitOfWork unitOfWork = Setup();
       Guid transaction1Id = new Guid("88888888-4444-4444-4444-222222222222");
@@ -1012,7 +1011,7 @@ namespace spreaders.lib.tests
         PayeesClientIds = new List<int>() { 1 }
       });
 
-      ApiService apiService = new ApiService(unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
       apiService.ProcessUpdatedObjects();

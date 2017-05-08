@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace spreaders.lib.Services
 {
-  public class ApiService
+  public class ApiSyncService
   {
     IUnitOfWork _unitOfWork;
     GroupService _groupService;
@@ -23,7 +23,7 @@ namespace spreaders.lib.Services
     List<AddedEntity<Person>> _peopleToUpdate;
     List<AddedEntity<Transaction>> _transactionsToUpdate;
 
-    public ApiService(IUnitOfWork unitOfWork, ApiUpdateJsonModel model)
+    public ApiSyncService(IUnitOfWork unitOfWork, ApiUpdateJsonModel model)
     {
       _unitOfWork = unitOfWork;
       _groupService = new GroupService(_unitOfWork);

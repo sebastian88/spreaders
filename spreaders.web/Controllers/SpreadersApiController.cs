@@ -1,5 +1,6 @@
 ﻿using spreaders.lib.Context;
 using spreaders.lib.Context.Interfaces;
+using spreaders.lib.models.Entities;
 using spreaders.lib.Models.Dtos.Json;
 using spreaders.lib.Services;
 using System;
@@ -27,12 +28,22 @@ namespace spreaders.web.Controllers
     // POST api/<controller>
     public ApiUpdateJsonReturnModel Sync([FromBody]ApiUpdateJsonModel model)
     {
-      ApiService apiService = new ApiService(_unitOfWork, model);
+      ApiSyncService apiService = new ApiSyncService(_unitOfWork, model);
 
       apiService.ProcessCreatedObjects();
       apiService.ProcessUpdatedObjects();
 
       return apiService.GenerateReturnModel();
+    }
+
+    // POST api/<controller>
+    public ApiUpdateJsonReturnModel GetGroupInfo(Guid id)
+    {
+      GroupService groupService = new GroupService(_unitOfWork);
+
+      Group group = groupService.Get(id);
+
+      return null;
     }
   }
 }
