@@ -21,7 +21,7 @@ spreaders.pages.transaction = (function () {
 
 	transaction.prototype.populateForm = function (group) {
 
-		this.currentGroup = group
+		this.currentGroup = group[0]
 
 		this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
 		this.payerRadios = new spreaders.view.addPerson(this.currentGroup, this.addPersonContainer, this.storage, this.observer)

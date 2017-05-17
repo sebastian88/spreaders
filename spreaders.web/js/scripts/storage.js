@@ -106,13 +106,17 @@
       this.addCallback(this.addGroup, [group, callback])
       return
     }
+    group.externalId = this.generateUUID()
     group.isSyncNeeded = true
     var transaction = this.createReadWriteTransaction(this.dbSchema.groupsTable.tableName)
     var objectStore = this.getObjectStore(transaction, this.dbSchema.groupsTable.tableName)
     var response = objectStore.add(group)
 
     response.onsuccess = function (e) {
-      callback(e.target.result)
+      if (callback && typeof callback === "function") {
+        group.id = e.target.result
+        callback(group)
+      }
     }
   }
 
@@ -134,10 +138,11 @@
   }
 
   storage.prototype.getGroup = function (groupId, callback) {
-    this.getById(
+    this.getFromIndexStore(
       this.getGroup.bind(this),
       [groupId, callback],
       this.dbSchema.groupsTable.tableName,
+      "externalId",
       groupId,
       callback)
   }
@@ -148,6 +153,7 @@
       return
     }
 
+    person.externalId = this.generateUUID()
     person.isSyncNeeded = true
     var dbTransaction = this.createReadWriteTransaction(this.dbSchema.peopleTable.tableName)
     var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.peopleTable.tableName)
@@ -204,10 +210,7 @@
 	}
 
 	storage.prototype.getPeopleForGroup = function (group, callback) {
-		if (group.externalId)
-			this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "externalGroupId", group.externalId, callback)
-		else
-			this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "groupId", group.id, callback)
+		this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "groupId", group.externalId, callback)
 	}
 	
   storage.prototype.getPerson = function (personId, callback) {
@@ -233,6 +236,7 @@
       return
     }
 
+    transaction.externalId = this.generateUUID()
     transaction.isSyncNeeded = true
     var dbTransaction = this.createReadWriteTransaction(this.dbSchema.transactionsTable.tableName)
     var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.transactionsTable.tableName)
@@ -269,10 +273,7 @@
 	}
 
 	storage.prototype.getTransactionsForGroup = function (group, callback) {
-		if (group.externalId)
-			this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "externalGroupId", group.externalId, callback)
-		else
-			this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "groupId", group.id, callback)
+		this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "groupId", group.externalId, callback)
 	}
 
   storage.prototype.getAllTransactions = function (callback) {

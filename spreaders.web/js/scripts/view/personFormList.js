@@ -19,8 +19,8 @@ spreaders.view.personFormList = (function () {
 		this.addButton = {}
 	}
 	
-	personFormList.prototype.createRadios = function() {
-	  var payers = this.storage.getPeople(this.currentGroup.id, this.createRadiosCallback.bind(this))
+  personFormList.prototype.createRadios = function () {
+    this.storage.getPeople(this.currentGroup.externalId, this.createRadiosCallback.bind(this))
 	  this.createErrorElement()
 	}
 	

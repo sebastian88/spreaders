@@ -23,21 +23,13 @@ spreaders.pages.transactions = (function(){
 
 	transactions.prototype.populatePage = function (group) {
 		// If no group then try from web service
-		if (group) {
-			this.group = group
-			var groupId = this.getGroupId(this.group)
-			this.storage.getPeopleForGroup(group, this.getPeopleCallback.bind(this))
-			this.storage.getTransactionsForGroup(group, this.getTransactionsCallback.bind(this))
+		if (group[0]) {
+			this.group = group[0]
+      this.storage.getPeopleForGroup(this.group, this.getPeopleCallback.bind(this))
+      this.storage.getTransactionsForGroup(this.group, this.getTransactionsCallback.bind(this))
 
 			this.observer.subscribe("deleteTransaction", this.updateTotals, this)
 		}
-	}
-
-	transactions.prototype.getGroupId = function(group) {
-		//if (group.externalId)
-			//return group.externalId
-		//else
-			return group.id
 	}
 
 
