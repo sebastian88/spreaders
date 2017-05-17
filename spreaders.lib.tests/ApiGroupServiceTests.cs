@@ -21,7 +21,7 @@ namespace spreaders.lib.tests
     {
       ApiGroupService service = Setup();
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(null);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(null);
 
       Assert.IsNotNull(model);
     }
@@ -31,7 +31,7 @@ namespace spreaders.lib.tests
     {
       ApiGroupService service = Setup();
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(null);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(null);
 
       Assert.IsNull(model.Group);
     }
@@ -41,7 +41,7 @@ namespace spreaders.lib.tests
     {
       ApiGroupService service = Setup();
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(null);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(null);
 
       Assert.IsNotNull(model.People);
     }
@@ -51,7 +51,7 @@ namespace spreaders.lib.tests
     {
       ApiGroupService service = Setup();
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(null);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(null);
 
       Assert.IsNotNull(model.Transactions);
     }
@@ -62,7 +62,7 @@ namespace spreaders.lib.tests
       ApiGroupService service = Setup();
       Group group = new Group { Name = "Test1" };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual("Test1", model.Group.Name);
     }
@@ -74,7 +74,7 @@ namespace spreaders.lib.tests
       Guid expectedId = new Guid("88888888-4444-4444-4444-222222222222");
       Group group = new Group { Id = expectedId };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(expectedId, model.Group.Id);
     }
@@ -86,7 +86,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction() };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(1, model.Transactions.Count);
     }
@@ -98,7 +98,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction(), new Transaction() };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(2, model.Transactions.Count);
     }
@@ -110,7 +110,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction { Amount = 10 }};
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(10, model.Transactions.FirstOrDefault().Amount);
     }
@@ -122,7 +122,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction { Amount = 12 } };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(12, model.Transactions.FirstOrDefault().Amount);
     }
@@ -134,7 +134,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction { Payees = new List<Person> { new Person() } } };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(1, model.Transactions.FirstOrDefault().Payees.Count);
     }
@@ -147,7 +147,7 @@ namespace spreaders.lib.tests
       List<Transaction> transactions = new List<Transaction> { new Transaction { Payees = new List<Person> { new Person { Id = expectedId } } } };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(expectedId, model.Transactions.First().Payees.First());
     }
@@ -157,14 +157,62 @@ namespace spreaders.lib.tests
     {
       ApiGroupService service = Setup();
       Guid expectedId = new Guid("88888888-4444-4444-4444-222222222222");
-      List<Transaction> transactions = new List<Transaction> { new Transaction { Payer = new Person { Id = expectedId } } };
+      List<Transaction> transactions = new List<Transaction> { new Transaction { PayerId = expectedId } };
       Group group = new Group { Transactions = transactions };
 
-      ApiGetGroupReturnModel model = service.GetReturnModel(group);
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
 
       Assert.AreEqual(expectedId, model.Transactions.First().PayerId);
     }
 
+    [TestMethod]
+    public void ApiGroupService_GetReturnModel_ModelContainsPerson_ReturnedModelContainsOnePerson()
+    {
+      ApiGroupService service = Setup();
+      List<Person> people = new List<Person> { new Person() };
+      Group group = new Group { People = people };
 
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
+
+      Assert.AreEqual(1, model.People.Count);
+    }
+
+    [TestMethod]
+    public void ApiGroupService_GetReturnModel_ModelContains2People_ReturnedModelContains2People()
+    {
+      ApiGroupService service = Setup();
+      List<Person> people = new List<Person> { new Person(), new Person() };
+      Group group = new Group { People = people };
+
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
+
+      Assert.AreEqual(2, model.People.Count);
+    }
+
+    [TestMethod]
+    public void ApiGroupService_GetReturnModel_ModelContainsPersonWithId_ReturnedModelContainsPersonWithCorrectId()
+    {
+      ApiGroupService service = Setup();
+      Guid expectedId = new Guid("88888888-4444-4444-4444-222222222222");
+      List<Person> people = new List<Person> { new Person { Id = expectedId } };
+      Group group = new Group { People = people };
+
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
+
+      Assert.AreEqual(expectedId, model.People.First().Id);
+    }
+
+    [TestMethod]
+    public void ApiGroupService_GetReturnModel_ModelContainsPersonWithName_ReturnedModelContainsPersonWithCorrectName()
+    {
+      ApiGroupService service = Setup();
+      string expectedName = "test";
+      List<Person> people = new List<Person> { new Person { Name = expectedName } };
+      Group group = new Group { People = people };
+
+      ApiGetGroupReturnModel model = service.GenerateReturnModel(group);
+
+      Assert.AreEqual(expectedName, model.People.First().Name);
+    }
   }
 }

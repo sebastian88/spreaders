@@ -17,13 +17,14 @@ namespace spreaders.lib.Services
       _unitOfWork = unitOfWork;
     }
 
-    public ApiGetGroupReturnModel GetReturnModel(Group group)
+    public ApiGetGroupReturnModel GenerateReturnModel(Group group)
     {
       ApiGetGroupReturnModel model = new ApiGetGroupReturnModel();
       if(group != null)
       {
         model.Group = MapToJsonGroup(group);
         model.Transactions = MapToJsonTransactions(group.Transactions);
+        model.People = MapToJsonPeople(group.People);
       }
       return model;
     }
@@ -54,8 +55,27 @@ namespace spreaders.lib.Services
         Deleted = transaction.Deleted,
         Description = transaction.Description,
         GroupId = transaction.GroupId,
-        Payees = transaction.Payees.Select(x => x.Id).ToList()
-        
+        Payees = transaction.Payees.Select(x => x.Id).ToList(),
+        PayerId = transaction.PayerId
+      };
+    }
+
+    private List<JsonPerson> MapToJsonPeople(ICollection<Person> people)
+    {
+      List<JsonPerson> jsonPeople = new List<JsonPerson>();
+      foreach (Person person in people)
+        jsonPeople.Add(MaptoJsonPerson(person));
+      return jsonPeople;
+    }
+
+    private JsonPerson MaptoJsonPerson(Person person)
+    {
+      return new JsonPerson
+      {
+        Id = person.Id,
+        Name = person.Name,
+        Deleted = person.Deleted,
+        GroupId = person.GroupId
       };
     }
   }

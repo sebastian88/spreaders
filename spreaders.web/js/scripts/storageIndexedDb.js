@@ -18,14 +18,14 @@
         tableName: "people",
         keyPath: "id",
         autoIncrement: true,
-				index: ["externalId", "groupId", "externalGroupId", "deleted", "isSyncNeeded"],
+				index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       },
       transactionsTable: {
         tableName: "transactions",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "groupId", "externalGroupId", "deleted", "isSyncNeeded"],
+        index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       }
     }
@@ -104,6 +104,18 @@
 
   storageIndexedDb.prototype.getObjectStore = function (transaction, table) {
     return transaction.objectStore(table);
+  }
+
+  storageIndexedDb.prototype.generateUUID = function () {
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+      d += performance.now();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
   }
 
   return storageIndexedDb

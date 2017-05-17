@@ -30,7 +30,7 @@ spreaders.pages.groups = (function(){
 	  this.ul.appendChild(li)
 
 	  var a = document.createElement("a")
-	  a.href = this.urlService.getTransactionsPage(group.id)
+	  a.href = this.urlService.getTransactionsPage(group.externalId)
 	  a.innerHTML = group.id + ' ' + group.name
 	  a.title = group.id
 	  li.appendChild(a)
@@ -45,8 +45,8 @@ spreaders.pages.groups = (function(){
 		this.storage.addGroup(group, this.createGroupButtonClickCallback.bind(this))
 	}
 
-	groupPage.prototype.createGroupButtonClickCallback = function (id) {
-	  window.location.href = this.urlService.getTransactionsPage(id)
+  groupPage.prototype.createGroupButtonClickCallback = function (group) {
+    window.location.href = this.urlService.getTransactionsPage(group.externalId)
 	}
 	
 	return groupPage

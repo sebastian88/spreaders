@@ -81,8 +81,7 @@
 				"Id": people[i].externalId,
 				"Name": people[i].name,
 				"Deleted": people[i].Deleted,
-				"GroupClientId": people[i].groupId,
-				"GroupId": people[i].externalGroupId
+				"GroupId": people[i].groupId
 
 			})
 		return peopleJson
@@ -98,14 +97,11 @@
 				"Description": transactions[i].description,
 
 				// reference objects
-				"PayerClientId": this.GetInternalId(transactions[i].payer),
-				"PayerId": this.GetExternalId(transactions[i].payer),
-				"PayeesClientIds": this.GetInternalIds(transactions[i].payees),
-				"Payees": this.GetExternalIds(transactions[i].payees),
+				"PayerId": transactions[i].payer,
+				"Payees": transactions[i].payees,
 
 				"Deleted": transactions[i].Deleted,
-				"GroupClientId": transactions[i].groupId,
-				"GroupId": transactions[i].externalGroupId
+				"GroupId": transactions[i].groupId
       })
     return transactionJson
 	}
@@ -200,7 +196,7 @@
 
 	synchroniser.prototype.mapPerson = function (existingPerson, newPerson) {
 		existingPerson.externalId = newPerson.Id
-		existingPerson.externalGroupId = newPerson.GroupId
+		existingPerson.groupId = newPerson.GroupId
 		return existingPerson
 	}
 
