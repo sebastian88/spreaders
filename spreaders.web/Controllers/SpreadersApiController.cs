@@ -26,14 +26,13 @@ namespace spreaders.web.Controllers
     }
 
     // POST api/<controller>
-    public ApiUpdateJsonReturnModel Sync([FromBody]ApiUpdateJsonModel model)
+    public bool Sync([FromBody]EntitiesList model)
     {
       ApiSyncService apiService = new ApiSyncService(_unitOfWork, model);
+      
+      apiService.ProcessRequest();
 
-      apiService.ProcessCreatedObjects();
-      apiService.ProcessUpdatedObjects();
-
-      return apiService.GenerateReturnModel();
+      return true;
     }
 
     // POST api/<controller>

@@ -87,8 +87,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Dtos\General\AddedEntity.cs" />
     <Compile Include="Models\Dtos\Json\ApiGetGroupReturnModel.cs" />
-    <Compile Include="Models\Dtos\Json\ApiUpdateJsonReturnModel.cs" />
-    <Compile Include="Models\Dtos\Json\ApiUpdateJsonModel.cs" />
     <Compile Include="Models\Dtos\Json\EntitiesList.cs" />
     <Compile Include="Models\Dtos\Json\JsonGroup.cs" />
     <Compile Include="Models\Dtos\Json\JsonPerson.cs" />
