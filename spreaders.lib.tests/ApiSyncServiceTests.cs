@@ -180,6 +180,26 @@ namespace spreaders.lib.tests
     }
 
     [TestMethod]
+    public void ApiSyncService_ProcessRequest_CreatePerson_PersonIsCreated()
+    {
+      IUnitOfWork unitOfWork = Setup();
+      Guid personId = new Guid("88888888-4444-4444-4444-222222222222");
+
+      EntitiesList model = new EntitiesList();
+      model.People.Add(new JsonPerson()
+      {
+        Id = personId,
+        Name = "test1"
+      });
+
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
+
+      apiService.ProcessRequest();
+
+      Assert.AreEqual("test1", unitOfWork.StorageContext.People.First().Name);
+    }
+
+    [TestMethod]
     public void ApiSyncService_ProcessRequest_UpdatePersonName_NameIsUpdated()
     {
       IUnitOfWork unitOfWork = Setup();
@@ -224,6 +244,24 @@ namespace spreaders.lib.tests
       apiService.ProcessRequest();
 
       Assert.AreEqual(group2Id, unitOfWork.StorageContext.People.First().GroupId);
+    }
+
+    [TestMethod]
+    public void ApiSyncService_ProcessRequest_CreateTransaction_TransactionIsCreated()
+    {
+      IUnitOfWork unitOfWork = Setup();
+      EntitiesList model = new EntitiesList();
+      model.Transactions.Add(new JsonTransaction()
+      {
+        Id = new Guid("88888888-4444-4444-4444-222222222222"),
+        Amount = 2
+      });
+
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
+
+      apiService.ProcessRequest();
+
+      Assert.AreEqual(2, unitOfWork.StorageContext.Transactions.First().Amount);
     }
 
     [TestMethod]

@@ -19,10 +19,22 @@ namespace spreaders.lib.Services
 
     public Transaction Get(Guid id)
     {
-      return _unitOfWork.StorageContext.Transactions.Where(x => x.Id == id).First();
+      return _unitOfWork.StorageContext.Transactions.Where(x => x.Id == id).FirstOrDefault();
     }
 
-    public Transaction PopulateTransaction(Transaction transaction, JsonTransaction jsonTransaction)
+    public void Add(Transaction transaction)
+    {
+      _unitOfWork.StorageContext.Transactions.Add(transaction);
+    }
+
+    public Transaction CreateFromJsonTransaction(JsonTransaction jsonTransaction)
+    {
+      Transaction transaction = UpdateFromJsonPerson(new Transaction(), jsonTransaction);
+      Add(transaction);
+      return transaction;
+    }
+
+    public Transaction UpdateFromJsonPerson(Transaction transaction, JsonTransaction jsonTransaction)
     {
       if (jsonTransaction == null)
         throw new Exception("jsontransaction is null");

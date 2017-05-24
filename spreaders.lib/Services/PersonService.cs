@@ -25,10 +25,17 @@ namespace spreaders.lib.Services
 
     public Person Get(Guid id)
     {
-      return _unitOfWork.StorageContext.People.Where(x => x.Id == id).First();
+      return _unitOfWork.StorageContext.People.Where(x => x.Id == id).FirstOrDefault();
     }
-    
-    public Person PopulatePerson(Person person, JsonPerson jsonPerson)
+
+    public Person AddFromJsonPerson(JsonPerson jsonPerson)
+    {
+      Person person = UpdateFromJsonPerson(new Person(), jsonPerson);
+      Add(person);
+      return person;
+    }
+
+    public Person UpdateFromJsonPerson(Person person, JsonPerson jsonPerson)
     {
       person.Name = jsonPerson.Name;
       person.GroupId = jsonPerson.GroupId;

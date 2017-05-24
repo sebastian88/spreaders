@@ -32,27 +32,47 @@ namespace spreaders.lib.Services
 
     public void ProcessRequest()
     {
-      if (_model == null || _model == null)
+      if (_model == null)
         return;
 
-      foreach(JsonGroup jsonGroup in _model.Groups)
-      {
-        Group group = _groupService.Get(jsonGroup.Id);
-        group = _groupService.PopulateGroup(group, jsonGroup);
-      }
+      foreach (JsonGroup jsonGroup in _model.Groups)
+        ProcessGroup(jsonGroup);
 
       foreach (JsonPerson jsonPerson in _model.People)
-      {
-        Person person = _personService.Get(jsonPerson.Id);
-        person = _personService.PopulatePerson(person, jsonPerson);
-      }
+        ProcessPerson(jsonPerson);
 
       foreach (JsonTransaction jsonTransaction in _model.Transactions)
-      {
-        Transaction transaction = _transactionService.Get(jsonTransaction.Id);
-        transaction = _transactionService.PopulateTransaction(transaction, jsonTransaction);
-      }
+        ProcessTransaction(jsonTransaction);
+
       _unitOfWork.Commit();
     }
+
+    private void ProcessGroup(JsonGroup jsonGroup)
+    {
+      Group group = _groupService.Get(jsonGroup.Id);
+      if (group == null)
+        _groupService.AddFromJsonGroup(jsonGroup);
+      else
+        _groupService.UpdateFromJsonGroup(group, jsonGroup);
+    }
+
+    private void ProcessPerson(JsonPerson jsonPerson)
+    {
+      Person person = _personService.Get(jsonPerson.Id);
+      if (person == null)
+        _personService.AddFromJsonPerson(jsonPerson);
+      else
+        _personService.UpdateFromJsonPerson(person, jsonPerson);
+    }
+
+    private void ProcessTransaction(JsonTransaction jsonTransaction)
+    {
+      Transaction transaction = _transactionService.Get(jsonTransaction.Id);
+      if (transaction == null)
+        _transactionService.CreateFromJsonTransaction(jsonTransaction);
+      else
+        _transactionService.UpdateFromJsonPerson(transaction, jsonTransaction);
+    }
+
   }
 }

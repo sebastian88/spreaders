@@ -23,10 +23,17 @@ namespace spreaders.lib.Services
 
     public Group Get(Guid id)
     {
-      return _unitOfWork.StorageContext.Groups.Where(x => x.Id == id).First();
+      return _unitOfWork.StorageContext.Groups.Where(x => x.Id == id).FirstOrDefault();
     }
-    
-    public Group PopulateGroup(Group group, JsonGroup jsonGroup)
+
+    public Group AddFromJsonGroup(JsonGroup jsonGroup)
+    {
+      Group group = UpdateFromJsonGroup(new Group(), jsonGroup);
+      Add(group);
+      return group;
+    }
+
+    public Group UpdateFromJsonGroup(Group group, JsonGroup jsonGroup)
     {
       group.Name = jsonGroup.Name;
       return group;
