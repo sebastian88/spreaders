@@ -17,7 +17,6 @@
         "transactions": []
       }
     }
-
     this.storage.getAllGroups(this.processGroups.bind(this))
     this.storage.getAllPeople(this.processPeople.bind(this))
     this.storage.getAllTransactions(this.processTransactions.bind(this))
@@ -101,19 +100,19 @@
 			responseJson.GroupsToUpdate,
 			this.storage.getGroup.bind(this.storage),
 			this.storage.updateGroup.bind(this.storage),
-			this.mapGroup)
+			this.mapEntity)
 
 		this.processResponseEntities(
 			responseJson.PeopleToUpdate,
 			this.storage.getPerson.bind(this.storage),
 			this.storage.updatePerson.bind(this.storage),
-			this.mapPerson)
+			this.mapEntity)
 
 		this.processResponseEntities(
 			responseJson.TransactionsToUpdate,
 			this.storage.getTransaction.bind(this.storage),
 			this.storage.updateTransaction.bind(this.storage),
-			this.mapTransaction)
+			this.mapEntity)
   }
 
 	synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
@@ -126,22 +125,9 @@
     }
 	}
 
-	synchroniser.prototype.mapGroup = function (existingGroup, newGroup) {
-		existingGroup.externalId = newGroup.Id
-		return existingGroup
-	}
-
-	synchroniser.prototype.mapPerson = function (existingPerson, newPerson) {
-		existingPerson.externalId = newPerson.Id
-		existingPerson.groupId = newPerson.GroupId
-		return existingPerson
-	}
-
-	synchroniser.prototype.mapTransaction = function (existingTransaction, newTransaction) {
-		existingTransaction.externalId = newTransaction.Id
-		existingTransaction.payees = newTransaction.Payees
-		existingTransaction.payer = newTransaction.PayerId
-		return existingTransaction
+	synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
+	  existingEntity.isSyncNeeded = false
+	  return existingEntity
 	}
 	
   return synchroniser
