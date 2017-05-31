@@ -1,6 +1,5 @@
 ﻿spreaders.storage = (function () {
 
-
   var storage = function () {
     
   }

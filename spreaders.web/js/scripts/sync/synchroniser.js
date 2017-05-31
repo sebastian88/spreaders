@@ -11,12 +11,7 @@
 
   synchroniser.prototype.processEntities = function () {
     this.apiUpdateJsonModel = {
-      "createdObjects": {
-        "groups": [],
-        "people": [],
-        "transactions": []
-      },
-      "updatedObjects": {
+      "entities": {
         "groups": [],
         "people": [],
         "transactions": []
@@ -29,47 +24,27 @@
   }
 
   synchroniser.prototype.processGroups = function (groups) {
-    var splitGroups = this.split(groups)
-		this.apiUpdateJsonModel.createdObjects.groups = this.createGroupsJson(splitGroups.created)
-		this.apiUpdateJsonModel.updatedObjects.groups = this.createGroupsJson(splitGroups.updated)
+    this.apiUpdateJsonModel.entities.groups = this.createGroupsJson(groups)
     this.groupsAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processPeople = function (people) {
-    var splitPeople = this.split(people)
-		this.apiUpdateJsonModel.createdObjects.people = this.createPeopleJson(splitPeople.created)
-		this.apiUpdateJsonModel.updatedObjects.people = this.createPeopleJson(splitPeople.updated)
+    this.apiUpdateJsonModel.entities.people = this.createPeopleJson(people)
     this.peopleAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processTransactions = function (transactions) {
-    var splitTransactions = this.split(transactions)
-		this.apiUpdateJsonModel.createdObjects.transactions = this.createTransactionsJson(splitTransactions.created)
-		this.apiUpdateJsonModel.updatedObjects.transactions = this.createTransactionsJson(splitTransactions.updated)
+    this.apiUpdateJsonModel.entities.transactions = this.createTransactionsJson(transactions)
     this.transactionsAddedToJson = true
     this.makeRequest()
-  }
-
-  synchroniser.prototype.split = function (entities) {
-    created = []
-    updated = []
-    for (var i = 0; i < entities.length; i++) {
-      if (entities[i].isSyncNeeded) {
-        if (entities[i].externalId)
-          updated.push(entities[i])
-        else
-          created.push(entities[i])
-      }
-    }
-    return { "created": created, "updated": updated }
   }
 
   synchroniser.prototype.createGroupsJson = function (groups) {
     groupsJson = []
     for (var i = 0; i < groups.length; i++)
-      groupsJson.push({ "ClientId": groups[i].id, "Name": groups[i].name })
+      groupsJson.push({ "Id": groups[i].externalId, "Name": groups[i].name })
     return groupsJson
 	}
 
@@ -77,7 +52,6 @@
 		peopleJson = []
 		for (var i = 0; i < people.length; i++)
 			peopleJson.push({
-				"ClientId": people[i].id,
 				"Id": people[i].externalId,
 				"Name": people[i].name,
 				"Deleted": people[i].Deleted,
@@ -91,7 +65,6 @@
     transactionJson = []
     for (var i = 0; i < transactions.length; i++)
       transactionJson.push({
-				"ClientId": transactions[i].id,
 				"Id": transactions[i].externalId,
 				"Amount": transactions[i].amount,
 				"Description": transactions[i].description,
@@ -105,42 +78,6 @@
       })
     return transactionJson
 	}
-
-	synchroniser.prototype.GetInternalIds = function (idsList) {
-		var matchedIds = []
-		for (var i = 0; i < idsList.length; i++) {
-			if (!String(idsList[i]).match(/[a-z]/i)) {
-				matchedIds.push(idsList[i])
-			}
-		}
-		return matchedIds
-	}
-
-	synchroniser.prototype.GetInternalId = function (id) {
-		if (!String(id).match(/[a-z]/i))
-			return id
-		else
-			return null;
-	}
-
-	synchroniser.prototype.GetExternalIds = function (idsList) {
-		var matchedIds = []
-		for (var i = 0; i < idsList.length; i++) {
-			if (String(idsList[i]).match(/[a-z]/i)) {
-				matchedIds.push(idsList[i])
-			}
-		}
-		return matchedIds
-	}
-
-	synchroniser.prototype.GetExternalId = function (id) {
-		if (String(id).match(/[a-z]/i))
-			return id
-		else
-			return null;
-	}
-
-
 
   synchroniser.prototype.makeRequest = function (apiUpdateJsonModel) {
     if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)

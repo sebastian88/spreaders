@@ -12,11 +12,11 @@ spreaders.pages.transactions = (function(){
 		this.transactions = []
 		this.getTransactionsComplete = false
 		
-		var addTransactionButton = document.getElementsByClassName("addTransactionButton")[0];
+		var addTransactionButton = document.getElementsByClassName("addTransactionButton")[0]
 		addTransactionButton.addEventListener("click", this.redirectToTransaction.bind(this))
 
-		this.personTotalsContainer = document.getElementsByClassName("personTotals")[0];
-		this.transactionContainer = document.getElementsByClassName("transactions")[0];
+		this.personTotalsContainer = document.getElementsByClassName("personTotals")[0]
+		this.transactionContainer = document.getElementsByClassName("transactions")[0]
 
 		this.storage.getGroup(pageContext.getCurrentGroupId(), this.populatePage.bind(this))
 	}
@@ -35,14 +35,14 @@ spreaders.pages.transactions = (function(){
 
 	transactions.prototype.getPeopleCallback = function (people) {
 	  this.people = people
-	  this.getPeopleComplete = true;
+	  this.getPeopleComplete = true
 
 	  this.renderTransactionsAndTotals()
 	}
 
 	transactions.prototype.getTransactionsCallback = function (transactions) {
 	  this.transactions = transactions
-	  this.getTransactionsComplete = true;
+	  this.getTransactionsComplete = true
 
 	  this.renderTransactionsAndTotals()
 	}
