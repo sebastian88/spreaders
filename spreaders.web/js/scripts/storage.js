@@ -80,6 +80,26 @@
     }
   }
 
+  storage.prototype.getOneFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
+    if (!this.db) {
+      this.addCallback(callback, parameters)
+      return
+    }
+    var entities = []
+
+    var transaction = this.createReadTransaction(tableName)
+    var objectStore = this.getObjectStore(transaction, tableName)
+    var request = objectStore.index(indexName).openCursor(indexValue)
+
+    request.onerror = this.handleError
+
+    request.onsuccess = function (event) {
+      var cursor = event.target.result;
+      if (cursor)
+        successCallback(cursor.value)
+    }
+  }
+
   storage.prototype.updateEntity = function (callback, tableName, entityToBeUpdated, isSyncNeeded, successCallback) {
     if (!this.db) {
       this.addCallback(callback, [entityToBeUpdated, isSyncNeeded, successCallback])
@@ -137,7 +157,7 @@
   }
 
   storage.prototype.getGroup = function (groupId, callback) {
-    this.getFromIndexStore(
+    this.getOneFromIndexStore(
       this.getGroup.bind(this),
       [groupId, callback],
       this.dbSchema.groupsTable.tableName,
@@ -209,14 +229,21 @@
 	}
 
 	storage.prototype.getPeopleForGroup = function (group, callback) {
-		this.getFromIndexStore(this.getPeopleForGroup.bind(this), [group, callback], this.dbSchema.peopleTable.tableName, "groupId", group.externalId, callback)
+    this.getFromIndexStore(
+      this.getPeopleForGroup.bind(this),
+      [group, callback],
+      this.dbSchema.peopleTable.tableName,
+      "groupId",
+      group.externalId,
+      callback)
 	}
 	
   storage.prototype.getPerson = function (personId, callback) {
-    this.getById(
+    this.getOneFromIndexStore(
       this.getPerson.bind(this),
       [personId, callback],
       this.dbSchema.peopleTable.tableName,
+      "externalId",
       personId,
       callback)
   }
@@ -263,6 +290,16 @@
       this.getTransaction.bind(this),
       [transactionId, callback],
       this.dbSchema.transactionsTable.tableName,
+      transactionId,
+      callback)
+  }
+
+  storage.prototype.getTransactionByExternalId = function (transactionId, callback) {
+    this.getOneFromIndexStore(
+      this.getTransactionByExternalId.bind(this),
+      [transactionId, callback],
+      this.dbSchema.transactionsTable.tableName,
+      "externalId",
       transactionId,
       callback)
   }

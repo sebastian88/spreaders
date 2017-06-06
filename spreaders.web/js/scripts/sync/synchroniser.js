@@ -6,6 +6,9 @@
     this.groupsAddedToJson = false
     this.peopleAddedToJson = false
     this.transactionsAddedToJson = false
+    this.syncedGroups = []
+    this.syncedPeople = []
+    this.syncedTransactions = []
     this.processEntities()
   }
 
@@ -42,41 +45,48 @@
 
   synchroniser.prototype.createGroupsJson = function (groups) {
     groupsJson = []
-    for (var i = 0; i < groups.length; i++)
-      groupsJson.push({ "Id": groups[i].externalId, "Name": groups[i].name })
+    for (var i = 0; i < groups.length; i++) {
+      groupsJson.push({
+        "id": groups[i].externalId,
+        "name": groups[i].name
+      })
+      this.syncedGroups.push(groups[i].externalId)
+    }
     return groupsJson
-	}
+  }
 
-	synchroniser.prototype.createPeopleJson = function (people) {
-		peopleJson = []
-		for (var i = 0; i < people.length; i++)
-			peopleJson.push({
-				"Id": people[i].externalId,
-				"Name": people[i].name,
-				"Deleted": people[i].Deleted,
-				"GroupId": people[i].groupId
-
-			})
-		return peopleJson
-	}
+  synchroniser.prototype.createPeopleJson = function (people) {
+    peopleJson = []
+    for (var i = 0; i < people.length; i++) {
+      peopleJson.push({
+        "id": people[i].externalId,
+        "name": people[i].name,
+        "deleted": people[i].Deleted,
+        "groupId": people[i].groupId
+      })
+      this.syncedPeople.push(people[i].externalId)
+    }
+    return peopleJson
+  }
 
   synchroniser.prototype.createTransactionsJson = function (transactions) {
     transactionJson = []
-    for (var i = 0; i < transactions.length; i++)
+    for (var i = 0; i < transactions.length; i++) {
       transactionJson.push({
-				"Id": transactions[i].externalId,
-				"Amount": transactions[i].amount,
-				"Description": transactions[i].description,
+        "id": transactions[i].externalId,
+        "amount": transactions[i].amount,
+        "description": transactions[i].description,
 
-				// reference objects
-				"PayerId": transactions[i].payer,
-				"Payees": transactions[i].payees,
-
-				"Deleted": transactions[i].Deleted,
-				"GroupId": transactions[i].groupId
+        // reference objects
+        "payerId": transactions[i].payer,
+        "payees": transactions[i].payees,
+        "deleted": transactions[i].Deleted,
+        "groupId": transactions[i].groupId
       })
+      this.syncedTransactions.push(transactions[i].externalId)
+    }
     return transactionJson
-	}
+  }
 
   synchroniser.prototype.makeRequest = function (apiUpdateJsonModel) {
     if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)
@@ -85,50 +95,49 @@
     var xmlhttp = new XMLHttpRequest()
     xmlhttp.onreadystatechange = function () {
       if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
-        this.processResponse(xmlhttp.responseText)
+        this.setEntitiesToSynced()
       }
     }.bind(this)
-		xmlhttp.open("POST", "http://localhost:54321/api/sync", true)
+    xmlhttp.open("POST", "http://localhost:54321/api/sync", true)
     xmlhttp.setRequestHeader("Content-type", "application/json")
     xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
   }
 
-  synchroniser.prototype.processResponse = function (responseText) {
-    var responseJson = JSON.parse(responseText)
+  synchroniser.prototype.setEntitiesToSynced = function () {
 
-		this.processResponseEntities(
-			responseJson.GroupsToUpdate,
-			this.storage.getGroup.bind(this.storage),
-			this.storage.updateGroup.bind(this.storage),
-			this.mapEntity)
+    this.processResponseEntities(
+      this.syncedGroups,
+      this.storage.getGroup.bind(this.storage),
+      this.storage.updateGroup.bind(this.storage),
+      this.mapEntity)
 
-		this.processResponseEntities(
-			responseJson.PeopleToUpdate,
-			this.storage.getPerson.bind(this.storage),
-			this.storage.updatePerson.bind(this.storage),
-			this.mapEntity)
+    this.processResponseEntities(
+      this.syncedPeople,
+      this.storage.getPerson.bind(this.storage),
+      this.storage.updatePerson.bind(this.storage),
+      this.mapEntity)
 
-		this.processResponseEntities(
-			responseJson.TransactionsToUpdate,
-			this.storage.getTransaction.bind(this.storage),
-			this.storage.updateTransaction.bind(this.storage),
-			this.mapEntity)
+    this.processResponseEntities(
+      this.syncedTransactions,
+      this.storage.getTransactionByExternalId.bind(this.storage),
+      this.storage.updateTransaction.bind(this.storage),
+      this.mapEntity)
   }
 
-	synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
+  synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
     for (var i = 0; i < entities.length; i++) {
       var entityUpdater = new spreaders.entityUpdater()
-			entityUpdater.externalEntity = entities[i]
-			entityUpdater.updateFunction = callback
-			entityUpdater.mapper = mapper
-			getEntityFunction(entities[i].ClientId, entityUpdater.update.bind(entityUpdater))
+      entityUpdater.externalEntity = entities[i]
+      entityUpdater.updateFunction = callback
+      entityUpdater.mapper = mapper
+      getEntityFunction(entities[i].externalId, entityUpdater.update.bind(entityUpdater))
     }
-	}
+  }
 
-	synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
-	  existingEntity.isSyncNeeded = false
-	  return existingEntity
-	}
-	
+  synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
+    existingEntity.isSyncNeeded = false
+    return existingEntity
+  }
+
   return synchroniser
 })()
