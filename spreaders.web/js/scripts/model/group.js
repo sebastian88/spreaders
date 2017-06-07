@@ -4,7 +4,8 @@ spreaders.model.group = (function(){
     this.id
     this.externalId = ''
     this.name = name
-    this.isSyncNeeded = false
+    this.isDeleted = 0
+    this.isSyncNeeded = 0
 	}
 	
 	return group

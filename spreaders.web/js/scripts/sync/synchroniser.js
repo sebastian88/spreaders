@@ -48,7 +48,8 @@
     for (var i = 0; i < groups.length; i++) {
       groupsJson.push({
         "id": groups[i].externalId,
-        "name": groups[i].name
+        "name": groups[i].name,
+        "isDeleted": groups[i].isDeleted
       })
       this.syncedGroups.push(groups[i].externalId)
     }
@@ -61,7 +62,7 @@
       peopleJson.push({
         "id": people[i].externalId,
         "name": people[i].name,
-        "deleted": people[i].Deleted,
+        "isDeleted": people[i].isDeleted,
         "groupId": people[i].groupId
       })
       this.syncedPeople.push(people[i].externalId)
@@ -80,7 +81,7 @@
         // reference objects
         "payerId": transactions[i].payer,
         "payees": transactions[i].payees,
-        "deleted": transactions[i].Deleted,
+        "isDeleted": transactions[i].isDeleted,
         "groupId": transactions[i].groupId
       })
       this.syncedTransactions.push(transactions[i].externalId)
@@ -94,7 +95,7 @@
 
     var xmlhttp = new XMLHttpRequest()
     xmlhttp.onreadystatechange = function () {
-      if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
+      if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
         this.setEntitiesToSynced()
       }
     }.bind(this)
@@ -135,7 +136,7 @@
   }
 
   synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
-    existingEntity.isSyncNeeded = false
+    existingEntity.isSyncNeeded = 0
     return existingEntity
   }
 

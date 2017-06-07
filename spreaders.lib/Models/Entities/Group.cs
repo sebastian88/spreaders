@@ -15,7 +15,9 @@ namespace spreaders.lib.models.Entities
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
     public string Name { get; set; }
-		public virtual ICollection<Transaction> Transactions { get; set; }
+    public bool IsDeleted { get; set; }
+
+    public virtual ICollection<Transaction> Transactions { get; set; }
     public virtual ICollection<Person> People { get; set; }
     public virtual ICollection<User> Users { get; set; }
 

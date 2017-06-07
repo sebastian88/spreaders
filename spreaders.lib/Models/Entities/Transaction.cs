@@ -16,7 +16,7 @@ namespace spreaders.lib.models.Entities
     public Guid Id { get; set; }
     public decimal Amount { get; set; }
     public string Description { get; set; }
-    public bool Deleted { get; set; }
+    public bool IsDeleted { get; set; }
 
 
     public Guid PayerId { get; set; }

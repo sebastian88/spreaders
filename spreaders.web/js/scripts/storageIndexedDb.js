@@ -11,21 +11,21 @@
         tableName: "groups",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "isSyncNeeded"],
-        unique: [true, false]
+        index: ["externalId", "isDeleted", "isSyncNeeded"],
+        unique: [true, false, false]
       },
       peopleTable: {
         tableName: "people",
         keyPath: "id",
         autoIncrement: true,
-				index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
+				index: ["externalId", "groupId", "isDeleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       },
       transactionsTable: {
         tableName: "transactions",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "groupId", "deleted", "isSyncNeeded"],
+        index: ["externalId", "groupId", "isDeleted", "isSyncNeeded"],
         unique: [true, false, false, false]
       }
     }
@@ -45,7 +45,6 @@
   storageIndexedDb.prototype.handleSuccess = function (event) {
     this.db = event.target.result
     if (this.callbacks[0]) {
-      var i
       for (var i = 0; i < this.callbacks.length; i++) {
         this.callbacks[i].callback.apply(this, this.callbacks[i].arguments);
       }

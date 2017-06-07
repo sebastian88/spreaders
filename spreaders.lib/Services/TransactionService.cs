@@ -40,7 +40,7 @@ namespace spreaders.lib.Services
         throw new Exception("jsontransaction is null");
       
       transaction.Amount = jsonTransaction.Amount;
-      transaction.Deleted = jsonTransaction.Deleted;
+      transaction.IsDeleted = jsonTransaction.IsDeleted;
       transaction.Description = jsonTransaction.Description;
       transaction.GroupId = jsonTransaction.GroupId;
       transaction.PayerId = jsonTransaction.PayerId;

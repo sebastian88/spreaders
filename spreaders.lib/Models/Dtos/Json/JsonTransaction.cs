@@ -11,7 +11,7 @@ namespace spreaders.lib.Models.Dtos.Json
     public Guid Id { get; set; }
     public decimal Amount { get; set; }
     public string Description { get; set; }
-    public bool Deleted { get; set; }
+    public bool IsDeleted { get; set; }
     public int PayerClientId { get; set; }
     public Guid PayerId { get; set; }
     public List<int> PayeesClientIds { get; set; }

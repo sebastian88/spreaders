@@ -15,7 +15,7 @@ namespace spreaders.lib.models.Entities
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public bool Deleted { get; set; }
+    public bool IsDeleted { get; set; }
 
 
     [InverseProperty("Payees")]

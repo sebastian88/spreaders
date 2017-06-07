@@ -44,7 +44,7 @@
     request.onsuccess = function (event) {
       var cursor = event.target.result;
       if (cursor) {
-        if (!cursor.value.deleted)
+        if (!cursor.value.isDeleted)
           entities.push(cursor.value);
         cursor.continue();
       }
@@ -70,7 +70,7 @@
     request.onsuccess = function (event) {
       var cursor = event.target.result;
       if (cursor) {
-        if (!cursor.value.deleted)
+        if (!cursor.value.isDeleted)
           entities.push(cursor.value);
         cursor.continue();
       }
@@ -106,8 +106,8 @@
       return
     }
 
-    if (isSyncNeeded && isSyncNeeded !== false)
-      isSyncNeeded = true
+    if (isSyncNeeded && isSyncNeeded !== 0)
+      isSyncNeeded = 1
 
     entityToBeUpdated.isSyncNeeded = isSyncNeeded
     var dbTransaction = this.createReadWriteTransaction(tableName)
@@ -126,7 +126,7 @@
       return
     }
     group.externalId = this.generateUUID()
-    group.isSyncNeeded = true
+    group.isSyncNeeded = 1
     var transaction = this.createReadWriteTransaction(this.dbSchema.groupsTable.tableName)
     var objectStore = this.getObjectStore(transaction, this.dbSchema.groupsTable.tableName)
     var response = objectStore.add(group)
@@ -173,7 +173,7 @@
     }
 
     person.externalId = this.generateUUID()
-    person.isSyncNeeded = true
+    person.isSyncNeeded = 1
     var dbTransaction = this.createReadWriteTransaction(this.dbSchema.peopleTable.tableName)
     var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.peopleTable.tableName)
     var response = objectStore.add(person)
@@ -218,7 +218,7 @@
     cursorRequest.onsuccess = function (event) {
       var cursor = event.target.result;
       if (cursor) {
-        if (!cursor.value.deleted)
+        if (!cursor.value.isDeleted)
           people.push(cursor.value);
         cursor.continue();
       }
@@ -263,7 +263,7 @@
     }
 
     transaction.externalId = this.generateUUID()
-    transaction.isSyncNeeded = true
+    transaction.isSyncNeeded = 1
     var dbTransaction = this.createReadWriteTransaction(this.dbSchema.transactionsTable.tableName)
     var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.transactionsTable.tableName)
     var response = objectStore.put(transaction)

@@ -52,7 +52,7 @@ namespace spreaders.lib.Services
       {
         Id = transaction.Id,
         Amount = transaction.Amount,
-        Deleted = transaction.Deleted,
+        IsDeleted = transaction.IsDeleted,
         Description = transaction.Description,
         GroupId = transaction.GroupId,
         Payees = transaction.Payees.Select(x => x.Id).ToList(),
@@ -74,7 +74,7 @@ namespace spreaders.lib.Services
       {
         Id = person.Id,
         Name = person.Name,
-        Deleted = person.Deleted,
+        IsDeleted = person.IsDeleted,
         GroupId = person.GroupId
       };
     }

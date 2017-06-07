@@ -5,8 +5,8 @@ spreaders.model.person = (function () {
     this.externalId
     this.groupId = group.externalId
 		this.name = name
-		this.deleted = false
-		this.isSyncNeeded = false
+		this.isDeleted = 0
+		this.isSyncNeeded = 0
   };
 	
 	return person;
