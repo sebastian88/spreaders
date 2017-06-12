@@ -20,9 +20,9 @@
         "transactions": []
       }
     }
-    this.storage.getAllGroups(this.processGroups.bind(this))
-    this.storage.getAllPeople(this.processPeople.bind(this))
-    this.storage.getAllTransactions(this.processTransactions.bind(this))
+    this.storage.getGroupsForSync(this.processGroups.bind(this))
+    this.storage.getPeopleForSync(this.processPeople.bind(this))
+    this.storage.getTransactionsForSync(this.processTransactions.bind(this))
   }
 
   synchroniser.prototype.processGroups = function (groups) {
@@ -51,7 +51,7 @@
         "name": groups[i].name,
         "isDeleted": groups[i].isDeleted
       })
-      this.syncedGroups.push(groups[i].externalId)
+      this.syncedGroups.push(groups[i])
     }
     return groupsJson
   }
@@ -65,7 +65,7 @@
         "isDeleted": people[i].isDeleted,
         "groupId": people[i].groupId
       })
-      this.syncedPeople.push(people[i].externalId)
+      this.syncedPeople.push(people[i])
     }
     return peopleJson
   }
@@ -84,12 +84,12 @@
         "isDeleted": transactions[i].isDeleted,
         "groupId": transactions[i].groupId
       })
-      this.syncedTransactions.push(transactions[i].externalId)
+      this.syncedTransactions.push(transactions[i])
     }
     return transactionJson
   }
 
-  synchroniser.prototype.makeRequest = function (apiUpdateJsonModel) {
+  synchroniser.prototype.makeRequest = function () {
     if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)
       return
 
@@ -108,13 +108,13 @@
 
     this.processResponseEntities(
       this.syncedGroups,
-      this.storage.getGroup.bind(this.storage),
+      this.storage.getGroupByExternalId.bind(this.storage),
       this.storage.updateGroup.bind(this.storage),
       this.mapEntity)
 
     this.processResponseEntities(
       this.syncedPeople,
-      this.storage.getPerson.bind(this.storage),
+      this.storage.getPersonByExternalId.bind(this.storage),
       this.storage.updatePerson.bind(this.storage),
       this.mapEntity)
 

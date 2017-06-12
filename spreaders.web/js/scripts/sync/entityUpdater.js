@@ -8,7 +8,7 @@
 
   entityUpdater.prototype.update = function (entity) {
 		entity = this.mapper(entity, this.externalEntity)
-    this.updateFunction(entity, null, false)
+    this.updateFunction(entity, null, 0)
   }
 
   return entityUpdater

@@ -108,6 +108,8 @@
 
     if (isSyncNeeded && isSyncNeeded !== 0)
       isSyncNeeded = 1
+    else
+      isSyncNeeded = 0
 
     entityToBeUpdated.isSyncNeeded = isSyncNeeded
     var dbTransaction = this.createReadWriteTransaction(tableName)
@@ -163,6 +165,26 @@
       this.dbSchema.groupsTable.tableName,
       "externalId",
       groupId,
+      callback)
+  }
+
+  storage.prototype.getGroupByExternalId = function (groupId, callback) {
+    this.getOneFromIndexStore(
+      this.getGroupByExternalId.bind(this),
+      [groupId, callback],
+      this.dbSchema.groupsTable.tableName,
+      "externalId",
+      groupId,
+      callback)
+  }
+
+  storage.prototype.getGroupsForSync = function (callback) {
+    this.getFromIndexStore(
+      this.getGroupsForSync.bind(this),
+      [callback],
+      this.dbSchema.groupsTable.tableName,
+      "isSyncNeeded",
+      1,
       callback)
   }
 
@@ -226,7 +248,17 @@
         callback(people)
       }
     };
-	}
+  }
+
+  storage.prototype.getPeopleForSync = function (callback) {
+    this.getFromIndexStore(
+      this.getPeopleForSync.bind(this),
+      [callback],
+      this.dbSchema.peopleTable.tableName,
+      "isSyncNeeded",
+      1,
+      callback)
+  }
 
 	storage.prototype.getPeopleForGroup = function (group, callback) {
     this.getFromIndexStore(
@@ -241,6 +273,16 @@
   storage.prototype.getPerson = function (personId, callback) {
     this.getOneFromIndexStore(
       this.getPerson.bind(this),
+      [personId, callback],
+      this.dbSchema.peopleTable.tableName,
+      "externalId",
+      personId,
+      callback)
+  }
+
+  storage.prototype.getPersonByExternalId = function (personId, callback) {
+    this.getOneFromIndexStore(
+      this.getPersonByExternalId.bind(this),
       [personId, callback],
       this.dbSchema.peopleTable.tableName,
       "externalId",
@@ -317,6 +359,16 @@
       this.getAllTransactions.bind(this),
       [callback],
       this.dbSchema.transactionsTable.tableName,
+      callback)
+  }
+
+  storage.prototype.getTransactionsForSync = function (callback) {
+    this.getFromIndexStore(
+      this.getTransactionsForSync.bind(this),
+      [callback],
+      this.dbSchema.transactionsTable.tableName,
+      "isSyncNeeded",
+      1,
       callback)
   }
 

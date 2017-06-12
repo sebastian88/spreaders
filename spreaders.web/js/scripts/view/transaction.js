@@ -77,8 +77,8 @@ spreaders.view.transaction = (function () {
   }
 
   transaction.prototype.deleteTransaction = function () {
-    this.transaction.isDeleted = true;
-    this.storage.updateTransaction(this.transaction, this.deleteTransactionCallback.bind(this))
+    this.transaction.isDeleted = 1;
+    this.storage.updateTransaction(this.transaction, this.deleteTransactionCallback.bind(this), 1)
   }
 
   transaction.prototype.deleteTransactionCallback = function () {
