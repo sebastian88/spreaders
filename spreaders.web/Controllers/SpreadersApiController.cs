@@ -36,7 +36,7 @@ namespace spreaders.web.Controllers
     }
 
     // POST api/<controller>
-    public ApiGetGroupReturnModel GetGroupInfo(Guid id)
+    public ApiGetGroupReturnModel GetGroup(Guid id)
     {
       GroupService groupService = new GroupService(_unitOfWork);
       ApiGroupService apiGroupService = new ApiGroupService(_unitOfWork);

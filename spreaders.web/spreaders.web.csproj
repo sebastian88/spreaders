@@ -145,6 +145,7 @@
     <Content Include="js\pages\groups.js" />
     <Content Include="js\pages\transaction.js" />
     <Content Include="js\pages\transactions.js" />
+    <Content Include="js\scripts\apiService.js" />
     <Content Include="js\scripts\model\group.js" />
     <Content Include="js\scripts\model\person.js" />
     <Content Include="js\scripts\model\personTotal.js" />

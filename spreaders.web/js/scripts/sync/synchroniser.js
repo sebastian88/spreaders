@@ -1,8 +1,9 @@
 ﻿spreaders.sync.synchroniser = (function () {
 
 
-  var synchroniser = function (storage) {
+  var synchroniser = function (storage, apiService) {
     this.storage = storage
+    this.apiService = apiService
     this.groupsAddedToJson = false
     this.peopleAddedToJson = false
     this.transactionsAddedToJson = false
@@ -93,15 +94,21 @@
     if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)
       return
 
-    var xmlhttp = new XMLHttpRequest()
-    xmlhttp.onreadystatechange = function () {
-      if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
-        this.setEntitiesToSynced()
-      }
-    }.bind(this)
-    xmlhttp.open("POST", "http://localhost:54321/api/sync", true)
-    xmlhttp.setRequestHeader("Content-type", "application/json")
-    xmlhttp.send(JSON.stringify(this.apiUpdateJsonModel))
+    if (!this.isSyncNeeded())
+      return
+
+    this.apiService.sync(this.apiUpdateJsonModel, this.setEntitiesToSynced().bind(this))
+  }
+
+  synchroniser.prototype.isSyncNeeded = function () {
+    if (this.apiUpdateJsonModel.entities.groups.length > 0
+      && this.apiUpdateJsonModel.entities.people.length > 0
+      && this.apiUpdateJsonModel.entities.transactions.length > 0) {
+      return true
+    }
+    else {
+      return false
+    }
   }
 
   synchroniser.prototype.setEntitiesToSynced = function () {
