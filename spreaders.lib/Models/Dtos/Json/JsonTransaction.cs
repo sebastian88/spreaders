@@ -1,27 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Web;
 
 namespace spreaders.lib.Models.Dtos.Json
 {
+  [DataContract(Name = "Transaction")]
   public class JsonTransaction
   {
-    public int ClientId { get; set; }
+    [DataMember(Name = "id")]
     public Guid Id { get; set; }
+    [DataMember(Name = "amount")]
     public decimal Amount { get; set; }
+    [DataMember(Name = "description")]
     public string Description { get; set; }
+    [DataMember(Name = "isDeleted")]
     public bool IsDeleted { get; set; }
-    public int PayerClientId { get; set; }
+    [DataMember(Name = "payerId")]
     public Guid PayerId { get; set; }
-    public List<int> PayeesClientIds { get; set; }
+    [DataMember(Name = "payees")]
     public List<Guid> Payees { get; set; }
-    public int GroupClientId { get; set; }
+    [DataMember(Name = "groupId")]
     public Guid GroupId { get; set; }
 
     public JsonTransaction()
     {
-      PayeesClientIds = new List<int>();
       Payees = new List<Guid>();
     }
   }

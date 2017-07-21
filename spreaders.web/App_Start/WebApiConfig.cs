@@ -17,7 +17,7 @@ namespace spreaders.web
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{id}",
+                routeTemplate: "api/{action}/{id}",
                 defaults: new { controller = "SpreadersApi", id = RouteParameter.Optional }
             );
         }

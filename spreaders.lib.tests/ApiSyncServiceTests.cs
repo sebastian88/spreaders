@@ -126,7 +126,7 @@ namespace spreaders.lib.tests
     public void ApiSyncService_ProcessRequest_EmptyModel_DoesNotError()
     {
       IUnitOfWork unitOfWork = Setup();
-      ApiSyncService apiService = new ApiSyncService(unitOfWork, new EntitiesList());
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, new Entities());
 
       try
       {
@@ -144,7 +144,7 @@ namespace spreaders.lib.tests
       IUnitOfWork unitOfWork = Setup();
       Guid GroupId = new Guid("88888888-4444-4444-4444-222222222222");
 
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.Groups.Add(new JsonGroup()
       {
         Id = GroupId,
@@ -165,7 +165,7 @@ namespace spreaders.lib.tests
       Guid GroupId = new Guid("88888888-4444-4444-4444-222222222222");
       AddGroupToStorage(unitOfWork, GroupId, "test1");
 
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.Groups.Add(new JsonGroup()
       {
         Id = GroupId,
@@ -185,7 +185,7 @@ namespace spreaders.lib.tests
       IUnitOfWork unitOfWork = Setup();
       Guid personId = new Guid("88888888-4444-4444-4444-222222222222");
 
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.People.Add(new JsonPerson()
       {
         Id = personId,
@@ -206,7 +206,7 @@ namespace spreaders.lib.tests
       Guid personId = new Guid("88888888-4444-4444-4444-222222222222");
       AddPersonToStorage(unitOfWork, personId, "test1", Guid.Empty);
 
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.People.Add(new JsonPerson()
       {
         Id = personId,
@@ -231,7 +231,7 @@ namespace spreaders.lib.tests
       AddGroupToStorage(unitOfWork, group2Id, "group2");
       AddPersonToStorage(unitOfWork, personId, "test1", group1Id);
 
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.People.Add(new JsonPerson()
       {
         Id = personId,
@@ -250,7 +250,7 @@ namespace spreaders.lib.tests
     public void ApiSyncService_ProcessRequest_CreateTransaction_TransactionIsCreated()
     {
       IUnitOfWork unitOfWork = Setup();
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.Transactions.Add(new JsonTransaction()
       {
         Id = new Guid("88888888-4444-4444-4444-222222222222"),
@@ -270,7 +270,7 @@ namespace spreaders.lib.tests
       IUnitOfWork unitOfWork = Setup();
       Guid transactionId = new Guid("88888888-4444-4444-4444-222222222222");
       AddTransactionIntoStorage(unitOfWork, transactionId, 1);
-      EntitiesList model = new EntitiesList();
+      Entities model = new Entities();
       model.Transactions.Add(new JsonTransaction()
       {
         Id = transactionId,

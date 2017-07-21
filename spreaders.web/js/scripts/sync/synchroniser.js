@@ -15,11 +15,9 @@
 
   synchroniser.prototype.processEntities = function () {
     this.apiUpdateJsonModel = {
-      "entities": {
-        "groups": [],
-        "people": [],
-        "transactions": []
-      }
+      "groups": [],
+      "people": [],
+      "transactions": []
     }
     this.storage.getGroupsForSync(this.processGroups.bind(this))
     this.storage.getPeopleForSync(this.processPeople.bind(this))
@@ -27,19 +25,19 @@
   }
 
   synchroniser.prototype.processGroups = function (groups) {
-    this.apiUpdateJsonModel.entities.groups = this.createGroupsJson(groups)
+    this.apiUpdateJsonModel.groups = this.createGroupsJson(groups)
     this.groupsAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processPeople = function (people) {
-    this.apiUpdateJsonModel.entities.people = this.createPeopleJson(people)
+    this.apiUpdateJsonModel.people = this.createPeopleJson(people)
     this.peopleAddedToJson = true
     this.makeRequest()
   }
 
   synchroniser.prototype.processTransactions = function (transactions) {
-    this.apiUpdateJsonModel.entities.transactions = this.createTransactionsJson(transactions)
+    this.apiUpdateJsonModel.transactions = this.createTransactionsJson(transactions)
     this.transactionsAddedToJson = true
     this.makeRequest()
   }
@@ -97,13 +95,13 @@
     if (!this.isSyncNeeded())
       return
 
-    this.apiService.sync(this.apiUpdateJsonModel, this.setEntitiesToSynced().bind(this))
+    this.apiService.sync(this.apiUpdateJsonModel, this.setEntitiesToSynced.bind(this))
   }
 
   synchroniser.prototype.isSyncNeeded = function () {
-    if (this.apiUpdateJsonModel.entities.groups.length > 0
-      && this.apiUpdateJsonModel.entities.people.length > 0
-      && this.apiUpdateJsonModel.entities.transactions.length > 0) {
+    if (this.apiUpdateJsonModel.groups.length > 0
+      || this.apiUpdateJsonModel.people.length > 0
+      || this.apiUpdateJsonModel.transactions.length > 0) {
       return true
     }
     else {

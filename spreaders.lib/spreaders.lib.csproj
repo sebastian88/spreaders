@@ -31,16 +31,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.2.0-beta1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,6 +82,14 @@
     <Compile Include="Migrations\201702191900533_final.cs" />
     <Compile Include="Migrations\201702191900533_final.Designer.cs">
       <DependentUpon>201702191900533_final.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706261956432_StuffUpdate.cs" />
+    <Compile Include="Migrations\201706261956432_StuffUpdate.Designer.cs">
+      <DependentUpon>201706261956432_StuffUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706262001077_IdNotDbGenerated.cs" />
+    <Compile Include="Migrations\201706262001077_IdNotDbGenerated.Designer.cs">
+      <DependentUpon>201706262001077_IdNotDbGenerated.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Dtos\General\AddedEntity.cs" />
@@ -134,6 +141,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702191900533_final.resx">
       <DependentUpon>201702191900533_final.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706261956432_StuffUpdate.resx">
+      <DependentUpon>201706261956432_StuffUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706262001077_IdNotDbGenerated.resx">
+      <DependentUpon>201706262001077_IdNotDbGenerated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

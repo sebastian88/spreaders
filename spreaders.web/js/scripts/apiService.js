@@ -1,6 +1,6 @@
 ﻿spreaders.apiService = (function () {
   var apiService = function () {
-    this.baseUrl = 'http://localhost:54321/'
+    this.baseUrl = 'http://localhost:54321'
     this.apiPath = 'api'
     this.syncEndPoint = 'sync'
     this.getGroupEndPoint = 'getgroup'
@@ -34,7 +34,8 @@
     }.bind(this)
 
     xmlhttp.open("GET", this.getGroupUrl + groupId, true)
-    xmlhttp.send(JSON.stringify(apiUpdateJsonModel))
+    xmlhttp.setRequestHeader("Content-type", "application/json")
+    xmlhttp.send()
   }
 
   return apiService

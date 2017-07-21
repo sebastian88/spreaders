@@ -30,7 +30,7 @@ namespace spreaders.lib.Services
 
     public Person AddFromJsonPerson(JsonPerson jsonPerson)
     {
-      Person person = UpdateFromJsonPerson(new Person(), jsonPerson);
+      Person person = UpdateFromJsonPerson(new Person { Id = jsonPerson.Id }, jsonPerson);
       Add(person);
       return person;
     }

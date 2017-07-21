@@ -18,9 +18,9 @@ namespace spreaders.lib.Services
     PersonService _personService;
     TransactionService _transactionService;
 
-    EntitiesList _model;
+    Entities _model;
 
-    public ApiSyncService(IUnitOfWork unitOfWork, EntitiesList model)
+    public ApiSyncService(IUnitOfWork unitOfWork, Entities model)
     {
       _unitOfWork = unitOfWork;
       _groupService = new GroupService(_unitOfWork);

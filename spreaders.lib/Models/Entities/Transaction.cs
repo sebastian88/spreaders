@@ -12,7 +12,6 @@ namespace spreaders.lib.models.Entities
   public class Transaction : IEntity
   {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
     public decimal Amount { get; set; }
     public string Description { get; set; }

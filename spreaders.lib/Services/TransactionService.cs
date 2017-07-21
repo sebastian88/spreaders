@@ -29,7 +29,7 @@ namespace spreaders.lib.Services
 
     public Transaction CreateFromJsonTransaction(JsonTransaction jsonTransaction)
     {
-      Transaction transaction = UpdateFromJsonPerson(new Transaction(), jsonTransaction);
+      Transaction transaction = UpdateFromJsonPerson(new Transaction { Id = jsonTransaction.Id }, jsonTransaction);
       Add(transaction);
       return transaction;
     }

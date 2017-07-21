@@ -26,7 +26,7 @@ namespace spreaders.web.Controllers
     }
 
     // POST api/<controller>
-    public bool Sync([FromBody]EntitiesList model)
+    public bool Sync([FromBody]Entities model)
     {
       ApiSyncService apiService = new ApiSyncService(_unitOfWork, model);
       

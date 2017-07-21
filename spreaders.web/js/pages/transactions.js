@@ -22,7 +22,12 @@ spreaders.pages.transactions = (function () {
   }
 
   transactions.prototype.populatePage = function (group) {
-    // If no group then try from web service
+
+    if (!group) {
+      this.apiService.getGroup(pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
+    }
+      
+
     if (group) {
       this.group = group
       this.storage.getPeopleForGroup(this.group, this.getPeopleCallback.bind(this))
@@ -32,6 +37,9 @@ spreaders.pages.transactions = (function () {
     }
   }
 
+  transactions.prototype.processGroupFromApi = function(groupInformation) {
+
+  }
 
   transactions.prototype.getPeopleCallback = function (people) {
     this.people = people
@@ -117,6 +125,7 @@ var urlService = new spreaders.urlService()
 var pageContext = new spreaders.pageContext(urlService)
 var storage = new spreaders.storage()
 var observer = new spreaders.observer()
-var synchroniser = new spreaders.sync.synchroniser(storage)
+var apiService = new spreaders.apiService()
+var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
 
 var page = new spreaders.pages.transactions(pageContext, urlService, storage, observer, synchroniser)

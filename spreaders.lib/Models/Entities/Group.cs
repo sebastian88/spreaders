@@ -12,7 +12,6 @@ namespace spreaders.lib.models.Entities
   public class Group : IEntity
   {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
     public string Name { get; set; }
     public bool IsDeleted { get; set; }

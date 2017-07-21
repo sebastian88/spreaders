@@ -28,7 +28,7 @@ namespace spreaders.lib.Services
 
     public Group AddFromJsonGroup(JsonGroup jsonGroup)
     {
-      Group group = UpdateFromJsonGroup(new Group(), jsonGroup);
+      Group group = UpdateFromJsonGroup(new Group { Id = jsonGroup.Id }, jsonGroup);
       Add(group);
       return group;
     }
