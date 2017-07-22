@@ -80,6 +80,31 @@
     }
   }
 
+  storage.prototype.getAllFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
+    if (!this.db) {
+      this.addCallback(callback, parameters)
+      return
+    }
+    var entities = []
+
+    var transaction = this.createReadTransaction(tableName)
+    var objectStore = this.getObjectStore(transaction, tableName)
+    var request = objectStore.index(indexName).openCursor(indexValue)
+
+    request.onerror = this.handleError
+
+    request.onsuccess = function (event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        entities.push(cursor.value);
+        cursor.continue();
+      }
+      else {
+        successCallback(entities)
+      }
+    }
+  }
+
   storage.prototype.getOneFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
     if (!this.db) {
       this.addCallback(callback, parameters)
@@ -97,6 +122,30 @@
       var cursor = event.target.result;
       if (cursor)
         successCallback(cursor.value)
+      else
+        successCallback(null)
+    }
+  }
+
+  storage.prototype.upsertFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, updatedEntity, updateMethod, addMethod) {
+    if (!this.db) {
+      this.addCallback(callback, parameters)
+      return
+    }
+    var entities = []
+
+    var transaction = this.createReadTransaction(tableName)
+    var objectStore = this.getObjectStore(transaction, tableName)
+    var request = objectStore.index(indexName).openCursor(indexValue)
+
+    request.onerror = this.handleError
+
+    request.onsuccess = function (event) {
+      var cursor = event.target.result;
+      if (cursor)
+        updateMethod(updatedEntity)
+      else
+        addMethod(updatedEntity)
     }
   }
 
@@ -179,7 +228,7 @@
   }
 
   storage.prototype.getGroupsForSync = function (callback) {
-    this.getFromIndexStore(
+    this.getAllFromIndexStore(
       this.getGroupsForSync.bind(this),
       [callback],
       this.dbSchema.groupsTable.tableName,
@@ -217,8 +266,7 @@
       callback)
   }
 
-  storage.prototype.getPeople = function (groupId, callback)
-  {
+  storage.prototype.getPeople = function (groupId, callback) {
     if (!this.db) {
       this.addCallback(this.getPeople, [groupId, callback])
       return
@@ -251,7 +299,7 @@
   }
 
   storage.prototype.getPeopleForSync = function (callback) {
-    this.getFromIndexStore(
+    this.getAllFromIndexStore(
       this.getPeopleForSync.bind(this),
       [callback],
       this.dbSchema.peopleTable.tableName,
@@ -328,10 +376,11 @@
   }
 
   storage.prototype.getTransaction = function (transactionId, callback) {
-    this.getById(
+    this.getOneFromIndexStore(
       this.getTransaction.bind(this),
       [transactionId, callback],
       this.dbSchema.transactionsTable.tableName,
+      "externalId",
       transactionId,
       callback)
   }
@@ -363,7 +412,7 @@
   }
 
   storage.prototype.getTransactionsForSync = function (callback) {
-    this.getFromIndexStore(
+    this.getAllFromIndexStore(
       this.getTransactionsForSync.bind(this),
       [callback],
       this.dbSchema.transactionsTable.tableName,

@@ -29,7 +29,7 @@
 
     xmlhttp.onreadystatechange = function () {
       if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
-        callback()
+        callback(JSON.parse(xmlhttp.response))
       }
     }.bind(this)
 

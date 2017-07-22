@@ -29,8 +29,9 @@ namespace spreaders.lib.Services
 
     public Transaction CreateFromJsonTransaction(JsonTransaction jsonTransaction)
     {
-      Transaction transaction = UpdateFromJsonPerson(new Transaction { Id = jsonTransaction.Id }, jsonTransaction);
+      var transaction = new Transaction { Id = jsonTransaction.Id };
       Add(transaction);
+      UpdateFromJsonPerson(transaction, jsonTransaction);
       return transaction;
     }
 

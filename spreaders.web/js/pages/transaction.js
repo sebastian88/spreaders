@@ -55,7 +55,7 @@ spreaders.pages.transaction = (function () {
     if (!this.isPayeeCheckboxesRendered || !this.isPayerRadiosRendered)
       return
     this.transactionBeingEditedId = pageContext.getCurrentTransaction()
-    if (this.transactionBeingEditedId > 0)
+    if (this.transactionBeingEditedId)
       this.storage.getTransaction(this.transactionBeingEditedId, this.addTransactionBeingEditedCallback.bind(this))
   }
 
@@ -101,7 +101,7 @@ spreaders.pages.transaction = (function () {
     var amount = parseFloat(this.amountInput.value).toFixed(2)
     var description = this.descriptionInput.value
 
-    if (this.transactionBeingEditedId > 0) {
+    if (this.transactionBeingEditedId) {
       this.transactionBeingEdited.payer = payer
       this.transactionBeingEdited.payees = payees
       this.transactionBeingEdited.amount = amount

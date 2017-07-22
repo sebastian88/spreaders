@@ -110,7 +110,6 @@
   }
 
   synchroniser.prototype.setEntitiesToSynced = function () {
-
     this.processResponseEntities(
       this.syncedGroups,
       this.storage.getGroupByExternalId.bind(this.storage),
@@ -130,19 +129,87 @@
       this.mapEntity)
   }
 
-  synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
-    for (var i = 0; i < entities.length; i++) {
-      var entityUpdater = new spreaders.entityUpdater()
-      entityUpdater.externalEntity = entities[i]
-      entityUpdater.updateFunction = callback
-      entityUpdater.mapper = mapper
-      getEntityFunction(entities[i].externalId, entityUpdater.update.bind(entityUpdater))
-    }
-  }
-
   synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
     existingEntity.isSyncNeeded = 0
     return existingEntity
+  }
+
+  synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
+    for (var i = 0; i < entities.length; i++) {
+      this.processResponseEntity(entities[i], getEntityFunction, callback, mapper)
+    }
+  }
+
+  synchroniser.prototype.processResponseEntity = function (entity, getEntityFunction, callback, mapper) {
+    var entityUpdater = new spreaders.entityUpdater()
+    entityUpdater.externalEntity = entity
+    entityUpdater.updateFunction = callback
+    entityUpdater.mapper = mapper
+    getEntityFunction(entity.externalId, entityUpdater.update.bind(entityUpdater))
+  }
+
+  synchroniser.prototype.mapGroup = function (existingGroup, newGroup) {
+    if(!existingGroup)
+      existingGroup = new group()
+    
+    existingGroup.externalId = newGroup.externalId
+    existingGroup.name = newGroup.name
+    existingGroup.isDeleted = 0
+    if(newGroup.isDeleted)
+      existingGroup.isDeleted = 1
+    existingGroup.isSyncNeeded = 0
+    return existingGroup
+  }
+
+  synchroniser.prototype.mapPerson = function (existingPerson, newPerson) {
+    if(!existingPerson)
+      existingPerson = new person()
+    
+    existingPerson.externalId = newPerson.externalId
+    existingPerson.groupId = newPerson.groupId
+		existingPerson.name = newPerson.name
+    existingPerson.isDeleted = 0
+    if(newPerson.isDeleted)
+      existingPerson.isDeleted = 1
+		existingPerson.isSyncNeeded = 0
+    return existingPerson
+  }
+
+  synchroniser.prototype.mapTransaction = function (existingTransaction, newTransaction) {
+    if(!existingTransaction)
+      existingTransaction = new transaction()
+    
+    existingTransaction.externalId = newTransaction.externalId
+    existingTransaction.groupId = newTransaction.groupId
+    existingTransaction.payees = newTransaction.payees
+    existingTransaction.payer = newTransaction.payer
+    existingTransaction.amount = newTransaction.amount
+    existingTransaction.description = newTransaction.description
+    existingTransaction.isDeleted = 0
+    if(newTransaction.isDeleted)
+      existingTransaction.isDeleted = 1
+    existingTransaction.isSyncNeeded = 0
+    return existingTransaction
+  }
+
+  synchroniser.prototype.UpdateGroup = function (groupInformation, callback) {
+    this.processResponseEntity(
+      groupInformation.group,
+      this.storage.getGroupByExternalId.bind(this.storage),
+      this.storage.updateGroup.bind(this.storage),
+      this.mapGroup)
+
+    this.processResponseEntities(
+      groupInformation.people,
+      this.storage.getPersonByExternalId.bind(this.storage),
+      this.storage.updatePerson.bind(this.storage),
+      this.mapPerson)
+
+    this.processResponseEntities(
+      groupInformation.transactions,
+      this.storage.getTransactionByExternalId.bind(this.storage),
+      this.storage.updateTransaction.bind(this.storage),
+      this.mapTransaction)
   }
 
   return synchroniser

@@ -1,10 +1,11 @@
 spreaders.pages.transactions = (function () {
 
-  var transactions = function (pageContext, urlService, storage, observer) {
+  var transactions = function (pageContext, urlService, apiService, storage, observer) {
     this.group
     this.pageContext = pageContext
     // we need to get the groupd from storage if not get from web service
     this.urlService = urlService
+    this.apiService = apiService
     this.storage = storage
     this.observer = observer
     this.people = []
@@ -38,7 +39,7 @@ spreaders.pages.transactions = (function () {
   }
 
   transactions.prototype.processGroupFromApi = function(groupInformation) {
-
+    this.synchroniser.UpdateGroup(groupInformation, this.populatePage.bind(this));
   }
 
   transactions.prototype.getPeopleCallback = function (people) {
@@ -128,4 +129,4 @@ var observer = new spreaders.observer()
 var apiService = new spreaders.apiService()
 var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
 
-var page = new spreaders.pages.transactions(pageContext, urlService, storage, observer, synchroniser)
+var page = new spreaders.pages.transactions(pageContext, urlService, apiService, storage, observer, synchroniser)

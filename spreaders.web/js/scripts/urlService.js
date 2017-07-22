@@ -1,4 +1,4 @@
-spreaders.urlService = (function(){
+  spreaders.urlService = (function(){
   var urlService = function () {
     this.forwardSlash = "/"
     this.GroupsPathSection = "groups"

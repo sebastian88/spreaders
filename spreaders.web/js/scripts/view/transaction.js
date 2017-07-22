@@ -87,7 +87,7 @@ spreaders.view.transaction = (function () {
   }
 
   transaction.prototype.editTransaction = function () {
-    window.location.href = urlService.getTransactionPage(this.pageContext.getCurrentGroupId(), this.transaction.id)
+    window.location.href = urlService.getTransactionPage(this.pageContext.getCurrentGroupId(), this.transaction.externalId)
   }
 
 
