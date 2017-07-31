@@ -37,12 +37,15 @@ namespace spreaders.lib.Services
 
       foreach (JsonGroup jsonGroup in _model.Groups)
         ProcessGroup(jsonGroup);
+      _unitOfWork.Commit();
 
       foreach (JsonPerson jsonPerson in _model.People)
         ProcessPerson(jsonPerson);
+      _unitOfWork.Commit();
 
       foreach (JsonTransaction jsonTransaction in _model.Transactions)
         ProcessTransaction(jsonTransaction);
+      _unitOfWork.Commit();
 
       _unitOfWork.Commit();
     }

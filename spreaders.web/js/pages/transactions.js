@@ -1,13 +1,13 @@
 spreaders.pages.transactions = (function () {
 
-  var transactions = function (pageContext, urlService, apiService, storage, observer) {
+  var transactions = function (pageContext, urlService, apiService, storage, observer, synchroniser) {
     this.group
     this.pageContext = pageContext
-    // we need to get the groupd from storage if not get from web service
     this.urlService = urlService
     this.apiService = apiService
     this.storage = storage
     this.observer = observer
+    this.synchroniser = synchroniser
     this.people = []
     this.getPeopleComplete = false
     this.transactions = []
@@ -16,19 +16,39 @@ spreaders.pages.transactions = (function () {
     var addTransactionButton = document.getElementsByClassName("addTransactionButton")[0]
     addTransactionButton.addEventListener("click", this.redirectToTransaction.bind(this))
 
+    var syncButton = document.getElementsByClassName("syncButton")[0]
+    syncButton.addEventListener("click", this.processSyncClick.bind(this))
+
     this.personTotalsContainer = document.getElementsByClassName("personTotals")[0]
     this.transactionContainer = document.getElementsByClassName("transactions")[0]
 
-    this.storage.getGroup(pageContext.getCurrentGroupId(), this.populatePage.bind(this))
+    this.getGroupAndPopulatePage()
+    this.startWorker()
   }
 
-  transactions.prototype.populatePage = function (group) {
+  transactions.prototype.processSyncClick = function() {
+    this.apiService.getGroup(this.pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
+  }
 
-    if (!group) {
-      this.apiService.getGroup(pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
+  transactions.prototype.startWorker = function() {
+    groupId = this.pageContext.getCurrentGroupId()
+    var worker = new Worker('/js/scripts/sync/syncWorker.js')
+    worker.postMessage([groupId])
+    worker.onmessage = function(e) {
+      this.getGroupAndPopulatePage()
     }
-      
+  }
 
+  transactions.prototype.CheckGroupAndPopulatePage = function (group) {
+    if (!group) {
+      this.apiService.getGroup(this.pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
+    }
+    else {
+      this.PopulatePage(group)
+    }
+  }
+
+  transactions.prototype.PopulatePage = function(group) {
     if (group) {
       this.group = group
       this.storage.getPeopleForGroup(this.group, this.getPeopleCallback.bind(this))
@@ -39,7 +59,11 @@ spreaders.pages.transactions = (function () {
   }
 
   transactions.prototype.processGroupFromApi = function(groupInformation) {
-    this.synchroniser.UpdateGroup(groupInformation, this.populatePage.bind(this));
+    this.synchroniser.UpdateGroup(groupInformation, this.PopulatePage.bind(this));
+  }
+
+  transactions.prototype.getGroupAndPopulatePage = function() {
+    this.storage.getGroup(this.pageContext.getCurrentGroupId(), this.CheckGroupAndPopulatePage.bind(this))
   }
 
   transactions.prototype.getPeopleCallback = function (people) {
@@ -62,6 +86,7 @@ spreaders.pages.transactions = (function () {
 
     this.populateTotals();
 
+    this.transactionContainer.innerHTML = ""
     for (var i = 0; i < this.transactions.length; i++) {
       new spreaders.view.transaction(this.transactions[i],
         this.people,
@@ -122,11 +147,13 @@ spreaders.pages.transactions = (function () {
 })()
 
 
-var urlService = new spreaders.urlService()
-var pageContext = new spreaders.pageContext(urlService)
 var storage = new spreaders.storage()
-var observer = new spreaders.observer()
-var apiService = new spreaders.apiService()
-var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
+storage.connect().then(data => {
+  var urlService = new spreaders.urlService()
+  var pageContext = new spreaders.pageContext(urlService)
+  var observer = new spreaders.observer()
+  var apiService = new spreaders.apiService()
+  var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
 
-var page = new spreaders.pages.transactions(pageContext, urlService, apiService, storage, observer, synchroniser)
+  var page = new spreaders.pages.transactions(pageContext, urlService, apiService, storage, observer, synchroniser)
+})

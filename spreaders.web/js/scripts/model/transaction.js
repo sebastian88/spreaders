@@ -3,11 +3,17 @@ spreaders.model.transaction = (function () {
   var transaction = function (group, payer, payees, amount, description) {
     this.id
     this.externalId
-    this.groupId = group.externalId
+    
+    if(group)
+      this.groupId = group.externalId
+    else
+      this.groupId
+
     if (payees)
       this.payees = payees
     else
       this.payees = []
+
     this.payer = payer
     this.amount = amount
     this.description = description

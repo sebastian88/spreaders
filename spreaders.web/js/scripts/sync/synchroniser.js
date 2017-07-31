@@ -1,6 +1,5 @@
 ﻿spreaders.sync.synchroniser = (function () {
 
-
   var synchroniser = function (storage, apiService) {
     this.storage = storage
     this.apiService = apiService
@@ -10,10 +9,9 @@
     this.syncedGroups = []
     this.syncedPeople = []
     this.syncedTransactions = []
-    this.processEntities()
   }
 
-  synchroniser.prototype.processEntities = function () {
+  synchroniser.prototype.syncEntities = function () {
     this.apiUpdateJsonModel = {
       "groups": [],
       "people": [],
@@ -148,11 +146,18 @@
     getEntityFunction(entity.externalId, entityUpdater.update.bind(entityUpdater))
   }
 
+  synchroniser.prototype.processResponseEntityPromise = function (entity, getEntityFunction, updateEntityFunction, mapper) {
+    getEntityFunction(entity.externalId).then(existingEntity => {
+      updatedEntity = mapper(existingEntity, entity)
+      return updateEntityFunction(updatedEntity, false)
+    })
+  }
+
   synchroniser.prototype.mapGroup = function (existingGroup, newGroup) {
     if(!existingGroup)
-      existingGroup = new group()
+      existingGroup = new spreaders.model.group()
     
-    existingGroup.externalId = newGroup.externalId
+    existingGroup.externalId = newGroup.id
     existingGroup.name = newGroup.name
     existingGroup.isDeleted = 0
     if(newGroup.isDeleted)
@@ -163,9 +168,9 @@
 
   synchroniser.prototype.mapPerson = function (existingPerson, newPerson) {
     if(!existingPerson)
-      existingPerson = new person()
+      existingPerson = new spreaders.model.person()
     
-    existingPerson.externalId = newPerson.externalId
+    existingPerson.externalId = newPerson.id
     existingPerson.groupId = newPerson.groupId
 		existingPerson.name = newPerson.name
     existingPerson.isDeleted = 0
@@ -177,12 +182,12 @@
 
   synchroniser.prototype.mapTransaction = function (existingTransaction, newTransaction) {
     if(!existingTransaction)
-      existingTransaction = new transaction()
+      existingTransaction = new spreaders.model.transaction()
     
-    existingTransaction.externalId = newTransaction.externalId
+    existingTransaction.externalId = newTransaction.id
     existingTransaction.groupId = newTransaction.groupId
     existingTransaction.payees = newTransaction.payees
-    existingTransaction.payer = newTransaction.payer
+    existingTransaction.payer = newTransaction.payerId
     existingTransaction.amount = newTransaction.amount
     existingTransaction.description = newTransaction.description
     existingTransaction.isDeleted = 0
@@ -192,24 +197,31 @@
     return existingTransaction
   }
 
+  synchroniser.prototype.checkForGroupUpdates = function(groupId, callback) {
+    this.apiService.getGroup(groupId, this.UpdateGroup.bind(this), callback)
+  }
+
   synchroniser.prototype.UpdateGroup = function (groupInformation, callback) {
-    this.processResponseEntity(
-      groupInformation.group,
-      this.storage.getGroupByExternalId.bind(this.storage),
-      this.storage.updateGroup.bind(this.storage),
-      this.mapGroup)
+    var promises = []
+      
+    var groupPromise = this.storage.addOrUpdateGroupPromise(groupInformation.group, this.mapGroup)
+    promises.push(groupPromise)
+      
+    for(var i = 0; i < groupInformation.people.length; i++)
+    {
+      var personPromise = this.storage.addOrUpdatePersonPromise(groupInformation.people[i], this.mapPerson)
+      promises.push(personPromise)
+    }
+      
+    for(var i = 0; i < groupInformation.transactions.length; i++)
+    {
+      var transactionPromise = this.storage.addOrUpdateTransactionPromise(groupInformation.transactions[i], this.mapTransaction)
+      promises.push(transactionPromise)
+    }
 
-    this.processResponseEntities(
-      groupInformation.people,
-      this.storage.getPersonByExternalId.bind(this.storage),
-      this.storage.updatePerson.bind(this.storage),
-      this.mapPerson)
-
-    this.processResponseEntities(
-      groupInformation.transactions,
-      this.storage.getTransactionByExternalId.bind(this.storage),
-      this.storage.updateTransaction.bind(this.storage),
-      this.mapTransaction)
+    Promise.all(promises).then(values => {
+      callback()
+    }, function (){}.bind(this))
   }
 
   return synchroniser

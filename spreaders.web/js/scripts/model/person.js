@@ -3,8 +3,11 @@ spreaders.model.person = (function () {
   var person = function (group, name) {
     this.id
     this.externalId
-    this.groupId = group.externalId
-		this.name = name
+    if(group)
+      this.groupId = group.externalId
+    else
+      this.groupId
+    this.name = name
 		this.isDeleted = 0
 		this.isSyncNeeded = 0
   };

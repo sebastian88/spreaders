@@ -34,32 +34,39 @@
       this.localIndexedDb = indexedDB
     else
       this.localIndexedDb = window.indexedDB
-
-    this.request = this.connect()
   };
 
   storageIndexedDb.prototype.handleError = function (event) {
-    alert("error")
+    reject("Error")
   }
 
   storageIndexedDb.prototype.handleSuccess = function (event) {
     this.db = event.target.result
-    if (this.callbacks[0]) {
-      for (var i = 0; i < this.callbacks.length; i++) {
-        this.callbacks[i].callback.apply(this, this.callbacks[i].arguments);
-      }
-    }
+    resolve()
   }
 
   storageIndexedDb.prototype.connect = function () {
-    var request = this.localIndexedDb.open(this.dbSchema.name, this.dbSchema.version)
-    request.onupgradeneeded = this.createDatabase.bind(this)
-    request.onerror = this.handleError.bind(this)
-    request.onsuccess = this.handleSuccess.bind(this)
-    return request
+    return new Promise((resolve, reject) => {
+      var request = this.localIndexedDb.open(this.dbSchema.name, this.dbSchema.version)
+      request.onupgradeneeded = function(event){
+        this.createDatabase(event)
+        event.target.transaction.oncomplete = function(event) {
+          resolve()
+        }
+      }.bind(this)
+      request.onsuccess =  function(event){
+        this.db = event.target.result
+        resolve()
+      }.bind(this)
+      request.onerror = function(event){
+        this.handleError(event)
+        reject("Error")
+      }.bind(this)
+    })
   }
 
   storageIndexedDb.prototype.createDatabase = function (event) {
+    this.db = event.target.result;
     this.db = event.target.result;
 
     this.createTable(this.db, this.dbSchema.groupsTable)
@@ -89,16 +96,14 @@
     return isSupported
   }
 
-  storageIndexedDb.prototype.addCallback = function (callback, args) {
-    this.callbacks.push({ "callback": callback, "arguments": args })
+  storageIndexedDb.prototype.createReadWriteTransaction = function (tableName) {
+    var transaction = this.db.transaction(tableName, "readwrite")
+    return this.getObjectStore(transaction, tableName)
   }
 
-  storageIndexedDb.prototype.createReadWriteTransaction = function (tableNames) {
-    return this.db.transaction(tableNames, "readwrite")
-  }
-
-  storageIndexedDb.prototype.createReadTransaction = function (tableNames) {
-    return this.db.transaction(tableNames, "readonly")
+  storageIndexedDb.prototype.createReadTransaction = function (tableName) {
+    var transaction = this.db.transaction(tableName, "readonly")
+    return this.getObjectStore(transaction, tableName)
   }
 
   storageIndexedDb.prototype.getObjectStore = function (transaction, table) {
@@ -114,7 +119,7 @@
       var r = (d + Math.random() * 16) % 16 | 0;
       d = Math.floor(d / 16);
       return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    }).toUpperCase()
+    })
   }
 
   return storageIndexedDb

@@ -13,7 +13,7 @@ spreaders.pages.transaction = (function () {
     this.isPayeeCheckboxesRendered = false
     this.isPayerRadiosRendered = false
     this.currentGroup
-    this.storage.getGroup(pageContext.getCurrentGroupId(), this.populateForm.bind(this))
+    this.storage.getGroup(this.pageContext.getCurrentGroupId(), this.populateForm.bind(this))
 
     this.observer.subscribe("payeeCheckboxesRendered", this.payeeCheckboxesRendered, this)
     this.observer.subscribe("payerRadiosRendered", this.payerRadiosRendered, this)
@@ -54,8 +54,8 @@ spreaders.pages.transaction = (function () {
   transaction.prototype.addTransactionBeingEdited = function () {
     if (!this.isPayeeCheckboxesRendered || !this.isPayerRadiosRendered)
       return
-    this.transactionBeingEditedId = pageContext.getCurrentTransaction()
-    if (this.transactionBeingEditedId)
+    this.transactionBeingEditedId = this.pageContext.getCurrentTransaction()
+    if (this.isGuid(this.transactionBeingEditedId))
       this.storage.getTransaction(this.transactionBeingEditedId, this.addTransactionBeingEditedCallback.bind(this))
   }
 
@@ -101,7 +101,7 @@ spreaders.pages.transaction = (function () {
     var amount = parseFloat(this.amountInput.value).toFixed(2)
     var description = this.descriptionInput.value
 
-    if (this.transactionBeingEditedId) {
+    if (this.isGuid(this.transactionBeingEditedId)) {
       this.transactionBeingEdited.payer = payer
       this.transactionBeingEdited.payees = payees
       this.transactionBeingEdited.amount = amount
@@ -112,7 +112,7 @@ spreaders.pages.transaction = (function () {
       var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)
       this.storage.addTransaction(transaction)
     }
-    window.location.href = this.urlService.getTransactionsPage(pageContext.getCurrentGroupId())
+    window.location.href = this.urlService.getTransactionsPage(this.pageContext.getCurrentGroupId())
   }
 
   transaction.prototype.displayErrors = function () {
@@ -123,15 +123,21 @@ spreaders.pages.transaction = (function () {
       this.amountInputError.style.display = "block"
   }
 
+  transaction.prototype.isGuid = function(guidToText) {
+    return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(guidToText)
+  }
+
   return transaction
 })()
 
-var urlService = new spreaders.urlService()
-var pageContext = new spreaders.pageContext(urlService)
 var storage = new spreaders.storage()
-var observer = new spreaders.observer()
+storage.connect().then(data => {
+  var urlService = new spreaders.urlService()
+  var pageContext = new spreaders.pageContext(urlService)
+  var observer = new spreaders.observer()
 
-var page = new spreaders.pages.transaction(pageContext, urlService, storage, observer)
+  var page = new spreaders.pages.transaction(pageContext, urlService, storage, observer)
+})
 
 
 

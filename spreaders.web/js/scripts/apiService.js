@@ -24,12 +24,12 @@
     xmlhttp.send(JSON.stringify(apiUpdateJsonModel))
   }
 
-  apiService.prototype.getGroup = function (groupId, callback) {
+  apiService.prototype.getGroup = function (groupId, callback, secondCallback) {
     var xmlhttp = new XMLHttpRequest()
 
     xmlhttp.onreadystatechange = function () {
       if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
-        callback(JSON.parse(xmlhttp.response))
+        callback(JSON.parse(xmlhttp.response), secondCallback)
       }
     }.bind(this)
 

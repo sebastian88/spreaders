@@ -10,15 +10,10 @@
     console.log(error);
   }
 
-  storage.prototype.getById = function (callback, parameters, tableName, id, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
+  storage.prototype.getById = function (tableName, id, successCallback) {
 
     var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.get(parseInt(id));
+    var request = transaction.get(parseInt(id));
 
     request.onerror = this.handleError
 
@@ -28,16 +23,11 @@
     }
   }
 
-  storage.prototype.getAllOfEntity = function (callback, parameters, tableName, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
+  storage.prototype.getAllOfEntity = function (tableName, successCallback) {
     var entities = []
 
     var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.openCursor()
+    var request = transaction.openCursor()
 
     request.onerror = this.handleError
 
@@ -54,16 +44,11 @@
     }
   }
 
-  storage.prototype.getFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
+  storage.prototype.getFromIndexStore = function (tableName, indexName, indexValue, successCallback) {
     var entities = []
 
     var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.index(indexName).openCursor(indexValue)
+    var request = transaction.index(indexName).openCursor(indexValue)
 
     request.onerror = this.handleError
 
@@ -80,16 +65,11 @@
     }
   }
 
-  storage.prototype.getAllFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
+  storage.prototype.getAllFromIndexStore = function (tableName, indexName, indexValue, successCallback) {
     var entities = []
 
     var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.index(indexName).openCursor(indexValue)
+    var request = transaction.index(indexName).openCursor(indexValue)
 
     request.onerror = this.handleError
 
@@ -105,16 +85,11 @@
     }
   }
 
-  storage.prototype.getOneFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
+  storage.prototype.getOneFromIndexStore = function (tableName, indexName, indexValue, successCallback) {
     var entities = []
 
     var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.index(indexName).openCursor(indexValue)
+    var request = transaction.index(indexName).openCursor(indexValue)
 
     request.onerror = this.handleError
 
@@ -127,43 +102,36 @@
     }
   }
 
-  storage.prototype.upsertFromIndexStore = function (callback, parameters, tableName, indexName, indexValue, updatedEntity, updateMethod, addMethod) {
-    if (!this.db) {
-      this.addCallback(callback, parameters)
-      return
-    }
-    var entities = []
+  storage.prototype.getOneFromIndexStorePromise = function (tableName, indexName, indexValue) {
+    return new Promise((resolve, reject) => {
+      var entities = []
 
-    var transaction = this.createReadTransaction(tableName)
-    var objectStore = this.getObjectStore(transaction, tableName)
-    var request = objectStore.index(indexName).openCursor(indexValue)
+      var transaction = this.createReadTransaction(tableName)
+      var request = transaction.index(indexName).openCursor(indexValue)
 
-    request.onerror = this.handleError
+      request.onerror = function (event) {
+        reject(event)
+      }
 
-    request.onsuccess = function (event) {
-      var cursor = event.target.result;
-      if (cursor)
-        updateMethod(updatedEntity)
-      else
-        addMethod(updatedEntity)
-    }
+      request.onsuccess = function (event) {
+        var cursor = event.target.result;
+        if (cursor)
+          resolve(cursor.value)
+        else
+          resolve(null)
+      }
+    })
   }
 
-  storage.prototype.updateEntity = function (callback, tableName, entityToBeUpdated, isSyncNeeded, successCallback) {
-    if (!this.db) {
-      this.addCallback(callback, [entityToBeUpdated, isSyncNeeded, successCallback])
-      return
-    }
-
+  storage.prototype.updateEntity = function (tableName, entityToBeUpdated, isSyncNeeded, successCallback) {
     if (isSyncNeeded && isSyncNeeded !== 0)
       isSyncNeeded = 1
     else
       isSyncNeeded = 0
 
     entityToBeUpdated.isSyncNeeded = isSyncNeeded
-    var dbTransaction = this.createReadWriteTransaction(tableName)
-    var objectStore = this.getObjectStore(dbTransaction, tableName)
-    var response = objectStore.put(entityToBeUpdated)
+    var transaction = this.createReadWriteTransaction(tableName)
+    var response = transaction.put(entityToBeUpdated)
 
     response.onsuccess = function (e) {
       if (successCallback && typeof successCallback === "function")
@@ -171,16 +139,58 @@
     }
   }
 
+  storage.prototype.updateEntityPromise = function (tableName, entityToBeUpdated, isSyncNeeded) {
+    return new Promise((resolve, reject) => {
+      if (isSyncNeeded && isSyncNeeded !== 0)
+        entityToBeUpdated.isSyncNeeded = 1
+      else
+        entityToBeUpdated.isSyncNeeded = 0
+
+      var transaction = this.createReadWriteTransaction(tableName)
+      var response = transaction.put(entityToBeUpdated)
+
+      response.onsuccess = function (e) {
+        resolve(e.target.result)
+      }
+    })
+  }
+
+  storage.prototype.addOrUpdateEntityPromise = function (tableName, entityToBeUpdated, mapper) {
+
+    return new Promise((resolve, reject) => {
+      var entities = []
+
+      var transaction = this.createReadTransaction(tableName)
+      var request = transaction.index("externalId").openCursor(entityToBeUpdated.id)
+
+      request.onerror = function (event) {
+        reject(event)
+      }
+
+      request.onsuccess = function (event) {
+
+        var cursor = event.target.result;
+        var entity = null
+        if (cursor)
+          entity = cursor.value
+        
+        var updatedEntity = mapper(entity, entityToBeUpdated)
+
+        var transaction = this.createReadWriteTransaction(tableName)
+        var response = transaction.put(updatedEntity)
+
+        response.onsuccess = function (e) {
+          resolve(e.target.result)
+        }
+      }.bind(this)
+    })
+  }
+
   storage.prototype.addGroup = function (group, callback) {
-    if (!this.db) {
-      this.addCallback(this.addGroup, [group, callback])
-      return
-    }
     group.externalId = this.generateUUID()
     group.isSyncNeeded = 1
     var transaction = this.createReadWriteTransaction(this.dbSchema.groupsTable.tableName)
-    var objectStore = this.getObjectStore(transaction, this.dbSchema.groupsTable.tableName)
-    var response = objectStore.add(group)
+    var response = transaction.add(group)
 
     response.onsuccess = function (e) {
       if (callback && typeof callback === "function") {
@@ -192,35 +202,49 @@
 
   storage.prototype.updateGroup = function (group, callback, isSyncNeeded) {
     this.updateEntity(
-      this.updateGroup.bind(this),
       this.dbSchema.groupsTable.tableName,
       group,
       isSyncNeeded,
       callback)
   }
 
+  storage.prototype.updateGroupPromise = function (group, isSyncNeeded) {
+    return this.updateEntityPromise(
+      this.dbSchema.groupsTable.tableName,
+      group,
+      isSyncNeeded)
+  }
+
+  storage.prototype.addOrUpdateGroupPromise = function (group, mapper) {
+    return this.addOrUpdateEntityPromise(
+      this.dbSchema.groupsTable.tableName,
+      group,
+      mapper)
+  }
+
   storage.prototype.getAllGroups = function (callback) {
     this.getAllOfEntity(
-      this.getAllGroups.bind(this),
-      [callback],
       this.dbSchema.groupsTable.tableName,
       callback)
   }
 
   storage.prototype.getGroup = function (groupId, callback) {
     this.getOneFromIndexStore(
-      this.getGroup.bind(this),
-      [groupId, callback],
       this.dbSchema.groupsTable.tableName,
       "externalId",
       groupId,
       callback)
   }
 
+  storage.prototype.getGroupPromise = function (groupId) {
+    return this.getOneFromIndexStorePromise(
+      this.dbSchema.groupsTable.tableName,
+      "externalId",
+      groupId)
+  }
+
   storage.prototype.getGroupByExternalId = function (groupId, callback) {
     this.getOneFromIndexStore(
-      this.getGroupByExternalId.bind(this),
-      [groupId, callback],
       this.dbSchema.groupsTable.tableName,
       "externalId",
       groupId,
@@ -229,8 +253,6 @@
 
   storage.prototype.getGroupsForSync = function (callback) {
     this.getAllFromIndexStore(
-      this.getGroupsForSync.bind(this),
-      [callback],
       this.dbSchema.groupsTable.tableName,
       "isSyncNeeded",
       1,
@@ -238,16 +260,10 @@
   }
 
   storage.prototype.addPerson = function (person, callback) {
-    if (!this.db) {
-      this.addCallback(this.addPerson, [person, callback])
-      return
-    }
-
     person.externalId = this.generateUUID()
     person.isSyncNeeded = 1
-    var dbTransaction = this.createReadWriteTransaction(this.dbSchema.peopleTable.tableName)
-    var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.peopleTable.tableName)
-    var response = objectStore.add(person)
+    var transaction = this.createReadWriteTransaction(this.dbSchema.peopleTable.tableName)
+    var response = transaction.add(person)
 
     response.onsuccess = function (e) {
       if (callback && typeof callback === "function") {
@@ -259,25 +275,33 @@
 
   storage.prototype.updatePerson = function (person, callback, isSyncNeeded) {
     this.updateEntity(
-      this.updatePerson.bind(this),
       this.dbSchema.peopleTable.tableName,
       person,
       isSyncNeeded,
       callback)
   }
 
+  storage.prototype.updatePersonPromise = function (person, isSyncNeeded) {
+    return this.updateEntityPromise(
+      this.dbSchema.peopleTable.tableName,
+      person,
+      isSyncNeeded)
+  }
+
+  storage.prototype.addOrUpdatePersonPromise = function (person, mapper) {
+    return this.addOrUpdateEntityPromise(
+      this.dbSchema.peopleTable.tableName,
+      person,
+      mapper)
+  }
+
   storage.prototype.getPeople = function (groupId, callback) {
-    if (!this.db) {
-      this.addCallback(this.getPeople, [groupId, callback])
-      return
-    }
 
     var transaction = this.createReadTransaction(this.dbSchema.peopleTable.tableName)
-    var objectStore = this.getObjectStore(transaction, this.dbSchema.peopleTable.tableName)
 
     var people = []
 
-    var index = objectStore.index("groupId")
+    var index = transaction.index("groupId")
     var cursorRequest = index.openCursor(groupId)
 
     cursorRequest.onerror = function (error) {
@@ -300,8 +324,6 @@
 
   storage.prototype.getPeopleForSync = function (callback) {
     this.getAllFromIndexStore(
-      this.getPeopleForSync.bind(this),
-      [callback],
       this.dbSchema.peopleTable.tableName,
       "isSyncNeeded",
       1,
@@ -310,8 +332,6 @@
 
 	storage.prototype.getPeopleForGroup = function (group, callback) {
     this.getFromIndexStore(
-      this.getPeopleForGroup.bind(this),
-      [group, callback],
       this.dbSchema.peopleTable.tableName,
       "groupId",
       group.externalId,
@@ -320,8 +340,6 @@
 	
   storage.prototype.getPerson = function (personId, callback) {
     this.getOneFromIndexStore(
-      this.getPerson.bind(this),
-      [personId, callback],
       this.dbSchema.peopleTable.tableName,
       "externalId",
       personId,
@@ -330,33 +348,30 @@
 
   storage.prototype.getPersonByExternalId = function (personId, callback) {
     this.getOneFromIndexStore(
-      this.getPersonByExternalId.bind(this),
-      [personId, callback],
       this.dbSchema.peopleTable.tableName,
       "externalId",
       personId,
       callback)
   }
 
+  storage.prototype.getPersonPromise = function (personId, callback) {
+    return this.getOneFromIndexStorePromise(
+      this.dbSchema.peopleTable.tableName,
+      "externalId",
+      personId)
+  }
+
   storage.prototype.getAllPeople = function (callback) {
     this.getAllOfEntity(
-      this.getAllPeople.bind(this),
-      [callback],
       this.dbSchema.peopleTable.tableName,
       callback)
   }
 
   storage.prototype.addTransaction = function (transaction, callback) {
-    if (!this.db) {
-      this.addCallback(this.addTransaction, [transaction, callback])
-      return
-    }
-
     transaction.externalId = this.generateUUID()
     transaction.isSyncNeeded = 1
     var dbTransaction = this.createReadWriteTransaction(this.dbSchema.transactionsTable.tableName)
-    var objectStore = this.getObjectStore(dbTransaction, this.dbSchema.transactionsTable.tableName)
-    var response = objectStore.put(transaction)
+    var response = dbTransaction.put(transaction)
 
     response.onsuccess = function (e) {
       if (callback && typeof callback === "function") {
@@ -368,27 +383,43 @@
 
   storage.prototype.updateTransaction = function (transaction, callback, isSyncNeeded) {
     this.updateEntity(
-      this.updateTransaction.bind(this),
       this.dbSchema.transactionsTable.tableName,
       transaction,
       isSyncNeeded,
       callback)
   }
 
+  storage.prototype.updateTransactionPromise = function (transaction, isSyncNeeded) {
+    return this.updateEntity(
+      this.dbSchema.transactionsTable.tableName,
+      transaction,
+      isSyncNeeded)
+  }
+
+  storage.prototype.addOrUpdateTransactionPromise = function (transaction, mapper) {
+    return this.addOrUpdateEntityPromise(
+      this.dbSchema.transactionsTable.tableName,
+      transaction,
+      mapper)
+  }
+
   storage.prototype.getTransaction = function (transactionId, callback) {
     this.getOneFromIndexStore(
-      this.getTransaction.bind(this),
-      [transactionId, callback],
       this.dbSchema.transactionsTable.tableName,
       "externalId",
       transactionId,
       callback)
   }
 
+  storage.prototype.getTransactionPromise = function (transactionId) {
+    return this.getOneFromIndexStorePromise(
+      this.dbSchema.transactionsTable.tableName,
+      "externalId",
+      transactionId)
+  }
+
   storage.prototype.getTransactionByExternalId = function (transactionId, callback) {
     this.getOneFromIndexStore(
-      this.getTransactionByExternalId.bind(this),
-      [transactionId, callback],
       this.dbSchema.transactionsTable.tableName,
       "externalId",
       transactionId,
@@ -396,25 +427,21 @@
   }
 
   storage.prototype.getTransactions = function (groupId, callback) {
-    this.getFromIndexStore(this.getTransactions.bind(this), [groupId, callback], this.dbSchema.transactionsTable.tableName, "groupId", groupId, callback)
+    this.getFromIndexStore(this.dbSchema.transactionsTable.tableName, "groupId", groupId, callback)
 	}
 
 	storage.prototype.getTransactionsForGroup = function (group, callback) {
-		this.getFromIndexStore(this.getTransactionsForGroup.bind(this), [group, callback], this.dbSchema.transactionsTable.tableName, "groupId", group.externalId, callback)
+		this.getFromIndexStore(this.dbSchema.transactionsTable.tableName, "groupId", group.externalId, callback)
 	}
 
   storage.prototype.getAllTransactions = function (callback) {
     this.getAllOfEntity(
-      this.getAllTransactions.bind(this),
-      [callback],
       this.dbSchema.transactionsTable.tableName,
       callback)
   }
 
   storage.prototype.getTransactionsForSync = function (callback) {
     this.getAllFromIndexStore(
-      this.getTransactionsForSync.bind(this),
-      [callback],
       this.dbSchema.transactionsTable.tableName,
       "isSyncNeeded",
       1,

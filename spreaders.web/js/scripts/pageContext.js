@@ -24,15 +24,15 @@ spreaders.pageContext = (function(){
 	}
 	
 	pageContext.prototype.getCurrentGroupId = function() {
-	  return GetUrlPathElement(this.urlService.GroupsPathSection)
+	  return GetUrlPathElement(this.urlService.GroupsPathSection).toLowerCase()
 	}
 	
 	pageContext.prototype.getCurrentTransaction = function() {
-	  return GetUrlPathElement(this.urlService.TransactionsPathSection)
+	  return GetUrlPathElement(this.urlService.TransactionsPathSection).toLowerCase()
 	}
 	
 	pageContext.prototype.getCurrentPerson = function() {
-	  return GetUrlPathElement("personId")
+	  return GetUrlPathElement("personId").toLowerCase()
 	}
 	
 	return pageContext

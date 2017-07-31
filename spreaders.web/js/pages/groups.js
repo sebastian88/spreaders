@@ -52,8 +52,10 @@ spreaders.pages.groups = (function(){
 	return groupPage
 })()
 
-var urlService = new spreaders.urlService()
-var pageContext = new spreaders.pageContext(urlService)
 var storage = new spreaders.storage()
+storage.connect().then(data => {
+	var urlService = new spreaders.urlService()
+	var pageContext = new spreaders.pageContext(urlService)
 
-var thisPage = new spreaders.pages.groups(urlService, storage);
+	var thisPage = new spreaders.pages.groups(urlService, storage);
+})
