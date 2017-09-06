@@ -172,6 +172,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Controllers\SpreadersApiController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
@@ -190,6 +191,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Service References\Application Insights\ConnectedService.json" />
+    <None Include="Properties\PublishProfiles\spreadersweb20170107122206 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\spreadersweb20170107122206.pubxml" />
     <Content Include="Views\Groups\Index.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
@@ -203,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\People\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

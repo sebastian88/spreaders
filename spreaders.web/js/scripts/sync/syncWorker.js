@@ -6,7 +6,7 @@ self.onmessage = function (event) {
   storage.connect().then(data => {
     var apiService = new spreaders.apiService()
     var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
-    synchroniser.syncEntities();
+    synchroniser.syncEntities()
     syncTimeout(synchroniser)
   })
 }

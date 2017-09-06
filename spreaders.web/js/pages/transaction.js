@@ -23,9 +23,6 @@ spreaders.pages.transaction = (function () {
 
     this.currentGroup = group
 
-    this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
-    this.payerRadios = new spreaders.view.addPerson(this.currentGroup, this.addPersonContainer, this.storage, this.observer)
-
     this.radiosContainer = document.getElementsByClassName("payerRadios")[0]
     this.payerRadios = new spreaders.view.payerRadio(this.currentGroup, this.radiosContainer, this.storage, this.observer)
 

@@ -12,6 +12,8 @@ spreaders.view.transaction = (function () {
     this.createDiv()
     this.populateDiv()
     this.addButtons()
+    this.addAccordianEvent()
+    //this.div.appendChild(document.createElement("hr"))
   }
 
   // private methods
@@ -27,9 +29,9 @@ spreaders.view.transaction = (function () {
     this.div.appendChild(this.ul)
 
     this.createLi(this.getPerson(this.transaction.payer).name, "payer")
-    this.createLi(this.transaction.amount, "amount")
-    this.createLi(this.getPayeeNamesCsv(), "payees")
     this.createLi(this.transaction.description, "description")
+    this.createLi("£" + this.transaction.amount, "amount")
+    this.createLi(this.getPayeeNamesCsv(), "payees")
   }
 
   transaction.prototype.createLi = function (data, cssClass, ul) {
@@ -47,8 +49,10 @@ spreaders.view.transaction = (function () {
 
 
     return payees.map(function (payee) {
-      return payee.name
-    }).join(',')
+      span = document.createElement("span")
+      span.innerHTML = payee.name.charAt(0)
+      return span.outerHTML
+    }).join("")
   }
 
   transaction.prototype.getPerson = function (personId) {
@@ -59,24 +63,50 @@ spreaders.view.transaction = (function () {
   }
 
   transaction.prototype.addButtons = function () {
-    this.deleteButton = this.addButton("delete")
-    this.deleteButton.addEventListener("click", this.deleteTransaction.bind(this))
-
-    this.editButton = this.addButton("edit")
-    this.editButton.addEventListener("click", this.editTransaction.bind(this))
+    this.deleteButton = this.addButton("delete", "delete")
+    this.editButton = this.addButton("edit", "edit")
+    this.deleteButtonHander = this.deleteTransaction.bind(this)
+    this.editButtonHandler = this.editTransaction.bind(this)
   }
 
-  transaction.prototype.addButton = function (label) {
+  transaction.prototype.addButton = function (label, cssClass) {
 
     var newButton = document.createElement("button")
     newButton.innerHTML = label
+    newButton.className = cssClass
     newButton.setAttribute('type', 'button')
     this.div.appendChild(newButton)
 
     return newButton
   }
 
-  transaction.prototype.deleteTransaction = function () {
+  transaction.prototype.addButtonEventListeners = function() {
+    this.deleteButton.addEventListener("click", this.deleteButtonHander)
+    this.editButton.addEventListener("click", this.editButtonHandler)
+  }
+  
+  transaction.prototype.removeButtonEventListeners = function() {
+    this.deleteButton.removeEventListener("click", this.deleteButtonHander)
+    this.editButton.removeEventListener("click", this.editButtonHandler)
+  }
+  
+  transaction.prototype.addAccordianEvent = function () {
+    this.div.addEventListener("click", this.addAccordianClass.bind(this))
+  }
+  
+  transaction.prototype.addAccordianClass = function () {
+    if(this.div.className == "transaction"){
+      this.addButtonEventListeners()
+      this.div.className = "transaction active"
+    }
+    else{
+      this.removeButtonEventListeners()
+      this.div.className = "transaction"
+    }
+  }
+
+  transaction.prototype.deleteTransaction = function (e) {
+    e.stopPropagation()
     this.transaction.isDeleted = 1;
     this.storage.updateTransaction(this.transaction, this.deleteTransactionCallback.bind(this), 1)
   }
@@ -86,7 +116,8 @@ spreaders.view.transaction = (function () {
     this.observer.fire("deleteTransaction", this.transaction)
   }
 
-  transaction.prototype.editTransaction = function () {
+  transaction.prototype.editTransaction = function (e) {
+    e.stopPropagation()
     window.location.href = this.urlService.getTransactionPage(this.pageContext.getCurrentGroupId(), this.transaction.externalId)
   }
 

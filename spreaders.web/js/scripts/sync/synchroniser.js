@@ -11,33 +11,21 @@
     this.syncedTransactions = []
   }
 
-  synchroniser.prototype.syncEntities = function () {
+  synchroniser.prototype.syncEntities = async function () {
     this.apiUpdateJsonModel = {
       "groups": [],
       "people": [],
       "transactions": []
     }
-    this.storage.getGroupsForSync(this.processGroups.bind(this))
-    this.storage.getPeopleForSync(this.processPeople.bind(this))
-    this.storage.getTransactionsForSync(this.processTransactions.bind(this))
-  }
+    var groups = await this.storage.getGroupsForSync()
+    var people = await this.storage.getPeopleForSync()
+    var transactions = await this.storage.getTransactionsForSync()
 
-  synchroniser.prototype.processGroups = function (groups) {
     this.apiUpdateJsonModel.groups = this.createGroupsJson(groups)
-    this.groupsAddedToJson = true
-    this.makeRequest()
-  }
-
-  synchroniser.prototype.processPeople = function (people) {
     this.apiUpdateJsonModel.people = this.createPeopleJson(people)
-    this.peopleAddedToJson = true
-    this.makeRequest()
-  }
-
-  synchroniser.prototype.processTransactions = function (transactions) {
     this.apiUpdateJsonModel.transactions = this.createTransactionsJson(transactions)
-    this.transactionsAddedToJson = true
-    this.makeRequest()
+
+    await this.makeRequest();
   }
 
   synchroniser.prototype.createGroupsJson = function (groups) {
@@ -86,14 +74,16 @@
     return transactionJson
   }
 
-  synchroniser.prototype.makeRequest = function () {
-    if (!this.groupsAddedToJson || !this.peopleAddedToJson || !this.transactionsAddedToJson)
-      return
+  synchroniser.prototype.makeRequest = async function () {
+    return new Promise((resolve, reject) => {
+      if (!this.isSyncNeeded())
+        resolve()
 
-    if (!this.isSyncNeeded())
-      return
-
-    this.apiService.sync(this.apiUpdateJsonModel, this.setEntitiesToSynced.bind(this))
+      this.apiService.sync(this.apiUpdateJsonModel).then(function(){
+        this.setEntitiesToSynced()
+        resolve()
+      }.bind(this))
+    })
   }
 
   synchroniser.prototype.isSyncNeeded = function () {

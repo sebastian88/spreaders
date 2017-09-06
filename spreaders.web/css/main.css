@@ -8,30 +8,47 @@
 
 * {
 	font-family: arial;
+	color: var(--four-color);
 }
 
 body {
 	/* background-color:var(--four-color) */
 }
 
+.sync {
+	float: left;
+	width: 50%;
+}
+
+.addTransaction {
+	float: right;
+	width: 50%;
+	text-align: right;
+}
+
 .transaction {
 	width: 98%;
 	max-width: 1000px;
-	min-height: 50px;
-	background-color: var(--one-color);
-	/* border-style: solid; */
-	/* border-width: 1px; */
-	/* border-color: black; */
-	border-radius: 5px;
-	margin: 40px auto;
-	padding: 5px 0px;
-	transition: 0.1s;
-	box-shadow: 0px 0px 20px #CCC;
+	height: 100px;
+	margin: 0 auto;
+	padding: 30px 0px 20px 0px;
+	border-bottom: 1px solid grey;
+	overflow: hidden;
+	transition: height 0.2s;
+	position: relative;
 }
 
-.transaction:hover {
-	transition: 0.1s;
-	box-shadow: 0px 0px 30px #CCC;
+.transaction.active {
+	height: 300px;
+	transition: height 0.2s;
+}
+
+.transaction li {
+	font-size: 3em;
+}
+
+.transaction:hover {	
+	/* box-shadow: 0px 0px 3px #CCC; */
 	/* box-shadow: inset 0 0 0 3px var(--two-color); */
 	cursor: pointer;
 }
@@ -44,11 +61,73 @@ body {
 .transaction ul.transactionDetails li {
 	list-style: none;
 	float: left;
+}
+.transaction ul.transactionDetails li.payer {
 	width:25%;
-	text-align: center;
-	overflow-wrap: break-word;
+	font-weight: bold;
+}
+.transaction ul.transactionDetails li.description {
+	width:50%;
+	font-size: 2em;
+	font-weight: lighter;
+	line-height: 2em;
+}
+.transaction ul.transactionDetails li.amount {
+	width:25%;
+	font-weight: bold;
+	text-align: right;
 }
 
+.transaction ul.transactionDetails li.payees {
+	margin-top: 10px;
+	float: left;
+	width:75%;
+	font-size: 2em;
+	font-weight: lighter;
+	line-height: 2em;
+	opacity: 0;
+	transition: opacity 0.1s;
+}
+
+.transaction.active ul.transactionDetails li.payees {
+	opacity: 1;
+	transition: opacity 0.5s;
+}
+
+.transaction ul.transactionDetails li.payees span {
+	height: 50px;
+	width: 50px;
+	margin-right: 5px;
+	display: inline-block;
+	background-color: var(--three-color);
+	border-radius: 25px;
+	text-align: center;
+	line-height: 1.6em;
+	color: white; 
+	font-weight: bold;
+}
+
+.transaction ul.transactionDetails li.payees span:last-child {
+	margin-right: 0px;
+}
+
+.transaction button {
+	opacity: 0;
+	transition: opacity 0.1s;
+	position: absolute;
+	top: 200px;
+	right: 0px;
+}
+
+.transaction button.delete {
+	left:0px;
+}
+
+
+.transaction.active button {
+	opacity: 1;
+	transition: opacity 0.5s;
+}
 
 .payees input[type="checkbox"], .payers input[type="radio"] {
   display: none;
@@ -90,14 +169,12 @@ input[type="text"], input[type="number"], textarea  {
 	font-size: 1.5em;
 }
 
-.payees .payeeAdd button, .payers .payerAdd button {
-	height: 52px;
-	width: 20%;
-	font-size: 1.5em;
+button {
+	height: 120px;
+	font-size: 3em;
+	font-weight: bold;
+	border: none;
+	padding: 30px 50px;
 	background-color: var(--one-color);
-	border: 1px solid var(--two-color);
-	border-radius: 5px;
-	margin-left: 4%;
-	max-width: 80px;
 	cursor: pointer;
 }

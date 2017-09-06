@@ -23,11 +23,12 @@ spreaders.pages.transactions = (function () {
     this.transactionContainer = document.getElementsByClassName("transactions")[0]
 
     this.getGroupAndPopulatePage()
-    this.startWorker()
+    //this.startWorker()
   }
 
-  transactions.prototype.processSyncClick = function() {
-    this.apiService.getGroup(this.pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
+  transactions.prototype.processSyncClick = async function() {
+    await this.synchroniser.syncEntities()
+      this.apiService.getGroup(this.pageContext.getCurrentGroupId(), this.processGroupFromApi.bind(this))
   }
 
   transactions.prototype.startWorker = function() {
@@ -51,15 +52,20 @@ spreaders.pages.transactions = (function () {
   transactions.prototype.PopulatePage = function(group) {
     if (group) {
       this.group = group
+
+      this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
+      new spreaders.view.addPerson(this.group, this.addPersonContainer, this.storage, this.observer)
+
       this.storage.getPeopleForGroup(this.group, this.getPeopleCallback.bind(this))
       this.storage.getTransactionsForGroup(this.group, this.getTransactionsCallback.bind(this))
 
       this.observer.subscribe("deleteTransaction", this.updateTotals, this)
+      this.observer.subscribe("personCreated", this.refreshPeopleAndPopulateTotals, this)
     }
   }
 
   transactions.prototype.processGroupFromApi = function(groupInformation) {
-    this.synchroniser.UpdateGroup(groupInformation, this.PopulatePage.bind(this));
+    this.synchroniser.UpdateGroup(groupInformation, this.getGroupAndPopulatePage.bind(this));
   }
 
   transactions.prototype.getGroupAndPopulatePage = function() {
@@ -96,6 +102,15 @@ spreaders.pages.transactions = (function () {
         this.urlService,
         this.observer);
     }
+  }
+
+  transactions.prototype.refreshPeopleAndPopulateTotals = function() {
+    this.storage.getPeopleForGroup(this.group, this.refreshPeopleAndPopulateTotalsCallback.bind(this))
+  }
+
+  transactions.prototype.refreshPeopleAndPopulateTotalsCallback = function(people) {
+    this.people = people
+    this.populateTotals()
   }
 
   transactions.prototype.updateTotals = function () {

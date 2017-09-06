@@ -84,6 +84,30 @@
       }
     }
   }
+  
+  storage.prototype.getAllFromIndexStorePromise = function (tableName, indexName, indexValue) {
+    return new Promise((resolve, reject) => {
+      var entities = []
+
+      var transaction = this.createReadTransaction(tableName)
+      var request = transaction.index(indexName).openCursor(indexValue)
+
+      request.onerror = function (event) {
+        reject(event)
+      }
+
+      request.onsuccess = function (event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          entities.push(cursor.value);
+          cursor.continue();
+        }
+        else {
+          resolve(entities)
+        }
+      }
+    })
+  }
 
   storage.prototype.getOneFromIndexStore = function (tableName, indexName, indexValue, successCallback) {
     var entities = []
@@ -104,7 +128,6 @@
 
   storage.prototype.getOneFromIndexStorePromise = function (tableName, indexName, indexValue) {
     return new Promise((resolve, reject) => {
-      var entities = []
 
       var transaction = this.createReadTransaction(tableName)
       var request = transaction.index(indexName).openCursor(indexValue)
@@ -251,12 +274,11 @@
       callback)
   }
 
-  storage.prototype.getGroupsForSync = function (callback) {
-    this.getAllFromIndexStore(
+  storage.prototype.getGroupsForSync = function () {
+    return this.getAllFromIndexStorePromise(
       this.dbSchema.groupsTable.tableName,
       "isSyncNeeded",
-      1,
-      callback)
+      1)
   }
 
   storage.prototype.addPerson = function (person, callback) {
@@ -322,12 +344,11 @@
     };
   }
 
-  storage.prototype.getPeopleForSync = function (callback) {
-    this.getAllFromIndexStore(
+  storage.prototype.getPeopleForSync = function () {
+    return this.getAllFromIndexStorePromise(
       this.dbSchema.peopleTable.tableName,
       "isSyncNeeded",
-      1,
-      callback)
+      1)
   }
 
 	storage.prototype.getPeopleForGroup = function (group, callback) {
@@ -440,12 +461,11 @@
       callback)
   }
 
-  storage.prototype.getTransactionsForSync = function (callback) {
-    this.getAllFromIndexStore(
+  storage.prototype.getTransactionsForSync = function () {
+    return this.getAllFromIndexStorePromise(
       this.dbSchema.transactionsTable.tableName,
       "isSyncNeeded",
-      1,
-      callback)
+      1)
   }
 
   return storage;
