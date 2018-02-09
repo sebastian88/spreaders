@@ -74,6 +74,7 @@ namespace spreaders.lib.Services
       {
         Id = person.Id,
         Name = person.Name,
+        Colour = person.Colour,
         IsDeleted = person.IsDeleted,
         GroupId = person.GroupId
       };

@@ -4,12 +4,14 @@ spreaders.pages.transaction = (function () {
     pageContext,
     urlService,
     storage,
-    observer
+    observer,
+    synchroniser
   ) {
     this.pageContext = pageContext
     this.urlService = urlService
     this.storage = storage
     this.observer = observer
+    this.synchroniser = synchroniser
     this.isPayeeCheckboxesRendered = false
     this.isPayerRadiosRendered = false
     this.currentGroup
@@ -17,6 +19,8 @@ spreaders.pages.transaction = (function () {
 
     this.observer.subscribe("payeeCheckboxesRendered", this.payeeCheckboxesRendered, this)
     this.observer.subscribe("payerRadiosRendered", this.payerRadiosRendered, this)
+
+    this.synchroniser.startServiceWorker()
   }
 
   transaction.prototype.populateForm = function (group) {
@@ -109,6 +113,7 @@ spreaders.pages.transaction = (function () {
       var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)
       this.storage.addTransaction(transaction)
     }
+    this.synchroniser.syncWithServer()
     window.location.href = this.urlService.getTransactionsPage(this.pageContext.getCurrentGroupId())
   }
 
@@ -132,8 +137,10 @@ storage.connect().then(data => {
   var urlService = new spreaders.urlService()
   var pageContext = new spreaders.pageContext(urlService)
   var observer = new spreaders.observer()
+  var apiService = new spreaders.apiService()
+  var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
 
-  var page = new spreaders.pages.transaction(pageContext, urlService, storage, observer)
+  var page = new spreaders.pages.transaction(pageContext, urlService, storage, observer, synchroniser)
 })
 
 

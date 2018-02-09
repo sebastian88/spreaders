@@ -1,8 +1,9 @@
 spreaders.pages.groups = (function(){
 
-	var groupPage = function(urlService, storage){
+	var groupPage = function(urlService, storage, synchroniser){
 		this.urlService = urlService
 		this.storage = storage
+		this.synchroniser = synchroniser
 
 
 		this.container = document.getElementsByClassName("groupContainer")[0]
@@ -14,6 +15,8 @@ spreaders.pages.groups = (function(){
 
 		var createGroupButton = document.getElementsByClassName("createGroupButton")[0]
 		createGroupButton.addEventListener("click", this.createGroupButtonClick.bind(this))
+
+		this.synchroniser.startServiceWorker()
 	}
 
 	groupPage.prototype.renderGroups = function () {
@@ -35,9 +38,6 @@ spreaders.pages.groups = (function(){
 	  a.title = group.id
 	  li.appendChild(a)
 	}
-
-	groupPage.prototype.init = function(){
-	}
 	
 	groupPage.prototype.createGroupButtonClick = function() {
 		var groupName = document.getElementsByName("groupName")[0].value
@@ -46,6 +46,7 @@ spreaders.pages.groups = (function(){
 	}
 
   groupPage.prototype.createGroupButtonClickCallback = function (group) {
+		this.synchroniser.syncWithServer()
     window.location.href = this.urlService.getTransactionsPage(group.externalId)
 	}
 	
@@ -56,6 +57,8 @@ var storage = new spreaders.storage()
 storage.connect().then(data => {
 	var urlService = new spreaders.urlService()
 	var pageContext = new spreaders.pageContext(urlService)
+  var apiService = new spreaders.apiService()
+  var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
 
-	var thisPage = new spreaders.pages.groups(urlService, storage);
+	var thisPage = new spreaders.pages.groups(urlService, storage, synchroniser);
 })

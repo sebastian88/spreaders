@@ -19,11 +19,22 @@ namespace spreaders.web
       //  defaults: new { controller = "Tranasctions", action = "Index" }
       //);
 
+      routes.MapRoute(
+        name: "TransactionsGeneric",
+        url: "groups/transactions",
+        defaults: new { controller = "Transactions", action = "Index", id = UrlParameter.Optional }
+      );
 
       routes.MapRoute(
         name: "Transactions",
         url: "groups/{groupid}/transactions",
         defaults: new { controller = "Transactions", action = "Index", id = UrlParameter.Optional }
+      );
+
+      routes.MapRoute(
+        name: "TransactionAddGeneric",
+        url: "groups/transactions/add",
+        defaults: new { controller = "Transactions", action = "AddEdit", id = UrlParameter.Optional }
       );
 
       routes.MapRoute(
@@ -36,6 +47,30 @@ namespace spreaders.web
         name: "transactionEdit",
         url: "groups/{groupid}/transactions/{trasactionId}",
         defaults: new { controller = "Transactions", action = "AddEdit", id = UrlParameter.Optional }
+      );
+
+      routes.MapRoute(
+        name: "peopleGeneric",
+        url: "groups/people",
+        defaults: new { controller = "People", action = "Index", id = UrlParameter.Optional }
+      );
+
+      routes.MapRoute(
+        name: "people",
+        url: "groups/{groupid}/people",
+        defaults: new { controller = "People", action = "Index", id = UrlParameter.Optional }
+      );
+
+      routes.MapRoute(
+        name: "personEditGeneric",
+        url: "groups/people/edit",
+        defaults: new { controller = "People", action = "Edit", id = UrlParameter.Optional }
+      );
+
+      routes.MapRoute(
+        name: "personEdit",
+        url: "groups/{groupid}/people/{personId}",
+        defaults: new { controller = "People", action = "Edit", id = UrlParameter.Optional }
       );
 
       routes.MapRoute(

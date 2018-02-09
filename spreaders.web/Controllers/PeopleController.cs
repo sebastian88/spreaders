@@ -9,7 +9,12 @@ namespace spreaders.web.Controllers
   public class PeopleController : Controller
   {
     // GET: People
-    public ActionResult Add(string groupId)
+    public ActionResult Index(string groupId)
+    {
+      return View();
+    }
+
+    public ActionResult Edit(string groupId, string personId)
     {
       return View();
     }

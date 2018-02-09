@@ -47,6 +47,7 @@
       peopleJson.push({
         "id": people[i].externalId,
         "name": people[i].name,
+        "colour": people[i].colour,
         "isDeleted": people[i].isDeleted,
         "groupId": people[i].groupId
       })
@@ -78,11 +79,12 @@
     return new Promise((resolve, reject) => {
       if (!this.isSyncNeeded())
         resolve()
-
-      this.apiService.sync(this.apiUpdateJsonModel).then(function(){
-        this.setEntitiesToSynced()
-        resolve()
-      }.bind(this))
+      else {
+        this.apiService.syncWithFetch(this.apiUpdateJsonModel).then(() => {
+          this.setEntitiesToSynced()
+          resolve()
+        })
+      }
     })
   }
 
@@ -162,7 +164,8 @@
     
     existingPerson.externalId = newPerson.id
     existingPerson.groupId = newPerson.groupId
-		existingPerson.name = newPerson.name
+    existingPerson.name = newPerson.name
+    existingPerson.colour = newPerson.colour
     existingPerson.isDeleted = 0
     if(newPerson.isDeleted)
       existingPerson.isDeleted = 1
@@ -191,27 +194,137 @@
     this.apiService.getGroup(groupId, this.UpdateGroup.bind(this), callback)
   }
 
-  synchroniser.prototype.UpdateGroup = function (groupInformation, callback) {
-    var promises = []
-      
-    var groupPromise = this.storage.addOrUpdateGroupPromise(groupInformation.group, this.mapGroup)
-    promises.push(groupPromise)
-      
-    for(var i = 0; i < groupInformation.people.length; i++)
-    {
-      var personPromise = this.storage.addOrUpdatePersonPromise(groupInformation.people[i], this.mapPerson)
-      promises.push(personPromise)
-    }
-      
-    for(var i = 0; i < groupInformation.transactions.length; i++)
-    {
-      var transactionPromise = this.storage.addOrUpdateTransactionPromise(groupInformation.transactions[i], this.mapTransaction)
-      promises.push(transactionPromise)
-    }
+  synchroniser.prototype.UpdateGroup = function (groupInformation) {
+    return new Promise((resolve, reject) => {
+      if(!groupInformation)
+        reject("no group infomation passed in")
 
-    Promise.all(promises).then(values => {
-      callback()
-    }, function (){}.bind(this))
+      var promises = []
+      
+      var groupPromise = this.storage.addOrUpdateGroupPromise(
+        groupInformation.group, 
+        this.mapGroup, 
+        this.isGroupIdentical)
+      promises.push(groupPromise)
+      
+      for(var i = 0; i < groupInformation.people.length; i++) { 
+        var personPromise = this.storage.addOrUpdatePersonPromise(
+          groupInformation.people[i], 
+          this.mapPerson, 
+          this.isPersonIdentical)
+        promises.push(personPromise)
+      }
+        
+      for(var i = 0; i < groupInformation.transactions.length; i++) {
+        var transactionPromise = this.storage.addOrUpdateTransactionPromise(
+          groupInformation.transactions[i], 
+          this.mapTransaction, 
+          this.isTransactionIdentical.bind(this))
+        promises.push(transactionPromise)
+      }
+
+      Promise.all(promises).then(values => {
+        var anyEntitiesUpdated = values.includes(true)
+        resolve(anyEntitiesUpdated)
+      }, function (){}.bind(this))
+    })
+  }
+
+  synchroniser.prototype.isGroupIdentical = function(clientGroup, serverGroup) {
+    if(!clientGroup)
+      return false
+    
+    if(clientGroup.name != serverGroup.name)
+      return false
+
+    if(clientGroup.isDeleted != serverGroup.isDeleted)
+      return false
+    
+    return true
+  }
+
+  synchroniser.prototype.isPersonIdentical = function(clientPerson, serverPerson) {
+    if(!clientPerson)
+      return false
+    
+    if(clientPerson.name != serverPerson.name)
+      return false
+
+    if(clientPerson.colour != serverPerson.colour)
+      return false
+    
+    if(clientPerson.isDeleted != serverPerson.isDeleted)
+      return false
+
+    return true
+  }
+
+  synchroniser.prototype.isTransactionIdentical = function(clientTransaction, serverTransaction) {
+    if(!clientTransaction)
+      return false
+
+    if(!this.areArraysEqual(clientTransaction.payees, serverTransaction.payees))
+      return false
+
+    if(clientTransaction.payer != serverTransaction.payerId)
+      return false
+
+    if(clientTransaction.amount != serverTransaction.amount)
+      return false
+
+    if(clientTransaction.description != serverTransaction.description)
+      return false
+
+    if(clientTransaction.isDeleted != serverTransaction.isDeleted)
+      return false
+
+    return true
+  }
+
+  synchroniser.prototype.areArraysEqual = function(array1, array2) {
+    if(!array1 && !array2)
+      return true
+
+    if(!array1 || !array2)
+      return false
+
+    if(array1.length != array2.length)
+      return false
+
+    for(var i = 0; i < array1.length; i++) {
+      if(!array2[i].includes(array1[i]))
+        return false
+    }
+    
+    return true;
+  }
+
+  synchroniser.prototype.isServiceWorkerAvailable = function() {
+    return "serviceWorker" in navigator
+  }
+
+  synchroniser.prototype.startServiceWorker = function() {
+    if(this.isServiceWorkerAvailable()) {
+      navigator.serviceWorker.register("/serviceWorker.js").then(function(registration) {
+      }).catch(function(err) {
+      })
+    }
+  }
+
+  synchroniser.prototype.syncWithServer = function() {
+    if(this.isServiceWorkerAvailable()) {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.sync.register("sync-updated-entities")
+      })
+    }
+  }
+
+  synchroniser.prototype.getUpdatesForGroup = function(groupId) {
+    if(this.isServiceWorkerAvailable()) {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.sync.register("sync-group-" + groupId)
+      })
+    }
   }
 
   return synchroniser

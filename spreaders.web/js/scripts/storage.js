@@ -1,4 +1,4 @@
-﻿spreaders.storage = (function () {
+spreaders.storage = (function () {
 
   var storage = function () {
     
@@ -178,11 +178,9 @@
     })
   }
 
-  storage.prototype.addOrUpdateEntityPromise = function (tableName, entityToBeUpdated, mapper) {
+  storage.prototype.addOrUpdateEntityPromise = function (tableName, entityToBeUpdated, mapper, isIdentical) {
 
     return new Promise((resolve, reject) => {
-      var entities = []
-
       var transaction = this.createReadTransaction(tableName)
       var request = transaction.index("externalId").openCursor(entityToBeUpdated.id)
 
@@ -197,13 +195,19 @@
         if (cursor)
           entity = cursor.value
         
-        var updatedEntity = mapper(entity, entityToBeUpdated)
+        if(isIdentical(entity, entityToBeUpdated)){
+          resolve(false)
+        }
+        else{
+          var updatedEntity = mapper(entity, entityToBeUpdated)
 
-        var transaction = this.createReadWriteTransaction(tableName)
-        var response = transaction.put(updatedEntity)
+          var transaction = this.createReadWriteTransaction(tableName)
+          var response = transaction.put(updatedEntity)
 
-        response.onsuccess = function (e) {
-          resolve(e.target.result)
+          response.onsuccess = function (e) {
+                    
+            resolve(true)
+          }
         }
       }.bind(this)
     })
@@ -238,11 +242,12 @@
       isSyncNeeded)
   }
 
-  storage.prototype.addOrUpdateGroupPromise = function (group, mapper) {
+  storage.prototype.addOrUpdateGroupPromise = function (group, mapper, isIdentical) {
     return this.addOrUpdateEntityPromise(
       this.dbSchema.groupsTable.tableName,
       group,
-      mapper)
+      mapper,
+      isIdentical)
   }
 
   storage.prototype.getAllGroups = function (callback) {
@@ -310,11 +315,12 @@
       isSyncNeeded)
   }
 
-  storage.prototype.addOrUpdatePersonPromise = function (person, mapper) {
+  storage.prototype.addOrUpdatePersonPromise = function (person, mapper, isIdentical) {
     return this.addOrUpdateEntityPromise(
       this.dbSchema.peopleTable.tableName,
       person,
-      mapper)
+      mapper,
+      isIdentical)
   }
 
   storage.prototype.getPeople = function (groupId, callback) {
@@ -357,7 +363,14 @@
       "groupId",
       group.externalId,
       callback)
-	}
+  }
+  
+  storage.prototype.getPeopleForGroupPromise = function (groupId) {
+    return this.getAllFromIndexStorePromise(
+      this.dbSchema.peopleTable.tableName,
+      "groupId",
+      groupId)
+  }
 	
   storage.prototype.getPerson = function (personId, callback) {
     this.getOneFromIndexStore(
@@ -375,7 +388,7 @@
       callback)
   }
 
-  storage.prototype.getPersonPromise = function (personId, callback) {
+  storage.prototype.getPersonPromise = function (personId) {
     return this.getOneFromIndexStorePromise(
       this.dbSchema.peopleTable.tableName,
       "externalId",
@@ -417,11 +430,12 @@
       isSyncNeeded)
   }
 
-  storage.prototype.addOrUpdateTransactionPromise = function (transaction, mapper) {
+  storage.prototype.addOrUpdateTransactionPromise = function (transaction, mapper, isIdentical) {
     return this.addOrUpdateEntityPromise(
       this.dbSchema.transactionsTable.tableName,
       transaction,
-      mapper)
+      mapper,
+      isIdentical)
   }
 
   storage.prototype.getTransaction = function (transactionId, callback) {
@@ -454,6 +468,13 @@
 	storage.prototype.getTransactionsForGroup = function (group, callback) {
 		this.getFromIndexStore(this.dbSchema.transactionsTable.tableName, "groupId", group.externalId, callback)
 	}
+  
+  storage.prototype.getTransactionsForGroupPromise = function (groupId) {
+    return this.getAllFromIndexStorePromise(
+      this.dbSchema.transactionsTable.tableName,
+      "groupId",
+      groupId)
+  }
 
   storage.prototype.getAllTransactions = function (callback) {
     this.getAllOfEntity(

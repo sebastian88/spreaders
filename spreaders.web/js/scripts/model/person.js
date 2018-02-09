@@ -1,6 +1,6 @@
 spreaders.model.person = (function () {
 	
-  var person = function (group, name) {
+  var person = function (group, name, colour) {
     this.id
     this.externalId
     if(group)
@@ -8,6 +8,7 @@ spreaders.model.person = (function () {
     else
       this.groupId
     this.name = name
+    this.colour = colour
 		this.isDeleted = 0
 		this.isSyncNeeded = 0
   };

@@ -49,9 +49,17 @@ spreaders.view.transaction = (function () {
 
 
     return payees.map(function (payee) {
-      span = document.createElement("span")
-      span.innerHTML = payee.name.charAt(0)
-      return span.outerHTML
+      firstLetter = document.createElement("span")
+      firstLetter.className = "firstLetter"
+      firstLetter.style.backgroundColor = payee.colour;
+      firstLetter.innerHTML = payee.name.charAt(0)
+      
+      remainingLetters = document.createElement("span")
+      remainingLetters.className = "remainingLetters"
+      remainingLetters.innerHTML = payee.name.substring(1)
+      firstLetter.appendChild(remainingLetters)
+
+      return firstLetter.outerHTML
     }).join("")
   }
 

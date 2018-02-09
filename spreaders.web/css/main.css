@@ -1,4 +1,5 @@
 /* #0099CC #CCFFCC #66CCFF #003399 */
+/* style like this https://repl.it */
 :root {
   --one-color: #CCFFCC;
   --two-color: #66CCFF;
@@ -11,8 +12,43 @@
 	color: var(--four-color);
 }
 
-body {
-	/* background-color:var(--four-color) */
+h1 {
+	font-size: 6em;
+	text-align: center;
+}
+
+h2 {
+	font-size: 4em;
+	text-align: center;
+}
+
+button {
+	height: 120px;
+	font-size: 3em;
+	font-weight: bold;
+	border: none;
+	padding: 30px 50px;
+	background-color: var(--one-color);
+	cursor: pointer;
+}
+
+.add {
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
+	width: 200px;
+	height: 200px;
+}
+
+button.addSectionExpand {
+	font-size: 6em;
+	font-weight: lighter;
+	color: white;
+	background-color: var(--three-color);
+	padding: 0;
+	height: 200px;
+	width:200px;
+	border-radius: 100px;
 }
 
 .sync {
@@ -26,10 +62,14 @@ body {
 	text-align: right;
 }
 
+.transactions {
+	margin-bottom: 300px;
+}
+
 .transaction {
 	width: 98%;
 	max-width: 1000px;
-	height: 100px;
+	height: 200px;
 	margin: 0 auto;
 	padding: 30px 0px 20px 0px;
 	border-bottom: 1px solid grey;
@@ -39,7 +79,7 @@ body {
 }
 
 .transaction.active {
-	height: 300px;
+	height: 350px;
 	transition: height 0.2s;
 }
 
@@ -85,37 +125,50 @@ body {
 	font-size: 2em;
 	font-weight: lighter;
 	line-height: 2em;
-	opacity: 0;
-	transition: opacity 0.1s;
-}
-
-.transaction.active ul.transactionDetails li.payees {
 	opacity: 1;
-	transition: opacity 0.5s;
 }
 
-.transaction ul.transactionDetails li.payees span {
+.transaction span.firstLetter {
 	height: 50px;
-	width: 50px;
+	max-width: 34px;
 	margin-right: 5px;
 	display: inline-block;
-	background-color: var(--three-color);
 	border-radius: 25px;
 	text-align: center;
 	line-height: 1.6em;
 	color: white; 
 	font-weight: bold;
+    padding-left: 16px;
+	transition: all 0.3s;
+}
+.transaction.active span.firstLetter {
+	max-width: 200px;
+	transition: all 0.5s;
+	padding-right: 14px;
 }
 
-.transaction ul.transactionDetails li.payees span:last-child {
+.transaction span.firstLetter:last-child {
 	margin-right: 0px;
+}
+
+.transaction .remainingLetters {
+	opacity: 0;
+	width: 0px;
+	transition: opacity 0.5s;
+	color: white;
+}
+
+.transaction.active .remainingLetters {
+	opacity: 1;
+	width: auto;
+	transition: opacity 0.5s;
 }
 
 .transaction button {
 	opacity: 0;
 	transition: opacity 0.1s;
 	position: absolute;
-	top: 200px;
+	top: 220px;
 	right: 0px;
 }
 
@@ -169,12 +222,74 @@ input[type="text"], input[type="number"], textarea  {
 	font-size: 1.5em;
 }
 
-button {
-	height: 120px;
-	font-size: 3em;
-	font-weight: bold;
-	border: none;
-	padding: 30px 50px;
-	background-color: var(--one-color);
-	cursor: pointer;
+.opaqueLayer {
+	width: 100%;
+	height: 100%;
+	opacity: 0.5;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background-color: black;
+}
+
+.visuallyHidden {
+	display:none;
+}
+
+.addSection {
+	width: 100%;
+	border-top: 1px solid black;
+	position: fixed;
+	bottom: -1px;
+	left: 0px;
+	height: 0px;
+	background-color: white;
+	text-align: center;
+	transition: all 250ms ease;
+}
+
+.addSection.active {
+	height: 400px;
+	transition: all 250ms ease;
+}
+
+.addSection button {
+	background-color: white;
+	width:300px;
+	height: auto;
+	padding:0;
+	margin-top: 100px;
+}
+
+.addSection button:first-of-type {
+	margin-right: 100px;
+}
+
+.addSection button img {
+	display: block;
+	margin: 0 100px;
+}
+
+.person li {
+	font-size: 6em;
+	list-style: none;
+}
+
+.showUpdates {
+	width: 50%;
+	position: fixed;
+	left: 50%;
+	top: 20px;
+	margin-left: -25%;
+	overflow-y: hidden;
+	max-height: 200px;
+	
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.showUpdates.closed {
+	max-height: 0px;
+	padding: 0px;
 }

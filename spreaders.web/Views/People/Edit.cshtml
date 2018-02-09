@@ -1,30 +1,28 @@
-﻿@model spreaders.web.Models.GroupsIndexViewModel
-
+@model spreaders.web.Models.TransactionAddEditViewModel
 @{
   Layout = null;
 }
-
 <!DOCTYPE html>
 <html>
-
 <head>
   <link rel="stylesheet" href="/css/main.css">
-  <title>Groups</title>
+  <title>Person Edit</title>
 </head>
-
 <body>
-
-  <section class="groupContainer"></section>
-  <section class="addGroup">
-    <label>
-      group name
-      <input type="text" name="groupName">
-    </label>
-    <button type="button" class="createGroupButton">create group</button>
-  </section>
-
+  <div class="editPerson">
+    <form>
+      <section>
+        <h1>Name</h1>
+        <input type="text" name="name"></input>
+        <input type="text" name="colour"></input>
+      </section>
+      <section>
+        <button type="submit" class="submit">Update</button>
+      </section>
+    </form>
+  </div>
   <script src="/js/scripts/namespaces.js"></script>
-  <script src="/js/scripts/model/group.js"></script>
+  <script src="/js/scripts/model/person.js"></script>
 
   <script src="/js/scripts/urlService.js"></script>
   <script src="/js/scripts/apiService.js"></script>
@@ -33,6 +31,6 @@
   <script src="/js/scripts/storage.js"></script>
   <script src="/js/scripts/sync/synchroniser.js"></script>
 
-  <script src="/js/pages/groups.js"></script>
+  <script src="/js/pages/person.js"></script>
 </body>
 </html>

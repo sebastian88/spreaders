@@ -14,6 +14,6 @@ namespace spreaders.lib.Models.Dtos.Json
     [DataMember(Name = "name")]
     public string Name { get; set; }
     [DataMember(Name = "isDeleted")]
-    public bool IdDeleted { get; set; }
+    public bool IsDeleted { get; set; }
   }
 }

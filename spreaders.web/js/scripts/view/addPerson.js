@@ -8,6 +8,8 @@ spreaders.view.addPerson = (function () {
 		this.addPersonContainer = addPersonContainer
 		this.storage = storage
 		this.observer = observer
+
+		this.colours = ['#f3a683','#f7d794','#778beb','#e77f67','#cf6a87','#e66767','#63cdda','#f8a5c2','#786fa6','#596275']
 		
 		this.createAddPersonInput()
 	}
@@ -39,7 +41,7 @@ spreaders.view.addPerson = (function () {
 	
 	addPerson.prototype.processAddPersonClickEvent = function() {
 	  if (this.addPersonInput.value) {
-			var newPerson = new spreaders.model.person(this.currentGroup, this.addPersonInput.value)
+			var newPerson = new spreaders.model.person(this.currentGroup, this.addPersonInput.value, this.getColour())
 		  this.storage.addPerson(newPerson, this.processAddPersonClickEventCallback.bind(this))
 			this.addPersonInput.value = ""
 		}
@@ -47,6 +49,10 @@ spreaders.view.addPerson = (function () {
 
 	addPerson.prototype.processAddPersonClickEventCallback = function (newPerson) {
 	  this.observer.fire("personCreated", newPerson)
+	}
+
+	addPerson.prototype.getColour = function() {
+		return this.colours[Math.floor(Math.random() * this.colours.length)];
 	}
 
 	return addPerson

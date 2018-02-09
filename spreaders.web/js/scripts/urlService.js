@@ -2,7 +2,8 @@
   var urlService = function () {
     this.forwardSlash = "/"
     this.GroupsPathSection = "groups"
-    this.TransactionsPathSection = "transactions"
+		this.TransactionsPathSection = "transactions"
+		this.PeoplePathSection = "people"
 	}
 	
 	urlService.prototype.getGroupPage = function() {
@@ -23,6 +24,15 @@
 
 		return url
 	}
+
+	urlService.prototype.getPeoplePage = function(groupId) {
+		return this.getGroupPage() + groupId + this.forwardSlash + this.PeoplePathSection + this.forwardSlash
+	}
+	
+	urlService.prototype.getPersonEditPage = function(groupId, personId) {
+		return this.getPeoplePage(groupId) + personId + this.forwardSlash
+	}
+
 	return urlService
 	
 })()

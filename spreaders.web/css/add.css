@@ -23,8 +23,6 @@
   position: relative;
   font-family: arial, sans-serif;
 }
-.middle .box:active {
-}
 .middle .box span {
   transition: all 300ms ease;
   user-select: none;

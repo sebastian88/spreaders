@@ -163,8 +163,6 @@
     <Content Include="js\scripts\view\payerRadio.js" />
     <Content Include="js\scripts\view\personFormList.js" />
     <Content Include="js\scripts\view\transaction.js" />
-    <Content Include="js\scripts\sync\backgroundSynchroniser.js" />
-    <Content Include="js\scripts\sync\syncWorker.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

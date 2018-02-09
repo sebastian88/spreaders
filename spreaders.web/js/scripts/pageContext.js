@@ -32,7 +32,7 @@ spreaders.pageContext = (function(){
 	}
 	
 	pageContext.prototype.getCurrentPerson = function() {
-	  return GetUrlPathElement("personId").toLowerCase()
+	  return GetUrlPathElement(this.urlService.PeoplePathSection).toLowerCase()
 	}
 	
 	return pageContext

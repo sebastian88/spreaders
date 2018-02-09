@@ -39,6 +39,8 @@ namespace spreaders.lib.Services
     {
       person.Name = jsonPerson.Name;
       person.GroupId = jsonPerson.GroupId;
+      person.Colour = jsonPerson.Colour;
+      person.IsDeleted = jsonPerson.IsDeleted;
       return person;
     }
   }

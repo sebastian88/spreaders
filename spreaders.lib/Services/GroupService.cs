@@ -36,6 +36,7 @@ namespace spreaders.lib.Services
     public Group UpdateFromJsonGroup(Group group, JsonGroup jsonGroup)
     {
       group.Name = jsonGroup.Name;
+      group.IsDeleted = jsonGroup.IsDeleted;
       return group;
     }
   }
