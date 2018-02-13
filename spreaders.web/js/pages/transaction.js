@@ -15,7 +15,9 @@ spreaders.pages.transaction = (function () {
     this.isPayeeCheckboxesRendered = false
     this.isPayerRadiosRendered = false
     this.currentGroup
-    this.storage.getGroup(this.pageContext.getCurrentGroupId(), this.populateForm.bind(this))
+    this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
+      this.populateForm(group)
+    })
 
     this.observer.subscribe("payeeCheckboxesRendered", this.payeeCheckboxesRendered, this)
     this.observer.subscribe("payerRadiosRendered", this.payerRadiosRendered, this)
@@ -56,8 +58,12 @@ spreaders.pages.transaction = (function () {
     if (!this.isPayeeCheckboxesRendered || !this.isPayerRadiosRendered)
       return
     this.transactionBeingEditedId = this.pageContext.getCurrentTransaction()
-    if (this.isGuid(this.transactionBeingEditedId))
-      this.storage.getTransaction(this.transactionBeingEditedId, this.addTransactionBeingEditedCallback.bind(this))
+    if (this.isGuid(this.transactionBeingEditedId)) {
+      this.storage.getTransaction(this.transactionBeingEditedId).then((transactionBeingEdited) => {
+        this.addTransactionBeingEditedCallback(transactionBeingEdited)
+      })
+    }
+      
   }
 
   transaction.prototype.addTransactionBeingEditedCallback = function (transactionBeingEdited) {
@@ -107,7 +113,7 @@ spreaders.pages.transaction = (function () {
       this.transactionBeingEdited.payees = payees
       this.transactionBeingEdited.amount = amount
       this.transactionBeingEdited.description = description
-      this.storage.updateTransaction(this.transactionBeingEdited, null, true)
+      this.storage.updateTransaction(this.transactionBeingEdited, true)
     }
     else {
       var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)

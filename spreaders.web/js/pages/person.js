@@ -28,7 +28,7 @@ spreaders.pages.person = (function () {
     person.prototype.processUpdateButtonClick = function() {
         this.person.name = this.name.value
         this.person.colour = this.colour.value
-        this.storage.updatePersonPromise(this.person, true).then(() => {
+        this.storage.updatePerson(this.person, true).then(() => {
             this.synchroniser.syncWithServer()
             window.location.href = this.urlService.getPeoplePage(this.pageContext.getCurrentGroupId())
         })

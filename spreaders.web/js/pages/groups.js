@@ -20,7 +20,9 @@ spreaders.pages.groups = (function(){
 	}
 
 	groupPage.prototype.renderGroups = function () {
-	  this.storage.getAllGroups(this.createGroupsListItem.bind(this))
+	  this.storage.getAllGroups().then((groups) => {
+			this.createGroupsListItem(groups)
+		})
 	}
 
 	groupPage.prototype.createGroupsListItem = function (groups) {
@@ -42,7 +44,9 @@ spreaders.pages.groups = (function(){
 	groupPage.prototype.createGroupButtonClick = function() {
 		var groupName = document.getElementsByName("groupName")[0].value
 		var group = new spreaders.model.group(groupName)
-		this.storage.addGroup(group, this.createGroupButtonClickCallback.bind(this))
+		this.storage.addGroup(group).then((group) => {
+			this.createGroupButtonClickCallback(group)
+		})
 	}
 
   groupPage.prototype.createGroupButtonClickCallback = function (group) {

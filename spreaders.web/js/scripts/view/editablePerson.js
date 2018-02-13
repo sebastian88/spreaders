@@ -60,7 +60,7 @@ spreaders.view.editablePerson = (function(){
 
     editablePerson.prototype.deletePerson = function (e) {
         this.person.isDeleted = 1;
-        this.storage.updatePersonPromise(this.person, 1).then(() => {this.observer.fire("personDeleted")})
+        this.storage.updatePerson(this.person, 1).then(() => {this.observer.fire("personDeleted")})
     }
     
     editablePerson.prototype.editPerson = function (e) {

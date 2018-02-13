@@ -20,13 +20,15 @@ spreaders.view.personFormList = (function () {
 	}
 	
   personFormList.prototype.createRadios = function () {
-    this.storage.getPeople(this.currentGroup.externalId, this.createRadiosCallback.bind(this))
+    this.storage.getPeopleForGroup(this.currentGroup.externalId).then((people) => {
+			this.createRadiosCallback(people)
+		})
 	  this.createErrorElement()
 	}
 	
-	personFormList.prototype.createRadiosCallback = function (payers) {
-	  for (var i = 0; i < payers.length; i++)
-	    this.createRadio(payers[i])
+	personFormList.prototype.createRadiosCallback = function (people) {
+	  for (var i = 0; i < people.length; i++)
+	    this.createRadio(people[i])
 	  this.callback()
 	}
 	

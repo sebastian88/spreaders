@@ -25,7 +25,7 @@
     this.apiUpdateJsonModel.people = this.createPeopleJson(people)
     this.apiUpdateJsonModel.transactions = this.createTransactionsJson(transactions)
 
-    await this.makeRequest();
+    return this.makeRequest();
   }
 
   synchroniser.prototype.createGroupsJson = function (groups) {
@@ -102,19 +102,19 @@
   synchroniser.prototype.setEntitiesToSynced = function () {
     this.processResponseEntities(
       this.syncedGroups,
-      this.storage.getGroupByExternalId.bind(this.storage),
+      this.storage.getGroup.bind(this.storage),
       this.storage.updateGroup.bind(this.storage),
       this.mapEntity)
 
     this.processResponseEntities(
       this.syncedPeople,
-      this.storage.getPersonByExternalId.bind(this.storage),
+      this.storage.getPerson.bind(this.storage),
       this.storage.updatePerson.bind(this.storage),
       this.mapEntity)
 
     this.processResponseEntities(
       this.syncedTransactions,
-      this.storage.getTransactionByExternalId.bind(this.storage),
+      this.storage.getTransaction.bind(this.storage),
       this.storage.updateTransaction.bind(this.storage),
       this.mapEntity)
   }
@@ -124,24 +124,22 @@
     return existingEntity
   }
 
-  synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, callback, mapper) {
+  synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, updateEntityFunction, mapper) {
     for (var i = 0; i < entities.length; i++) {
-      this.processResponseEntity(entities[i], getEntityFunction, callback, mapper)
+      this.processResponseEntity(entities[i], getEntityFunction, updateEntityFunction, mapper)
     }
   }
 
-  synchroniser.prototype.processResponseEntity = function (entity, getEntityFunction, callback, mapper) {
-    var entityUpdater = new spreaders.entityUpdater()
-    entityUpdater.externalEntity = entity
-    entityUpdater.updateFunction = callback
-    entityUpdater.mapper = mapper
-    getEntityFunction(entity.externalId, entityUpdater.update.bind(entityUpdater))
-  }
+  synchroniser.prototype.processResponseEntity = function (serverEntity, getEntityFunction, updateEntityFunction, mapper) {
+    // var entityUpdater = new spreaders.entityUpdater()
+    // entityUpdater.externalEntity = entity
+    // entityUpdater.updateFunction = callback
+    // entityUpdater.mapper = mapper
+    // getEntityFunction(entity.externalId, entityUpdater.update.bind(entityUpdater))
 
-  synchroniser.prototype.processResponseEntityPromise = function (entity, getEntityFunction, updateEntityFunction, mapper) {
-    getEntityFunction(entity.externalId).then(existingEntity => {
-      updatedEntity = mapper(existingEntity, entity)
-      return updateEntityFunction(updatedEntity, false)
+    getEntityFunction(serverEntity.externalId).then((clientEntity) => {
+      clientEntity = mapper(clientEntity, serverEntity)
+      updateEntityFunction(clientEntity, 0)
     })
   }
 
@@ -201,14 +199,14 @@
 
       var promises = []
       
-      var groupPromise = this.storage.addOrUpdateGroupPromise(
+      var groupPromise = this.storage.addOrUpdateGroup(
         groupInformation.group, 
         this.mapGroup, 
         this.isGroupIdentical)
       promises.push(groupPromise)
       
       for(var i = 0; i < groupInformation.people.length; i++) { 
-        var personPromise = this.storage.addOrUpdatePersonPromise(
+        var personPromise = this.storage.addOrUpdatePerson(
           groupInformation.people[i], 
           this.mapPerson, 
           this.isPersonIdentical)
@@ -216,7 +214,7 @@
       }
         
       for(var i = 0; i < groupInformation.transactions.length; i++) {
-        var transactionPromise = this.storage.addOrUpdateTransactionPromise(
+        var transactionPromise = this.storage.addOrUpdateTransaction(
           groupInformation.transactions[i], 
           this.mapTransaction, 
           this.isTransactionIdentical.bind(this))
@@ -305,7 +303,8 @@
 
   synchroniser.prototype.startServiceWorker = function() {
     if(this.isServiceWorkerAvailable()) {
-      navigator.serviceWorker.register("/serviceWorker.js").then(function(registration) {
+      navigator.serviceWorker.register("/serviceWorker.js")
+      .then(function(registration) {
       }).catch(function(err) {
       })
     }

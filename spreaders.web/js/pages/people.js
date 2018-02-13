@@ -12,7 +12,7 @@ spreaders.pages.people = (function () {
         this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
         
         var groupid = this.pageContext.getCurrentGroupId()
-        this.storage.getGroupPromise(groupid).then(group => {
+        this.storage.getGroup(groupid).then(group => {
             this.group = group
             this.createAddPeopleForm()
             this.getAndPopulatePeople()
@@ -35,7 +35,7 @@ spreaders.pages.people = (function () {
 
     people.prototype.getAndPopulatePeople = function() {
         this.peopleContainer.innerHTML = ""
-        this.storage.getPeopleForGroupPromise(this.group.externalId).then(people => {this.populatePeople(people)})
+        this.storage.getPeopleForGroup(this.group.externalId).then(people => {this.populatePeople(people)})
     }
 
     people.prototype.populatePeople = function(people) {

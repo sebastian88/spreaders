@@ -23,7 +23,7 @@ spreaders.pages.transactions = (function () {
   }
   
   transactions.prototype.getGroupAndPopulatePage = function() {
-    this.storage.getGroupPromise(this.pageContext.getCurrentGroupId()).then((group) => {
+    this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
       this.CheckGroupAndPopulatePage(group)
     })
   }
@@ -42,7 +42,7 @@ spreaders.pages.transactions = (function () {
   
   transactions.prototype.processGroupFromApi = function(groupInformation) {
     this.synchroniser.UpdateGroup(groupInformation).then(() => {
-      this.storage.getGroupPromise(this.pageContext.getCurrentGroupId()).then((group) => {
+      this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
         this.PopulatePage(group)
       })
     }) 
@@ -54,8 +54,12 @@ spreaders.pages.transactions = (function () {
 
       var promises = []
 
-      promises.push(this.storage.getPeopleForGroupPromise(this.group.externalId).then(people => {this.people = people}))
-      promises.push(this.storage.getTransactionsForGroupPromise(this.group.externalId).then(transactions => {this.transactions = transactions}))
+      promises.push(this.storage.getPeopleForGroup(this.group.externalId).then(people => {
+        this.people = people
+      }))
+      promises.push(this.storage.getTransactions(this.group.externalId).then(transactions => {
+        this.transactions = transactions
+      }))
       
       Promise.all(promises).then(() => {
         this.renderTransactionsAndTotals()
@@ -82,7 +86,7 @@ spreaders.pages.transactions = (function () {
 
   transactions.prototype.refreshPage = function() {
     this.showUpdatesButton.className = "showUpdates closed"
-    this.storage.getGroupPromise(this.pageContext.getCurrentGroupId()).then((group) => {
+    this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
       this.PopulatePage(group)
     })
   }
@@ -129,7 +133,9 @@ spreaders.pages.transactions = (function () {
   }
 
   transactions.prototype.refreshPeopleAndPopulateTotals = function() {
-    this.storage.getPeopleForGroup(this.group, this.refreshPeopleAndPopulateTotalsCallback.bind(this))
+    this.storage.getPeopleForGroup(this.group).then((people) => {
+      this.refreshPeopleAndPopulateTotalsCallback(people)
+    })
   }
 
   transactions.prototype.refreshPeopleAndPopulateTotalsCallback = function(people) {
@@ -139,7 +145,9 @@ spreaders.pages.transactions = (function () {
 
   transactions.prototype.updateTotalsAndSync = function () {
     this.synchroniser.syncWithServer()
-    this.storage.getTransactions(this.currentGroupId, this.updateTotalsCallback.bind(this))
+    this.storage.getTransactions(this.currentGroupId).then((transactions) => {
+      this.updateTotalsCallback(transactions)
+    })
   }
 
   transactions.prototype.updateTotalsCallback = function (transactions) {

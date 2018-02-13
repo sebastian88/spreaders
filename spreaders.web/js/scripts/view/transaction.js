@@ -115,8 +115,10 @@ spreaders.view.transaction = (function () {
 
   transaction.prototype.deleteTransaction = function (e) {
     e.stopPropagation()
-    this.transaction.isDeleted = 1;
-    this.storage.updateTransaction(this.transaction, this.deleteTransactionCallback.bind(this), 1)
+    this.transaction.isDeleted = 1
+    this.storage.updateTransaction(this.transaction, 1).then(() => {
+      this.deleteTransactionCallback()
+    })
   }
 
   transaction.prototype.deleteTransactionCallback = function () {

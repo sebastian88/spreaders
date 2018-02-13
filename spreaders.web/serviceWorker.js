@@ -1,22 +1,32 @@
-self.importScripts('/js/scripts/namespaces.js', 
-'/js/scripts/model/transaction.js',
-'/js/scripts/model/person.js',
-'/js/scripts/model/group.js',
-'/js/scripts/storageIndexedDb.js', 
-'/js/scripts/storage.js', 
-'/js/scripts/apiService.js', 
-'/js/scripts/sync/synchroniser.js', 
-'/js/scripts/urlService.js',
-'/js/scripts/sync/entityUpdater.js')
+self.importScripts('/js/live/library.js')
+// self.importScripts('/js/scripts/namespaces.js', 
+// '/js/scripts/model/transaction.js',
+// '/js/scripts/model/person.js',
+// '/js/scripts/model/group.js',
+// '/js/scripts/storageIndexedDb.js', 
+// '/js/scripts/storage.js', 
+// '/js/scripts/apiService.js', 
+// '/js/scripts/sync/synchroniser.js', 
+// '/js/scripts/urlService.js',
+// '/js/scripts/sync/entityUpdater.js')
 
-var cacheName = 'spreaders-cachev1'
-var immutableRequests = [] 
+var CACHE_NAME = 'spreaders-cache-v4'
+var immutableRequests = []
 var mutableRequests = [
   "/groups/", 
-  "/groups/transactions", 
-  "/groups/transactions/add", 
-  "/groups/people",
-  "/groups/people/edit"]
+  "/groups/transactions/", 
+  "/groups/transactions/add/", 
+  "/groups/people/",
+  "/groups/people/edit/",
+  "/js/live/library.js",
+  "/js/live/pages/groups.js",
+  "/js/live/pages/people.js",
+  "/js/live/pages/person.js",
+  "/js/live/pages/transaction.js",
+  "/js/live/pages/transactions.js",
+  "/css/main.css",
+  "/css/add.css",
+  "/img/folder.jpg"]
 
 self.addEventListener("activate", function(event) {
   event.waitUntil(caches.keys().then(function (cacheNames) { 
@@ -29,7 +39,7 @@ self.addEventListener("activate", function(event) {
 })
 
 self.addEventListener('install', function(event) {
-  event.waitUntil(caches.open("cache-v2").then(function (cache) {
+  event.waitUntil(caches.open(CACHE_NAME).then(function (cache) {
     var newImmutableRequests = [] 
     return Promise.all(immutableRequests.map(function(url) { 
       return caches.match(url).then(function (response) {
@@ -47,9 +57,40 @@ self.addEventListener('install', function(event) {
   }))
 })
 
-self.addEventListener('fetch', function(e) {
-    //console.log("fetched") 
-});
+self.addEventListener("fetch", function(event) {
+  var url = event.request.url
+  
+  if (url.substr(-1) != '/') 
+    url += '/'
+
+  if(matchUrl(url, '*/groups/*/transactions/')) 
+    event.respondWith(matchCacheOrFetch("/groups/transactions/", event.request))
+  
+  else if(matchUrl(url, '*/groups/*/transactions/add/'))
+    event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
+  
+  else if(matchUrl(url, '*/groups/*/transactions/*'))
+    event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
+  
+  else if(matchUrl(url, '*/groups/*/people/'))
+    event.respondWith(matchCacheOrFetch("/groups/people/", event.request))
+  
+  else if(matchUrl(url, '*/groups/*/people/*'))
+    event.respondWith(matchCacheOrFetch("/groups/people/edit/", event.request))
+  
+  else if(matchUrl(url, '*/groups/'))
+    event.respondWith(matchCacheOrFetch("/groups/", event.request))
+
+  else event.respondWith(caches.match(event.request).then(function(response) {
+    return response || fetch(event.request)
+  })) 
+})
+
+var matchCacheOrFetch = function(cache, request) {
+  return caches.match(cache).then((response) => {
+    return response || fetch(request)
+  })
+}
 
 self.addEventListener("sync", event => {
   if(event.tag.startsWith("sync-group-")) {
@@ -75,24 +116,29 @@ var syncUpdatedEntities = function() {
 
 var syncGroup = function(groupId) {
   return new Promise((resolve, reject) => {
-    var storage = new spreaders.storage()
-    storage.connect().then(data => {
-      var apiService = new spreaders.apiService()
-      var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
-      var urlService = new spreaders.urlService()
-      synchroniser.syncEntities().then(() => {
-        apiService.getGroupPromise(groupId).then(groupInformation => {
-          synchroniser.UpdateGroup(groupInformation).then(updateNeeded => {
-            if(updateNeeded)
-              sendMessageToClient(urlService.getTransactionsPage(groupId).slice(0, -1), "reload")
-            resolve()
+    try {
+      var storage = new spreaders.storage()
+      storage.connect().then(data => {
+        var apiService = new spreaders.apiService()
+        var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
+        var urlService = new spreaders.urlService()
+        synchroniser.syncEntities().then(() => {
+          apiService.getGroupPromise(groupId).then(groupInformation => {
+            synchroniser.UpdateGroup(groupInformation).then(updateNeeded => {
+              if(updateNeeded)
+                sendMessageToClient(urlService.getTransactionsPage(groupId).slice(0, -1), "reload")
+              resolve()
+            })
+            .catch(err => {reject(err)})
           })
           .catch(err => {reject(err)})
         })
         .catch(err => {reject(err)})
-      })
-      .catch(err => {reject(err)})
-    })
+      }) 
+    }
+    catch (err) {
+      reject(err)
+    }
   })
 }
 
@@ -105,13 +151,6 @@ var sendMessageToClient = function(clientUrl, message) {
   })
 }
 
-
-// synchroniser.syncEntities()
-// .then(() => apiService.getGroupPromise(groupId))
-// .then(groupInformation => synchroniser.UpdateGroup(groupInformation))
-// .then(updateNeeded => {
-//   if(updateNeeded)
-//     sendMessageToClient(urlService.getTransactionsPage(groupId).slice(0, -1), "reload")
-//   resolve()
-// })
-// .catch(err => {reject(err)})
+var matchUrl = function(str, rule) {
+  return new RegExp("^" + rule.split("*").join(".*") + "$").test(str);
+}
