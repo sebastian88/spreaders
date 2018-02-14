@@ -10,7 +10,7 @@ self.importScripts('/js/live/library.js')
 // '/js/scripts/urlService.js',
 // '/js/scripts/sync/entityUpdater.js')
 
-var CACHE_NAME = 'spreaders-cache-v4'
+var CACHE_NAME = 'spreaders-cache-v5'
 var immutableRequests = []
 var mutableRequests = [
   "/groups/", 
@@ -25,7 +25,6 @@ var mutableRequests = [
   "/js/live/pages/transaction.js",
   "/js/live/pages/transactions.js",
   "/css/main.css",
-  "/css/add.css",
   "/img/folder.jpg"]
 
 self.addEventListener("activate", function(event) {

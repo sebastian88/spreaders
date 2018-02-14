@@ -1,0 +1,17 @@
+{
+    "short_name": "Spreaders",
+    "name": "Spreaders",
+    "description": "Manage your money with friends and family",
+    "start_url": "/groups/?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "img/folder.jpg",
+            "type": "img/png",
+            "sizes": "192x192"
+        }
+    ],
+    "theme_color" : "#242424" , 
+    "background_color" : "#242424"
+}

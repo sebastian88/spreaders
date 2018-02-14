@@ -11,10 +11,12 @@ namespace spreaders.lib.Services
 {
   public class GroupService
   {
-    IUnitOfWork _unitOfWork;
+    private IUnitOfWork _unitOfWork;
+    private EntityService _entityService;
     public GroupService(IUnitOfWork unitOfWork)
     {
       _unitOfWork = unitOfWork;
+      _entityService = new EntityService();
     }
     public void Add(Group group)
     {
@@ -37,7 +39,7 @@ namespace spreaders.lib.Services
     {
       group.Name = jsonGroup.Name;
       group.IsDeleted = jsonGroup.IsDeleted;
-      return group;
+      return _entityService.UpdateFromJson(group, jsonGroup);
     }
   }
 }

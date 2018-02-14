@@ -95,13 +95,19 @@
     <Compile Include="Migrations\201802072149073_ColourForPerson.Designer.cs">
       <DependentUpon>201802072149073_ColourForPerson.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802131018084_UpdatedAndCreatedDatesForEntities.cs" />
+    <Compile Include="Migrations\201802131018084_UpdatedAndCreatedDatesForEntities.Designer.cs">
+      <DependentUpon>201802131018084_UpdatedAndCreatedDatesForEntities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Dtos\General\AddedEntity.cs" />
     <Compile Include="Models\Dtos\Json\ApiGetGroupReturnModel.cs" />
     <Compile Include="Models\Dtos\Json\EntitiesList.cs" />
+    <Compile Include="Models\Dtos\Json\Interfaces\IJsonEntity.cs" />
     <Compile Include="Models\Dtos\Json\JsonGroup.cs" />
     <Compile Include="Models\Dtos\Json\JsonPerson.cs" />
     <Compile Include="Models\Dtos\Json\JsonTransaction.cs" />
+    <Compile Include="Models\Entities\BaseEntity.cs" />
     <Compile Include="Models\Entities\Group.cs" />
     <Compile Include="Models\Entities\Interfaces\IEntity.cs" />
     <Compile Include="Models\Entities\Person.cs" />
@@ -110,6 +116,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ApiGroupService.cs" />
     <Compile Include="Services\ApiSyncService.cs" />
+    <Compile Include="Services\EntityService.cs" />
     <Compile Include="Services\GroupService.cs" />
     <Compile Include="Services\PersonService.cs" />
     <Compile Include="Services\TransactionService.cs" />
@@ -154,6 +161,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802072149073_ColourForPerson.resx">
       <DependentUpon>201802072149073_ColourForPerson.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131018084_UpdatedAndCreatedDatesForEntities.resx">
+      <DependentUpon>201802131018084_UpdatedAndCreatedDatesForEntities.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

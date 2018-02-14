@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace spreaders.lib.models.Entities
 {
-  public class Transaction : IEntity
+  public class Transaction : BaseEntity, IEntity
   {
     [Key]
     public Guid Id { get; set; }

@@ -11,21 +11,21 @@
         tableName: "groups",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "isDeleted", "isSyncNeeded"],
+        index: ["externalId", "isDeleted", "isSyncNeeded", "createdOn", "updatedOn"],
         unique: [true, false, false]
       },
       peopleTable: {
         tableName: "people",
         keyPath: "id",
         autoIncrement: true,
-				index: ["externalId", "groupId", "isDeleted", "isSyncNeeded"],
+				index: ["externalId", "groupId", "isDeleted", "isSyncNeeded", "createdOn", "updatedOn"],
         unique: [true, false, false, false]
       },
       transactionsTable: {
         tableName: "transactions",
         keyPath: "id",
         autoIncrement: true,
-        index: ["externalId", "groupId", "isDeleted", "isSyncNeeded"],
+        index: ["externalId", "groupId", "isDeleted", "isSyncNeeded", "createdOn", "updatedOn"],
         unique: [true, false, false, false]
       }
     }

@@ -12,9 +12,11 @@ namespace spreaders.lib.Services
   public class TransactionService
   {
     IUnitOfWork _unitOfWork;
+    EntityService _entityService;
     public TransactionService(IUnitOfWork unitOfWork)
     {
       _unitOfWork = unitOfWork;
+      _entityService = new EntityService();
     }
 
     public Transaction Get(Guid id)
@@ -57,7 +59,7 @@ namespace spreaders.lib.Services
         }
       }
 
-      return transaction;
+      return _entityService.UpdateFromJson(transaction, jsonTransaction);
     }
   }
 }

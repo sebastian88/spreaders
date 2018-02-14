@@ -12,10 +12,12 @@ namespace spreaders.lib.Services
   public class PersonService
   {
     private IUnitOfWork _unitOfWork;
+    private EntityService _entityService;
 
     public PersonService(IUnitOfWork unitOfWork)
     {
       _unitOfWork = unitOfWork;
+      _entityService = new EntityService();
     }
 
     public void Add(Person person)
@@ -41,7 +43,7 @@ namespace spreaders.lib.Services
       person.GroupId = jsonPerson.GroupId;
       person.Colour = jsonPerson.Colour;
       person.IsDeleted = jsonPerson.IsDeleted;
-      return person;
+      return _entityService.UpdateFromJson(person, jsonPerson); ;
     }
   }
 }

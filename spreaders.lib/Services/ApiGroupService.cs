@@ -12,9 +12,11 @@ namespace spreaders.lib.Services
   public class ApiGroupService
   {
     private IUnitOfWork _unitOfWork;
+    private EntityService _entityService;
     public ApiGroupService(IUnitOfWork unitOfWork)
     {
       _unitOfWork = unitOfWork;
+      _entityService = new EntityService();
     }
 
     public ApiGetGroupReturnModel GenerateReturnModel(Group group)
@@ -31,11 +33,12 @@ namespace spreaders.lib.Services
 
     private JsonGroup MapToJsonGroup(Group group)
     {
-      return new JsonGroup
+      var jsonGroup = new JsonGroup
       {
         Id = group.Id,
         Name = group.Name
       };
+      return _entityService.UpdateJsonFromEntity(jsonGroup, group);
     }
 
     private List<JsonTransaction> MapToJsonTransactions(ICollection<Transaction> transactions)
@@ -48,7 +51,7 @@ namespace spreaders.lib.Services
 
     private JsonTransaction MapToJsonTransaction(Transaction transaction)
     {
-      return new JsonTransaction
+      var jsonTransaction = new JsonTransaction
       {
         Id = transaction.Id,
         Amount = transaction.Amount,
@@ -58,6 +61,8 @@ namespace spreaders.lib.Services
         Payees = transaction.Payees.Select(x => x.Id).ToList(),
         PayerId = transaction.PayerId
       };
+
+      return _entityService.UpdateJsonFromEntity(jsonTransaction, transaction);
     }
 
     private List<JsonPerson> MapToJsonPeople(ICollection<Person> people)
@@ -70,7 +75,7 @@ namespace spreaders.lib.Services
         
     private JsonPerson MaptoJsonPerson(Person person)
     {
-      return new JsonPerson
+      var jsonPerson = new JsonPerson
       {
         Id = person.Id,
         Name = person.Name,
@@ -78,6 +83,8 @@ namespace spreaders.lib.Services
         IsDeleted = person.IsDeleted,
         GroupId = person.GroupId
       };
+
+      return _entityService.UpdateJsonFromEntity(jsonPerson, person);
     }
   }
 }

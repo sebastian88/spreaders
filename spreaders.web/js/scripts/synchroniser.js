@@ -34,7 +34,9 @@
       groupsJson.push({
         "id": groups[i].externalId,
         "name": groups[i].name,
-        "isDeleted": groups[i].isDeleted
+        "isDeleted": groups[i].isDeleted,
+        "createdOn": groups[i].createdOn,
+        "updatedOn": groups[i].updatedOn
       })
       this.syncedGroups.push(groups[i])
     }
@@ -49,7 +51,9 @@
         "name": people[i].name,
         "colour": people[i].colour,
         "isDeleted": people[i].isDeleted,
-        "groupId": people[i].groupId
+        "groupId": people[i].groupId,
+        "createdOn": people[i].createdOn,
+        "updatedOn": people[i].updatedOn
       })
       this.syncedPeople.push(people[i])
     }
@@ -63,6 +67,8 @@
         "id": transactions[i].externalId,
         "amount": transactions[i].amount,
         "description": transactions[i].description,
+        "createdOn": transactions[i].createdOn,
+        "updatedOn": transactions[i].updatedOn,
 
         // reference objects
         "payerId": transactions[i].payer,
@@ -149,6 +155,8 @@
     
     existingGroup.externalId = newGroup.id
     existingGroup.name = newGroup.name
+    existingGroup.createdOn = newGroup.createdOn
+    existingGroup.updatedOn = newGroup.updatedOn
     existingGroup.isDeleted = 0
     if(newGroup.isDeleted)
       existingGroup.isDeleted = 1
@@ -164,6 +172,8 @@
     existingPerson.groupId = newPerson.groupId
     existingPerson.name = newPerson.name
     existingPerson.colour = newPerson.colour
+    existingPerson.createdOn = newPerson.createdOn
+    existingPerson.updatedOn = newPerson.updatedOn
     existingPerson.isDeleted = 0
     if(newPerson.isDeleted)
       existingPerson.isDeleted = 1
@@ -181,9 +191,13 @@
     existingTransaction.payer = newTransaction.payerId
     existingTransaction.amount = newTransaction.amount
     existingTransaction.description = newTransaction.description
+    existingTransaction.createdOn = newTransaction.createdOn
+    existingTransaction.updatedOn = newTransaction.updatedOn
     existingTransaction.isDeleted = 0
     if(newTransaction.isDeleted)
       existingTransaction.isDeleted = 1
+    existingTransaction.createdOn = newTransaction.createdOn
+    existingTransaction.updatedOn = newTransaction.updatedOn
     existingTransaction.isSyncNeeded = 0
     return existingTransaction
   }

@@ -44,6 +44,8 @@ spreaders.pages.groups = (function(){
 	groupPage.prototype.createGroupButtonClick = function() {
 		var groupName = document.getElementsByName("groupName")[0].value
 		var group = new spreaders.model.group(groupName)
+		group.createdOn = this.storage.getUtcUnixTimeStamp()
+		group.updatedOn = this.storage.getUtcUnixTimeStamp()
 		this.storage.addGroup(group).then((group) => {
 			this.createGroupButtonClickCallback(group)
 		})

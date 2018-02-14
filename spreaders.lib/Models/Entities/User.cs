@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace spreaders.lib.models.Entities
 {
-  public class User : IEntity
+  public class User : BaseEntity, IEntity
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

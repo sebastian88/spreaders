@@ -13,7 +13,7 @@ spreaders.pages.person = (function () {
         this.updateButton.addEventListener("click", this.processUpdateButtonClick.bind(this))
         
         var personId = this.pageContext.getCurrentPerson()
-        this.storage.getPersonPromise(personId).then(person => {
+        this.storage.getPerson(personId).then(person => {
             this.person = person
             this.populateForm()
         })
@@ -28,6 +28,7 @@ spreaders.pages.person = (function () {
     person.prototype.processUpdateButtonClick = function() {
         this.person.name = this.name.value
         this.person.colour = this.colour.value
+        this.person.updatedOn = this.storage.getUtcUnixTimeStamp()
         this.storage.updatePerson(this.person, true).then(() => {
             this.synchroniser.syncWithServer()
             window.location.href = this.urlService.getPeoplePage(this.pageContext.getCurrentGroupId())

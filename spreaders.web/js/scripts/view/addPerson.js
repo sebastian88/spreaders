@@ -42,6 +42,8 @@ spreaders.view.addPerson = (function () {
 	addPerson.prototype.processAddPersonClickEvent = function() {
 	  if (this.addPersonInput.value) {
 			var newPerson = new spreaders.model.person(this.currentGroup, this.addPersonInput.value, this.getColour())
+			newPerson.createdOn = this.storage.getUtcUnixTimeStamp()
+			newPerson.updatedOn = this.storage.getUtcUnixTimeStamp()
 		  this.storage.addPerson(newPerson).then((person) => {
 				this.processAddPersonClickEventCallback(person)
 			})

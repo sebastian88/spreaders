@@ -1,13 +1,15 @@
 spreaders.storage = (function () {
 
-  var storage = function () {
-    
-  }
+  var storage = function () {}
 
   storage.prototype = new spreaders.storageIndexedDb()
 
   storage.prototype.handleError = function (error) {
     console.log(error)
+  }
+
+  storage.prototype.getUtcUnixTimeStamp = function () {
+    return Math.floor((new Date()).getTime() / 1000)
   }
 
   storage.prototype.addEntity = function (entity, tableName) {

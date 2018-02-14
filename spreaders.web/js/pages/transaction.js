@@ -113,10 +113,18 @@ spreaders.pages.transaction = (function () {
       this.transactionBeingEdited.payees = payees
       this.transactionBeingEdited.amount = amount
       this.transactionBeingEdited.description = description
+      this.transactionBeingEdited.updatedOn = this.storage.getUtcUnixTimeStamp()
       this.storage.updateTransaction(this.transactionBeingEdited, true)
     }
     else {
-      var transaction = new spreaders.model.transaction(this.currentGroup, payer, payees, amount, description)
+      var transaction = new spreaders.model.transaction(
+        this.currentGroup,
+        payer, 
+        payees, 
+        amount, 
+        description)
+      transaction.createdOn = this.storage.getUtcUnixTimeStamp()
+      transaction.updatedOn = this.storage.getUtcUnixTimeStamp()
       this.storage.addTransaction(transaction)
     }
     this.synchroniser.syncWithServer()
