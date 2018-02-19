@@ -7,11 +7,16 @@
     "display": "standalone",
     "icons": [
         {
-            "src": "img/folder.jpg",
+            "src": "img/spreaders-logo192.png",
             "type": "img/png",
             "sizes": "192x192"
+        },
+        {
+            "src": "img/spreaders-logo512.png",
+            "type": "img/png",
+            "sizes": "512x512"
         }
     ],
-    "theme_color" : "#242424" , 
+    "theme_color" : "#242424", 
     "background_color" : "#242424"
 }

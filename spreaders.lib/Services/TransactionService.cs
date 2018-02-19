@@ -21,7 +21,7 @@ namespace spreaders.lib.Services
 
     public Transaction Get(Guid id)
     {
-      return _unitOfWork.StorageContext.Transactions.Where(x => x.Id == id).FirstOrDefault();
+      return _unitOfWork.StorageContext.Transactions.Include("Payees").Where(x => x.Id == id).FirstOrDefault();
     }
 
     public void Add(Transaction transaction)
@@ -46,7 +46,7 @@ namespace spreaders.lib.Services
       transaction.IsDeleted = jsonTransaction.IsDeleted;
       transaction.Description = jsonTransaction.Description;
       transaction.GroupId = jsonTransaction.GroupId;
-      transaction.PayerId = jsonTransaction.PayerId;
+      transaction.PayerId = jsonTransaction.PayerId;  
 
       transaction.Payees = new HashSet<Person>();
       if (jsonTransaction.Payees != null)

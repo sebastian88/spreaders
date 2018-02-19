@@ -12,6 +12,7 @@ namespace spreaders.web
     public static void RegisterRoutes(RouteCollection routes)
     {
       routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+      routes.IgnoreRoute("*.json");
 
       //routes.MapRoute(
       //  name: "Group",

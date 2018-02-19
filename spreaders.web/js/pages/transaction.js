@@ -15,6 +15,9 @@ spreaders.pages.transaction = (function () {
     this.isPayeeCheckboxesRendered = false
     this.isPayerRadiosRendered = false
     this.currentGroup
+
+    this.populateBackButton()
+
     this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
       this.populateForm(group)
     })
@@ -23,6 +26,11 @@ spreaders.pages.transaction = (function () {
     this.observer.subscribe("payerRadiosRendered", this.payerRadiosRendered, this)
 
     this.synchroniser.startServiceWorker()
+  }
+
+  transaction.prototype.populateBackButton = function() {
+    var backButton = document.getElementsByClassName("backButton")[0]
+    backButton.href = this.urlService.getTransactionsPage(this.pageContext.getCurrentGroupId())
   }
 
   transaction.prototype.populateForm = function (group) {

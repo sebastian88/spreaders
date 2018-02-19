@@ -2,6 +2,7 @@
 cd C:\Github\spreaders\spreaders.web\js
 java -jar compiler.jar --js ^
 scripts/namespaces.js ^
+scripts/maths.js ^
 scripts/model/group.js ^
 scripts/model/person.js ^
 scripts/model/personTotal.js ^
@@ -46,5 +47,3 @@ java -jar compiler.jar --js ^
 pages/transactions.js ^
 --js_output_file live/pages/transactions.js ^
 --compilation_level SIMPLE
-
-pause

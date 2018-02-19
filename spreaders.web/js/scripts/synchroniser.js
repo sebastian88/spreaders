@@ -87,8 +87,9 @@
         resolve()
       else {
         this.apiService.syncWithFetch(this.apiUpdateJsonModel).then(() => {
-          this.setEntitiesToSynced()
-          resolve()
+          Promise.all(this.setEntitiesToSynced()).then(() => {
+            resolve()
+          })
         })
       }
     })
@@ -106,23 +107,26 @@
   }
 
   synchroniser.prototype.setEntitiesToSynced = function () {
-    this.processResponseEntities(
+    var promises = []
+    promises.push(this.processResponseEntities(
       this.syncedGroups,
       this.storage.getGroup.bind(this.storage),
       this.storage.updateGroup.bind(this.storage),
-      this.mapEntity)
+      this.mapEntity))
 
-    this.processResponseEntities(
+    promises.push(this.processResponseEntities(
       this.syncedPeople,
       this.storage.getPerson.bind(this.storage),
       this.storage.updatePerson.bind(this.storage),
-      this.mapEntity)
+      this.mapEntity))
 
-    this.processResponseEntities(
+    promises.push(this.processResponseEntities(
       this.syncedTransactions,
       this.storage.getTransaction.bind(this.storage),
       this.storage.updateTransaction.bind(this.storage),
-      this.mapEntity)
+      this.mapEntity))
+      
+    return promises
   }
 
   synchroniser.prototype.mapEntity = function (existingEntity, newEntity) {
@@ -131,21 +135,26 @@
   }
 
   synchroniser.prototype.processResponseEntities = function (entities, getEntityFunction, updateEntityFunction, mapper) {
+    var promises = []
     for (var i = 0; i < entities.length; i++) {
-      this.processResponseEntity(entities[i], getEntityFunction, updateEntityFunction, mapper)
+      promises.push(
+        this.processResponseEntity(entities[i], getEntityFunction, updateEntityFunction, mapper)
+      )
     }
+    return promises
   }
 
   synchroniser.prototype.processResponseEntity = function (serverEntity, getEntityFunction, updateEntityFunction, mapper) {
-    // var entityUpdater = new spreaders.entityUpdater()
-    // entityUpdater.externalEntity = entity
-    // entityUpdater.updateFunction = callback
-    // entityUpdater.mapper = mapper
-    // getEntityFunction(entity.externalId, entityUpdater.update.bind(entityUpdater))
+    return new Promise((resolve, reject) => {
+      getEntityFunction(serverEntity.externalId).then((clientEntity) => {
+        clientEntity = mapper(clientEntity, serverEntity)
+        updateEntityFunction(clientEntity, 0).then(() => {
+          resolve()
+        })
+        .catch((err) => {})
+      })
+      .catch((err) => {})
 
-    getEntityFunction(serverEntity.externalId).then((clientEntity) => {
-      clientEntity = mapper(clientEntity, serverEntity)
-      updateEntityFunction(clientEntity, 0)
     })
   }
 
@@ -189,7 +198,7 @@
     existingTransaction.groupId = newTransaction.groupId
     existingTransaction.payees = newTransaction.payees
     existingTransaction.payer = newTransaction.payerId
-    existingTransaction.amount = newTransaction.amount
+    existingTransaction.amount = Number(newTransaction.amount)
     existingTransaction.description = newTransaction.description
     existingTransaction.createdOn = newTransaction.createdOn
     existingTransaction.updatedOn = newTransaction.updatedOn
@@ -272,37 +281,43 @@
   }
 
   synchroniser.prototype.isTransactionIdentical = function(clientTransaction, serverTransaction) {
+    
     if(!clientTransaction)
       return false
-
+    
     if(!this.areArraysEqual(clientTransaction.payees, serverTransaction.payees))
       return false
-
+    
     if(clientTransaction.payer != serverTransaction.payerId)
       return false
-
-    if(clientTransaction.amount != serverTransaction.amount)
+    
+    if(!this.numbersAreEqual(clientTransaction.amount, serverTransaction.amount))
       return false
-
+    
     if(clientTransaction.description != serverTransaction.description)
       return false
-
+    
     if(clientTransaction.isDeleted != serverTransaction.isDeleted)
       return false
 
     return true
   }
 
+  synchroniser.prototype.numbersAreEqual = function(firstNumber, secondNumber) {
+    return Number(firstNumber) - Number(secondNumber) == 0
+  }
+
   synchroniser.prototype.areArraysEqual = function(array1, array2) {
+
     if(!array1 && !array2)
       return true
-
+    
     if(!array1 || !array2)
       return false
-
+    
     if(array1.length != array2.length)
       return false
-
+    
     for(var i = 0; i < array1.length; i++) {
       if(!array2[i].includes(array1[i]))
         return false

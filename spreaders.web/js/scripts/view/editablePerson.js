@@ -10,6 +10,7 @@ spreaders.view.editablePerson = (function(){
         this.createDiv()
         this.populateDiv()
         this.addButtons()
+        this.addAccordianEvent()
     }
 
     editablePerson.prototype.createDiv = function() {
@@ -24,6 +25,8 @@ spreaders.view.editablePerson = (function(){
         this.div.appendChild(this.ul)
 
         this.createLi(this.person.name, "name")
+        var li = this.createLi(this.person.name.charAt(0), "firstLetter")
+        li.style.backgroundColor = this.person.colour;
     }
     
     editablePerson.prototype.createLi = function (data, cssClass) {
@@ -31,31 +34,52 @@ spreaders.view.editablePerson = (function(){
         li.innerHTML = data
         li.className = cssClass
         this.ul.appendChild(li)
-    }
-
-    editablePerson.prototype.addButtons = function () {
-        this.deleteButton = this.addButton("delete", "delete")
-        this.editButton = this.addButton("edit", "edit")
-        this.deleteButtonHander = this.deletePerson.bind(this)
-        this.editButtonHandler = this.editPerson.bind(this)
-
-        this.addButtonEventListeners()
+        return li
     }
     
-    editablePerson.prototype.addButtonEventListeners = function() {
-        this.deleteButton.addEventListener("click", this.deleteButtonHander)
-        this.editButton.addEventListener("click", this.editButtonHandler)
-    }
+    editablePerson.prototype.addButtons = function () {
+        this.buttonDiv = document.createElement("div")
+        this.buttonDiv.className = "personButtons"
+        this.div.appendChild(this.buttonDiv)
 
+        this.deleteButton = this.addButton("Delete", "delete")
+        this.editButton = this.addButton("Edit", "edit")
+    }
+    
     editablePerson.prototype.addButton = function (label, cssClass) {
 
         var newButton = document.createElement("button")
         newButton.innerHTML = label
         newButton.className = cssClass
         newButton.setAttribute('type', 'button')
-        this.div.appendChild(newButton)
+        this.buttonDiv.appendChild(newButton)
 
         return newButton
+    }
+    
+    editablePerson.prototype.addAccordianEvent = function () {
+      this.div.addEventListener("click", this.addAccordianClass.bind(this))
+    }
+    
+    editablePerson.prototype.addAccordianClass = function () {
+      if(this.div.className == "person"){
+        this.addButtonEventListeners()
+        this.div.className = "person active"
+      }
+      else{
+        this.removeButtonEventListeners()
+        this.div.className = "person"
+      }
+    }
+    
+    editablePerson.prototype.addButtonEventListeners = function() {
+        this.deleteButton.addEventListener("click", this.deletePerson.bind(this))
+        this.editButton.addEventListener("click", this.editPerson.bind(this))
+    }
+    
+    editablePerson.prototype.removeButtonEventListeners = function() {
+      this.deleteButton.removeEventListener("click", this.deletePerson.bind(this))
+      this.editButton.removeEventListener("click", this.editPerson.bind(this))
     }
 
     editablePerson.prototype.deletePerson = function (e) {

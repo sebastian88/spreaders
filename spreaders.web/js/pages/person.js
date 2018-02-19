@@ -10,6 +10,8 @@ spreaders.pages.person = (function () {
         this.colour = document.getElementsByName("colour")[0]
         this.updateButton = document.getElementsByClassName("submit")[0]
 
+        this.populateBackButton()
+
         this.updateButton.addEventListener("click", this.processUpdateButtonClick.bind(this))
         
         var personId = this.pageContext.getCurrentPerson()
@@ -18,6 +20,11 @@ spreaders.pages.person = (function () {
             this.populateForm()
         })
         this.synchroniser.startServiceWorker()
+    }
+    
+    person.prototype.populateBackButton = function() {
+        var backButton = document.getElementsByClassName("backButton")[0]
+        backButton.href = this.urlService.getPeoplePage(this.pageContext.getCurrentGroupId())
     }
 
     person.prototype.populateForm = function() {

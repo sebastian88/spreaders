@@ -25,7 +25,12 @@ var mutableRequests = [
   "/js/live/pages/transaction.js",
   "/js/live/pages/transactions.js",
   "/css/main.css",
-  "/img/folder.jpg"]
+  "/img/transaction-icon.svg",
+  "/img/spreaders-logo.svg",
+  "/img/spreaders-logo16.png",
+  "/img/spreaders-logo192.png",
+  "/img/spreaders-logo512.png"
+]
 
 self.addEventListener("activate", function(event) {
   event.waitUntil(caches.keys().then(function (cacheNames) { 

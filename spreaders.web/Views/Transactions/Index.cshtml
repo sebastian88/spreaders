@@ -8,13 +8,15 @@
 <html>
 
 <head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="manifest" href="/manifest.json">
   <title>Transactions</title>
-  <link rel="icon" href="/img/folder.jpg" type="image/jpg">
+  <link rel="icon" href="/img/spreaders-logo16.png" type="image/png">
 </head>
 
 <body>
+  <a href="/groups/" class="backButton">Back</a>
   <section>
     <div><ul class="personTotals"></ul></div>
   </section>
@@ -27,8 +29,14 @@
   <div class="opaqueLayer visuallyHidden"></div>
   <section>
     <div class="addSection">
-      <button type="button" class="addTransactionButton"><img src="/img/folder.jpg"/> add<br />transaction</button>
-      <button type="button" class="addPersonButton"><img src="/img/folder.jpg"/>add<br />person</button>
+      <button type="button" class="addTransactionButton">
+        <img src="/img/spreaders-logo.svg" width="100px" height="100px"/>
+         add<br />transaction
+      </button>
+      <button type="button" class="addPersonButton">
+        <img src="/img/transaction-icon.svg" width="100px" height="100px"/> 
+        add<br />person
+      </button>
     </div>
   </section>
   <button type="button" class="showUpdates closed">show updates</button>

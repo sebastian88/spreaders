@@ -158,9 +158,17 @@ spreaders.pages.transactions = (function () {
   transactions.prototype.populateTotals = function () {
     this.personTotalsContainer.innerHTML = ""
     var personTotals = this.calculateTotals()
+    personTotals = this.sortPersonTotals(personTotals)
     for (var i = 0; i < personTotals.length; i++) {
       this.createPersonTotal(personTotals[i])
     }
+  }
+
+  transactions.prototype.sortPersonTotals = function(personTotals) {
+    personTotals.sort(function(a, b) { 
+      return b.total - a.total;
+    })
+    return personTotals
   }
 
   transactions.prototype.calculateTotals = function () {
@@ -170,20 +178,42 @@ spreaders.pages.transactions = (function () {
       for (var j = 0; j < this.transactions.length; j++) {
         var transaction = this.transactions[j]
         // payer
-        if (transaction.payer == personTotal.person.id || transaction.payer == personTotal.person.externalId)
-          personTotal.total -= transaction.amount
+        if (transaction.payer == personTotal.person.externalId)
+          personTotal.total += Number(transaction.amount)
         //payees
-        if (transaction.payees.includes(personTotal.person.id) == true || transaction.payees.includes(personTotal.person.externalId) == true)
-          personTotal.total += (transaction.amount / transaction.payees.length)
+        if (transaction.payees.includes(personTotal.person.externalId) == true)
+          personTotal.total -= Number(transaction.amount / transaction.payees.length)
       }
-      totals.push(personTotal)
+      var personDeletedAndNothingOwed = this.people[i].isDeleted == true && personTotal.total == 0 
+      
+      if(!personDeletedAndNothingOwed)
+        totals.push(personTotal)  
     }
     return totals
   }
 
   transactions.prototype.createPersonTotal = function (personTotal) {
     var li = document.createElement("li")
-    li.innerHTML = personTotal.person.name + ": " + personTotal.total
+
+    var nameDiv = document.createElement("div")
+    nameDiv.className = "personName"
+    nameDiv.innerHTML = personTotal.person.name
+    li.appendChild(nameDiv)
+
+    amountClass = ""
+    if(personTotal.total < 0)
+      amountClass = " negative"
+
+
+    var amountSpan = document.createElement("span")
+    amountSpan.className = "amount" + amountClass
+    amountSpan.innerHTML = "£" + spreaders.maths.roundAndFormatForCurrency(personTotal.total)
+
+    var amountDiv = document.createElement("div")
+    amountDiv.className = "amount"
+    amountDiv.appendChild(amountSpan)
+    li.appendChild(amountDiv)
+
     this.personTotalsContainer.appendChild(li)
   }
 

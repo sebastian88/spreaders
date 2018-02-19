@@ -30,7 +30,7 @@ spreaders.view.transaction = (function () {
 
     this.createLi(this.getPerson(this.transaction.payer).name, "payer")
     this.createLi(this.transaction.description, "description")
-    this.createLi("£" + this.transaction.amount, "amount")
+    this.createLi("£" + spreaders.maths.roundAndFormatForCurrency(this.transaction.amount), "amount")
     this.createLi(this.getPayeeNamesCsv(), "payees")
   }
 
@@ -71,8 +71,8 @@ spreaders.view.transaction = (function () {
   }
 
   transaction.prototype.addButtons = function () {
-    this.deleteButton = this.addButton("delete", "delete")
-    this.editButton = this.addButton("edit", "edit")
+    this.deleteButton = this.addButton("Delete", "delete")
+    this.editButton = this.addButton("Edit", "edit")
     this.deleteButtonHander = this.deleteTransaction.bind(this)
     this.editButtonHandler = this.editTransaction.bind(this)
   }

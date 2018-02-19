@@ -53,7 +53,7 @@ spreaders.pages.groups = (function(){
 
   groupPage.prototype.createGroupButtonClickCallback = function (group) {
 		this.synchroniser.syncWithServer()
-    window.location.href = this.urlService.getTransactionsPage(group.externalId)
+    window.location.href = this.urlService.getPeoplePage(group.externalId)
 	}
 	
 	return groupPage

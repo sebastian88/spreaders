@@ -21,11 +21,17 @@ spreaders.view.addPerson = (function () {
 		this.addPersonInput = document.createElement("input")
 		this.addPersonInput.setAttribute('type', 'text')
 		this.addPersonInput.setAttribute('name', 'addPerson')
-		this.addPersonContainer.appendChild(this.addPersonInput)
+		this.addPersonInput.setAttribute('placeholder', 'Name')
+		this.addPersonInput.className = "addPersonName"
+		var inputWrapperDiv = document.createElement("div")
+		inputWrapperDiv.className = "addPersonNameWrapper"
+		inputWrapperDiv.appendChild(this.addPersonInput)
+		this.addPersonContainer.appendChild(inputWrapperDiv)
 		
 		this.addButton = document.createElement("button")
-		this.addButton.innerHTML = "add"
+		this.addButton.innerHTML = "Add"
 		this.addButton.setAttribute('type', 'button')
+		this.addButton.className = "addPersonButton"
 		this.addPersonContainer.appendChild(this.addButton)
 		
 		this.addPersonInput.addEventListener("keydown", this.processAddPersonClickEventKeyDown.bind(this))

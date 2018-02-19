@@ -10,6 +10,8 @@ spreaders.pages.people = (function () {
         this.synchroniser = synchroniser
         this.peopleContainer = document.getElementsByClassName("peopleContainer")[0]
         this.addPersonContainer = document.getElementsByClassName("addPerson")[0]
+
+        this.populateBackButton()
         
         var groupid = this.pageContext.getCurrentGroupId()
         this.storage.getGroup(groupid).then(group => {
@@ -21,6 +23,11 @@ spreaders.pages.people = (function () {
         this.observer.subscribe("personCreated", this.handlePersonCreated, this)
         this.observer.subscribe("personDeleted", this.handlePersonDeleted, this)
         this.synchroniser.startServiceWorker()
+    }
+    
+    people.prototype.populateBackButton = function() {
+        var backButton = document.getElementsByClassName("backButton")[0]
+        backButton.href = this.urlService.getTransactionsPage(this.pageContext.getCurrentGroupId())
     }
 
     people.prototype.handlePersonCreated = function() {

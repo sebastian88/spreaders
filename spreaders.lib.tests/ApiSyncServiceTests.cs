@@ -91,10 +91,10 @@ namespace spreaders.lib.tests
       decimal amount, 
       Guid groupId = new Guid(), 
       Guid payerId = new Guid(),
-      HashSet<Person> payeeIds = null)
+      HashSet<Person> payees = null)
     {
-      if (payeeIds == null)
-        payeeIds = new HashSet<Person>();
+      if (payees == null)
+        payees = new HashSet<Person>();
 
       unitOfWork.StorageContext.Transactions.Add(new Transaction()
       {
@@ -102,7 +102,7 @@ namespace spreaders.lib.tests
         Amount = amount,
         GroupId = groupId,
         PayerId = payerId,
-        Payees = payeeIds
+        Payees = payees
       });
     }
     
@@ -282,6 +282,35 @@ namespace spreaders.lib.tests
       apiService.ProcessRequest();
 
       Assert.AreEqual(2, unitOfWork.StorageContext.Transactions.First().Amount);
+    }
+
+    [TestMethod]
+    public void ApiSyncService_ProcessRequest_RemoveTransactionPayee_TransactionOnlyHasOnePayee()
+    {
+      IUnitOfWork unitOfWork = Setup();
+      Guid transactionId = new Guid("88888888-4444-4444-4444-222222222222");
+      Guid firstPersonId = new Guid("88888888-1111-4444-4444-222222222222");
+      Guid secondPersonId = new Guid("88888888-2222-4444-4444-222222222222");
+      var payees = new HashSet<Person>
+      {
+        new Person() { Id = firstPersonId },
+        new Person() { Id = secondPersonId }
+      };
+      AddPersonToStorage(unitOfWork, firstPersonId, "test1", Guid.Empty);
+      AddPersonToStorage(unitOfWork, secondPersonId, "test2", Guid.Empty);
+      AddTransactionIntoStorage(unitOfWork, transactionId, 1, payees: payees);
+      Entities model = new Entities();
+      model.Transactions.Add(new JsonTransaction
+      {
+        Id = transactionId,
+        Payees = new List<Guid>() { firstPersonId }
+      });
+
+      ApiSyncService apiService = new ApiSyncService(unitOfWork, model);
+
+      apiService.ProcessRequest();
+
+      Assert.AreEqual(1, unitOfWork.StorageContext.Transactions.First().Payees.Count);
     }
   }
 }

@@ -8,8 +8,8 @@
 }
 
 * {
-	font-family: arial;
-	color: var(--four-color);
+	font-family: 'Roboto', sans-serif;
+	color: black;
 }
 
 h1 {
@@ -22,14 +22,33 @@ h2 {
 	text-align: center;
 }
 
-button {
+.backButton, button {
 	height: 120px;
 	font-size: 3em;
-	font-weight: bold;
+	color: black;
 	border: none;
 	padding: 30px 50px;
 	background-color: var(--one-color);
 	cursor: pointer;
+	text-decoration: none;
+}
+
+.backButton {
+	position: relative;
+	margin-left: 20px;
+	top: 20px;
+	padding: 20px 30px;
+}
+
+.backButton:after{
+    content:"";
+    position:absolute;
+    height:0;
+    width:0;
+    right:100%;
+    top:0;
+    border:50px solid transparent;
+    border-right: 20px solid var(--one-color);
 }
 
 .add {
@@ -62,6 +81,44 @@ button.addSectionExpand {
 	text-align: right;
 }
 
+.personTotals {
+	margin-top: 100px;
+}
+
+.personTotals li {
+	list-style: none;
+	font-size: 4em;
+	text-align: right;
+	overflow: hidden;
+}
+
+.personTotals li div.personName {
+	float:left;
+	width: 40%;
+	margin-right: 10%
+}
+
+.personTotals li div.amount {
+	float:right;
+	width: 50%;
+	color: green;
+}
+
+.personTotals li span.amount {
+	width :250px;
+	color: green;
+	display: block;
+}
+
+.personTotals li span.amount.negative {
+	color: red;
+}
+
+.personTotals li span.amount span {
+	font-size: 0.5em;
+	color: inherit;
+}
+
 .transactions {
 	margin-bottom: 300px;
 }
@@ -88,8 +145,6 @@ button.addSectionExpand {
 }
 
 .transaction:hover {	
-	/* box-shadow: 0px 0px 3px #CCC; */
-	/* box-shadow: inset 0 0 0 3px var(--two-color); */
 	cursor: pointer;
 }
 
@@ -104,18 +159,19 @@ button.addSectionExpand {
 }
 .transaction ul.transactionDetails li.payer {
 	width:25%;
-	font-weight: bold;
 }
 .transaction ul.transactionDetails li.description {
 	width:50%;
 	font-size: 2em;
-	font-weight: lighter;
+	font-weight: 300;
 	line-height: 2em;
 }
 .transaction ul.transactionDetails li.amount {
 	width:25%;
-	font-weight: bold;
 	text-align: right;
+}
+.transaction ul.transactionDetails li.amount span {
+	font-size: 0.5em;
 }
 
 .transaction ul.transactionDetails li.payees {
@@ -123,7 +179,6 @@ button.addSectionExpand {
 	float: left;
 	width:75%;
 	font-size: 2em;
-	font-weight: lighter;
 	line-height: 2em;
 	opacity: 1;
 }
@@ -137,7 +192,6 @@ button.addSectionExpand {
 	text-align: center;
 	line-height: 1.6em;
 	color: white; 
-	font-weight: bold;
     padding-left: 16px;
 	transition: all 0.3s;
 }
@@ -213,13 +267,18 @@ button.addSectionExpand {
   font-size: 1.5em;
 }
 
-input[type="text"], input[type="number"], textarea  {
-	height: 50px;
-	border-radius: 5px;
+input[type="text"], input[type="number"], textarea {
+	height: 115px;
 	border: 1px solid var(--two-color);
 	max-width: 400px;
 	width: 75%;
-	font-size: 1.5em;
+	font-size: 3em;
+	padding: 0 10px;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+    outline: none !important;
+	border: 1px solid var(--two-color);
 }
 
 .opaqueLayer {
@@ -270,9 +329,90 @@ input[type="text"], input[type="number"], textarea  {
 	margin: 0 100px;
 }
 
-.person li {
-	font-size: 6em;
+.peopleContainer {
+	margin-top: 75px;
+}
+
+.person {
+	margin: 20px 50px;
+	height: 125px;
+	overflow: hidden;
+	transition: height 0.3s;
+}
+
+.person.active {
+	height: 300px;
+	transition: height 0.3s;
+}
+
+.person ul {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 	list-style: none;
+}
+
+.person li {
+	list-style: none;
+}
+
+.person li.name {
+	font-size: 6em;
+	float: left;
+}
+
+.person li.firstLetter {
+	font-size: 4.5em;
+	float: right;
+	color: white;
+	border-radius: 50%;
+	width: 100px; 
+	height:100px;
+	text-align: center;
+	line-height: 1.4em;
+	margin-top: 13px;
+}
+
+.personButtons {
+	margin-top: 50px;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+.person.active .personButtons {
+	opacity: 1;
+	transition: opacity 0.5s;
+}
+
+.personButtons .delete {
+	float: left;
+}
+
+.personButtons .edit {
+	float: right;
+}
+
+.addPerson {
+	margin-top: 100px;
+}
+
+.addPersonNameWrapper {
+	width: 74%;
+	overflow: hidden;
+	float:left;
+}
+
+input.addPersonName{
+	width: 95%;
+	max-width: none;
+	float:right;
+}
+
+button.addPersonButton{
+	width: 25%;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .showUpdates {
