@@ -54,6 +54,8 @@ spreaders.view.addPerson = (function () {
 				this.processAddPersonClickEventCallback(person)
 			})
 			this.addPersonInput.value = ""
+			this.addPersonInput.focus()
+			this.addPersonInput.select()
 		}
 	}
 

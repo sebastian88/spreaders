@@ -1,16 +1,6 @@
 self.importScripts('/js/live/library.js')
-// self.importScripts('/js/scripts/namespaces.js', 
-// '/js/scripts/model/transaction.js',
-// '/js/scripts/model/person.js',
-// '/js/scripts/model/group.js',
-// '/js/scripts/storageIndexedDb.js', 
-// '/js/scripts/storage.js', 
-// '/js/scripts/apiService.js', 
-// '/js/scripts/sync/synchroniser.js', 
-// '/js/scripts/urlService.js',
-// '/js/scripts/sync/entityUpdater.js')
 
-var CACHE_NAME = 'spreaders-cache-v5'
+var CACHE_NAME = 'spreaders-cache-v7'
 var immutableRequests = []
 var mutableRequests = [
   "/groups/", 
@@ -29,7 +19,8 @@ var mutableRequests = [
   "/img/spreaders-logo.svg",
   "/img/spreaders-logo16.png",
   "/img/spreaders-logo192.png",
-  "/img/spreaders-logo512.png"
+  "/img/spreaders-logo512.png",
+  "https://fonts.googleapis.com/css?family=Roboto:100,300,400,900"
 ]
 
 self.addEventListener("activate", function(event) {

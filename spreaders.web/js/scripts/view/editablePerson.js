@@ -26,7 +26,7 @@ spreaders.view.editablePerson = (function(){
 
         this.createLi(this.person.name, "name")
         var li = this.createLi(this.person.name.charAt(0), "firstLetter")
-        li.style.backgroundColor = this.person.colour;
+        li.style.backgroundColor = this.person.colour
     }
     
     editablePerson.prototype.createLi = function (data, cssClass) {

@@ -16,9 +16,19 @@
   <div class="editPerson">
     <form>
       <section>
-        <h1>Name</h1>
-        <input type="text" name="name"></input>
-        <input type="text" name="colour"></input>
+        <div class="formRow">
+          <label for="name">Name</label>
+          <input type="text" name="name"></input>
+        </div>
+        <div class="formRow">
+          <input type="text" class="hidden" name="colour"></input>
+          <button class="changeIcon">Change Icon: <span class="firstLetter"></span></button>
+          <div class="iconSelection">
+            <ul class="iconSelectionList">
+
+            </ul>
+          </div>
+        </div>
       </section>
       <section>
         <button type="submit" class="submit">Update</button>
@@ -26,16 +36,6 @@
     </form>
   </div>
   <script src="/js/live/library.js"></script>
-
-  <!-- <script src="/js/scripts/namespaces.js"></script>
-  <script src="/js/scripts/model/person.js"></script>
-
-  <script src="/js/scripts/urlService.js"></script>
-  <script src="/js/scripts/apiService.js"></script>
-  <script src="/js/scripts/pageContext.js"></script>
-  <script src="/js/scripts/storageIndexedDb.js"></script>
-  <script src="/js/scripts/storage.js"></script>
-  <script src="/js/scripts/sync/synchroniser.js"></script> -->
 
   <script src="/js/live/pages/person.js"></script>
 </body>

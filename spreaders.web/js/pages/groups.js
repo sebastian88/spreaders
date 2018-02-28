@@ -36,7 +36,7 @@ spreaders.pages.groups = (function(){
 
 	  var a = document.createElement("a")
 	  a.href = this.urlService.getTransactionsPage(group.externalId)
-	  a.innerHTML = group.id + ' ' + group.name
+	  a.innerHTML = group.name
 	  a.title = group.id
 	  li.appendChild(a)
 	}

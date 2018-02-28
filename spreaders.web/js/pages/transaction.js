@@ -80,7 +80,7 @@ spreaders.pages.transaction = (function () {
     this.payeeCheckboxes.addSelectedValues(this.transactionBeingEdited.payees)
     this.amountInput.value = this.transactionBeingEdited.amount
     this.descriptionInput.value = this.transactionBeingEdited.description
-    this.submitButton.innerHTML = "update"
+    this.submitButton.innerHTML = "Update"
   }
 
   transaction.prototype.addSubmitEvent = function () {

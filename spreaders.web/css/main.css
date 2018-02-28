@@ -10,6 +10,12 @@
 * {
 	font-family: 'Roboto', sans-serif;
 	color: black;
+	margin: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+	margin: 10px;
 }
 
 h1 {
@@ -20,6 +26,18 @@ h1 {
 h2 {
 	font-size: 4em;
 	text-align: center;
+}
+
+label, legend {
+	font-size: 3em;
+}
+
+fieldset {
+	border: 0;
+}
+
+.hidden {
+	display: none;
 }
 
 .backButton, button {
@@ -34,21 +52,29 @@ h2 {
 }
 
 .backButton {
+	background: none;
+	font-size: 0.1em;
+	color: white;
 	position: relative;
-	margin-left: 20px;
-	top: 20px;
-	padding: 20px 30px;
+	width: 50px;
+	height: 50px;
+	border: solid grey;
+    border-width: 0 5px 5px 0;
+    display: inline-block;
+    padding: 5px;
+    transform: rotate(135deg);
+	-webkit-transform: rotate(135deg);
+	margin: 30px 0 -60px 30px;
 }
 
-.backButton:after{
-    content:"";
-    position:absolute;
-    height:0;
-    width:0;
-    right:100%;
-    top:0;
-    border:50px solid transparent;
-    border-right: 20px solid var(--one-color);
+.groupContainer li {
+	font-size: 5em;
+	list-style: none;
+	margin-bottom: 30px;
+}
+
+.groupContainer a {
+	text-decoration: none;
 }
 
 .add {
@@ -121,6 +147,7 @@ button.addSectionExpand {
 
 .transactions {
 	margin-bottom: 300px;
+    margin-top: 60px;
 }
 
 .transaction {
@@ -164,7 +191,8 @@ button.addSectionExpand {
 	width:50%;
 	font-size: 2em;
 	font-weight: 300;
-	line-height: 2em;
+    margin-top: 16px;
+	line-height: 1.2em;
 }
 .transaction ul.transactionDetails li.amount {
 	width:25%;
@@ -194,9 +222,13 @@ button.addSectionExpand {
 	color: white; 
     padding-left: 16px;
 	transition: all 0.3s;
+    font-size: 1em;
+	float: none;
+	margin-top: 0px;
+	width: auto;
 }
 .transaction.active span.firstLetter {
-	max-width: 200px;
+	max-width: 300px;
 	transition: all 0.5s;
 	padding-right: 14px;
 }
@@ -236,44 +268,70 @@ button.addSectionExpand {
 	transition: opacity 0.5s;
 }
 
-.payees input[type="checkbox"], .payers input[type="radio"] {
-  display: none;
+.addEditTransaction {
+	margin-top: 100px;
 }
-.payees input[type="checkbox"]:checked + .box, .payers input[type="radio"]:checked + .box {
-  background-color: var(--one-color);
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--two-color);
-	border-radius: 5px;
+
+.addEditTransaction section {
+	margin-bottom: 80px;
 }
-.payees .box, .payers .box {
-  width: 150px;
-  height: 50px;
-	padding: 40px 0;
-  background-color: #fff;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #fff;
-  transition: all 250ms ease;
-  will-change: transition;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
+
+.labelHeading {
+	display: block;
+    font-size: 5em;
+    margin-bottom: 30px;
 }
-.payees .box span, .payers .box span {
-  transition: all 300ms ease;
-  user-select: none;
-  font-size: 1.5em;
+
+.payerRadios, .payeeCheckboxes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.personSelector {
+	width: 155px;
+	display: inline-block;
+	margin-bottom: 25px;
+}
+
+.personSelector:not(:last-child) {
+	margin-right:20px;
+}
+
+.personSelector .firstLetter {
+	font-size: 2.5em;
+	width: 150px;
+	height: 150px;
+	border: 5px solid white;
+	border-radius: 50%;
+	display: inline-block;
+	text-align: center;
+	transition: all 250ms ease;
+}
+
+.personSelector .name {
+	font-size: 0.75em;
+	width: 155px;
+	display: inline-block;
+	text-align: center;
+}
+
+.payees input[type="checkbox"]:checked + .firstLetter, .payers input[type="radio"]:checked + .firstLetter {
+	border: 5px solid black;
+	transition: all 250ms ease;
 }
 
 input[type="text"], input[type="number"], textarea {
 	height: 115px;
+	width: 100%;
 	border: 1px solid var(--two-color);
-	max-width: 400px;
-	width: 75%;
-	font-size: 3em;
-	padding: 0 10px;
+    box-sizing: border-box;
+	font-size: 3rem;
+	padding: 25px 10px;
+	text-align: center;
+}
+
+textarea {
+	font-size: 2.5rem;
 }
 
 input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
@@ -361,16 +419,19 @@ input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
 	float: left;
 }
 
-.person li.firstLetter {
+.personDetails .firstLetter {
 	font-size: 4.5em;
 	float: right;
+	line-height: 1.4em;
+	margin-top: 13px;
+}
+
+.firstLetter {
 	color: white;
 	border-radius: 50%;
 	width: 100px; 
 	height:100px;
 	text-align: center;
-	line-height: 1.4em;
-	margin-top: 13px;
 }
 
 .personButtons {
@@ -391,6 +452,86 @@ input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
 
 .personButtons .edit {
 	float: right;
+}
+
+.editPerson {
+	margin-top: 100px;
+}
+
+.editPerson .formRow {
+	margin-bottom: 100px;
+}
+
+.editPerson label {
+	display: block;
+}
+
+.editPerson input {
+	width: 100%;
+}
+
+.changeIcon {
+	background-color: white;
+	width: 600px;
+	margin: 0px auto;
+	border: 1px solid var(--two-color);
+	display:block;
+	position: relative;
+	height: 150px;
+}
+
+.changeIcon .firstLetter{
+	position: absolute;
+	top: 25px;
+	right: 25px;
+	font-size: 4.5rem;
+	margin-top: 0px;
+    line-height: 1.4em;
+}
+
+.iconSelection {
+	max-height: 0px;
+	overflow: hidden;
+	margin-top: 70px;
+	box-shadow:
+	0px 50px 40px -50px #CCC,
+	0px -50px 40px -50px #CCC; 
+	
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.iconSelection.active {
+	max-height: 500px;
+	
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.iconSelectionList {
+	padding: 30px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.iconSelectionList .firstLetter {
+	margin: 15px;
+	float: none;
+	width: 150px;
+	height: 150px;
+	border-radius: 75px;
+	display:inline-block;
+	list-style: none;
+	font-size: 6.5em;
+	line-height: 1.4em;
+}
+
+.iconSelectionList .firstLetter.active {
+	width: 140px;
+	height: 140px;
+	border: 5px solid black;
 }
 
 .addPerson {

@@ -34,21 +34,31 @@ spreaders.view.personFormList = (function () {
 	
 	personFormList.prototype.createRadio = function (person) {
 		label = document.createElement("label")
+		label.className = "personSelector"
 		this.radioContainer.appendChild(label)
 		
 		var input = document.createElement("input")
-		input.setAttribute('type', this.inputType);
-		input.setAttribute('name', this.inputName);
-		input.setAttribute('value', this.getPersonId(person));
+		input.setAttribute('type', this.inputType)
+		input.setAttribute('name', this.inputName)
+		input.setAttribute('value', this.getPersonId(person))
+		input.className = "visuallyHidden"
 		label.appendChild(input)
 		
-		div = document.createElement("div")
-		div.className = "box"
-		label.appendChild(div)
+		// div = document.createElement("div")
+		// div.className = "box"
+		// div.style.backgroundColor = person.colour
+		// label.appendChild(div)
 		
-		span = document.createElement("span")
-		span.innerHTML = person.name
-		div.appendChild(span)
+		spanfirstLetter = document.createElement("span")
+		spanfirstLetter.className = "firstLetter"
+		spanfirstLetter.innerHTML = person.name.charAt(0)
+		spanfirstLetter.style.backgroundColor = person.colour
+		label.appendChild(spanfirstLetter)
+		
+		spanName = document.createElement("span")
+		spanName.className = "name"
+		spanName.innerHTML = person.name
+		label.appendChild(spanName)
 		
 		this.inputs[this.inputs.length] = input
 	}
@@ -65,7 +75,7 @@ spreaders.view.personFormList = (function () {
 		this.errorElement.className = "error error_" + this.inputName
 		this.errorElement.innerHTML = "This field is required"
 		this.errorElement.style.display = "none"
-		this.radioContainer.appendChild(this.errorElement)
+		this.radioContainer.parentElement.appendChild(this.errorElement)
 	}
 	
 	personFormList.prototype.displayError = function() {
