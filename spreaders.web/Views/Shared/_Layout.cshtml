@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5" >
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="manifest" href="/manifest.json">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" href="/img/spreaders-logo144.png" type="image/png">
+</head>
+<body>
+
+    @RenderBody()
+
+    <script src="/js/live/library.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>
+

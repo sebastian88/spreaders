@@ -1,52 +1,40 @@
 ﻿@model spreaders.web.Models.TransactionAddEditViewModel
 @{
-  Layout = null;
+    ViewBag.Title = "Groups";
 }
-<!DOCTYPE html>
-<html>
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="manifest" href="/manifest.json">
-  <title>Transaction</title>
-  <link rel="icon" href="/img/spreaders-logo16.png" type="image/png">
-</head>
-<body>
-  <a href="/groups/" class="backButton">Back</a>
-  <div class="addEditTransaction">
+<a href="/groups/" class="backButton">Back</a>
+<div class="addEditTransaction">
     <form>
-      <section>
-        <fieldset>
-          <legend class="labelHeading">Payer</legend>
-          <div class="payers">
-            <div class="payerRadios"></div>
-          </div>
-        </fieldset>
-      </section>
-      <section>
-        <fieldset>
-          <legend class="labelHeading">Payees</legend>
-          <div class="payees">
-            <div class="payeeCheckboxs"></div>
-          </div>
-        </fieldset>
-      </section>
-      <section>
-        <label for="amount" class="labelHeading">Amount</label>
-        <input type="number" min="0.01" step="0.01" name="amount" id="amount" />
-        <div class="error error_amount" style="display:none;">This field is required</div>
-      </section>
-      <section>
-        <label for="description" class="labelHeading">Description</label>
-        <textarea name="description" id="description"  maxlength="80"></textarea>
-      </section>
-      <section>
-        <button type="submit" class="submit">Add</button>
-      </section>
+        <section>
+            <fieldset>
+                <legend class="labelHeading">Payer</legend>
+                <div class="payers">
+                    <div class="payerRadios"></div>
+                </div>
+            </fieldset>
+        </section>
+        <section>
+            <fieldset>
+                <legend class="labelHeading">Payees</legend>
+                <div class="payees">
+                    <div class="payeeCheckboxs"></div>
+                </div>
+            </fieldset>
+        </section>
+        <section>
+            <label for="amount" class="labelHeading">Amount</label>
+            <input type="number" min="0.01" step="0.01" name="amount" id="amount" />
+            <div class="error error_amount" style="display:none;">This field is required</div>
+        </section>
+        <section>
+            <label for="description" class="labelHeading">Description</label>
+            <textarea name="description" id="description" maxlength="80"></textarea>
+        </section>
+        <section>
+            <button type="submit" class="submit">Add</button>
+        </section>
     </form>
-  </div>
-  <script src="/js/live/library.js"></script>
-
-  <script src="/js/live/pages/transaction.js"></script>
-</body>
-</html>
+</div>
+@section scripts {
+    <script src="/js/live/pages/transaction.js"></script>
+}

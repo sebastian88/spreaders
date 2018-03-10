@@ -1,13 +1,12 @@
 ﻿spreaders.apiService = (function () {
   var apiService = function () {
-    this.baseUrl = 'http://localhost:54321'
     this.apiPath = 'api'
     this.syncEndPoint = 'sync'
     this.getGroupEndPoint = 'getgroup'
     this.forwardSlash = "/"
 
-    this.syncUrl = this.baseUrl + this.forwardSlash + this.apiPath + this.forwardSlash + this.syncEndPoint
-    this.getGroupUrl = this.baseUrl + this.forwardSlash + this.apiPath + this.forwardSlash + this.getGroupEndPoint + this.forwardSlash
+    this.syncUrl = this.forwardSlash + this.apiPath + this.forwardSlash + this.syncEndPoint
+    this.getGroupUrl = this.forwardSlash + this.apiPath + this.forwardSlash + this.getGroupEndPoint + this.forwardSlash
   } 
 
   apiService.prototype.sync = function (apiUpdateJsonModel) {

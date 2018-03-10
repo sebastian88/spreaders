@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/1c9cad22-2324-4f55-965d-f8609191cfe2/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/spreaders.web</ApplicationInsightsResourceId>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -141,27 +142,32 @@
   <ItemGroup>
     <Content Include="css\main.css" />
     <Content Include="Global.asax" />
-    <Content Include="js\pages\groups.js" />
-    <Content Include="js\pages\transaction.js" />
-    <Content Include="js\pages\transactions.js" />
-    <Content Include="js\scripts\apiService.js" />
-    <Content Include="js\scripts\model\group.js" />
-    <Content Include="js\scripts\model\person.js" />
-    <Content Include="js\scripts\model\personTotal.js" />
-    <Content Include="js\scripts\storageIndexedDb.js" />
-    <Content Include="js\scripts\model\transaction.js" />
-    <Content Include="js\scripts\namespaces.js" />
-    <Content Include="js\scripts\observer.js" />
-    <Content Include="js\scripts\pageContext.js" />
-    <Content Include="js\scripts\storage.js" />
-    <Content Include="js\scripts\sync\entityUpdater.js" />
-    <Content Include="js\scripts\sync\synchroniser.js" />
-    <Content Include="js\scripts\urlService.js" />
-    <Content Include="js\scripts\view\addPerson.js" />
-    <Content Include="js\scripts\view\payeeCheckboxes.js" />
-    <Content Include="js\scripts\view\payerRadio.js" />
-    <Content Include="js\scripts\view\personFormList.js" />
-    <Content Include="js\scripts\view\transaction.js" />
+    <Content Include="img\spreaders-logo.svg" />
+    <Content Include="img\spreaders-logo144.png" />
+    <Content Include="img\spreaders-logo16.png" />
+    <Content Include="img\spreaders-logo192.png" />
+    <Content Include="img\spreaders-logo512.png" />
+    <Content Include="img\transaction-icon.svg" />
+    <Content Include="img\transaction-ison.png" />
+    <Content Include="js\live\library.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\live\pages\groups.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\live\pages\people.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\live\pages\person.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\live\pages\transaction.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\live\pages\transactions.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="serviceWorker.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -188,11 +194,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Service References\Application Insights\ConnectedService.json" />
+    <Content Include="manifest.json" />
     <None Include="Properties\PublishProfiles\spreadersweb20170107122206 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\spreadersweb20170107122206.pubxml" />
     <Content Include="Views\Groups\Index.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Transactions\AddEdit.cshtml" />
+    <Content Include="Views\People\Edit.cshtml" />
+    <Content Include="Views\People\Index.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -202,7 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\People\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -224,7 +234,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>27754</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

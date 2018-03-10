@@ -1,32 +1,16 @@
 ﻿@model spreaders.web.Models.GroupsIndexViewModel
-
 @{
-  Layout = null;
+    ViewBag.Title = "Groups";
 }
-
-<!DOCTYPE html>
-<html>
-
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="manifest" href="/manifest.json">
-  <title>Groups</title>
-  <link rel="icon" href="/img/spreaders-logo16.png" type="image/png">
-</head>
-
-<body>
-
-  <section class="groupContainer"></section>
-  <section class="addGroup">
+<section class="groupContainer"></section>
+<section class="addGroup">
     <label>
-      group name
-      <input type="text" name="groupName">
+        group name
+        <input type="text" name="groupName">
     </label>
     <button type="button" class="createGroupButton">create group</button>
-  </section>
-  <script src="/js/live/library.js"></script>
+</section>
 
-  <script src="/js/live/pages/groups.js"></script>
-</body>
-</html>
+@section scripts {
+    <script src="/js/live/pages/groups.js"></script>
+}

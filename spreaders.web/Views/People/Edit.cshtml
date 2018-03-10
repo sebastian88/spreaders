@@ -1,42 +1,29 @@
 @model spreaders.web.Models.TransactionAddEditViewModel
 @{
-  Layout = null;
+    ViewBag.Title = "Groups";
 }
-<!DOCTYPE html>
-<html>
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,900" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="manifest" href="/manifest.json">
-  <title>Person Edit</title>
-  <link rel="icon" href="/img/spreaders-logo16.png" type="image/png">
-</head>
-<body>
-  <a href="/groups/" class="backButton">Back</a>
-  <div class="editPerson">
+<a href="/groups/" class="backButton">Back</a>
+<div class="editPerson">
     <form>
-      <section>
-        <div class="formRow">
-          <label for="name">Name</label>
-          <input type="text" name="name"></input>
-        </div>
-        <div class="formRow">
-          <input type="text" class="hidden" name="colour"></input>
-          <button class="changeIcon">Change Icon: <span class="firstLetter"></span></button>
-          <div class="iconSelection">
-            <ul class="iconSelectionList">
-
-            </ul>
-          </div>
-        </div>
-      </section>
-      <section>
-        <button type="submit" class="submit">Update</button>
-      </section>
+        <section>
+            <div class="formRow">
+                <label for="name">Name</label>
+                <input type="text" name="name" />
+            </div>
+            <div class="formRow">
+                <input type="text" class="hidden" name="colour" />
+                <button class="changeIcon">Change Icon: <span class="firstLetter"></span></button>
+                <div class="iconSelection">
+                    <ul class="iconSelectionList"></ul>
+                </div>
+            </div>
+        </section>
+        <section>
+            <button type="submit" class="submit">Update</button>
+        </section>
     </form>
-  </div>
-  <script src="/js/live/library.js"></script>
+</div>
 
-  <script src="/js/live/pages/person.js"></script>
-</body>
-</html>
+@section scripts {
+    <script src="/js/live/pages/person.js"></script>
+    }
