@@ -7,17 +7,19 @@ using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
+using System.Web.Optimization;
 
 namespace spreaders.web
 {
-  public class Global : HttpApplication
-  {
-    void Application_Start(object sender, EventArgs e)
+    public class Global : HttpApplication
     {
-      // Code that runs on application startup
-      AreaRegistration.RegisterAllAreas();
-      GlobalConfiguration.Configure(WebApiConfig.Register);
-      RouteConfig.RegisterRoutes(RouteTable.Routes);
+        void Application_Start(object sender, EventArgs e)
+        {
+            // Code that runs on application startup
+            AreaRegistration.RegisterAllAreas();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
     }
-  }
 }
