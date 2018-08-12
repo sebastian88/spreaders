@@ -1,0 +1,16 @@
+﻿@model spreaders.web.Models.GroupsIndexViewModel
+@{
+    ViewBag.Title = "Add Group";
+}
+<h1>Add Group</h1>
+<section class="addGroup">
+    <label>
+        Group Name
+        <input type="text" name="groupName">
+    </label>
+    <button type="button" class="createGroupButton">Create</button>
+</section>
+
+@section scripts {
+    @Scripts.Render("~/js/live/pages/groupAdd")
+}

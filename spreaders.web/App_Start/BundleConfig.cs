@@ -10,9 +10,9 @@ namespace spreaders.web
     {
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/js/live/library").Include(
+            bundles.Add(new Bundle("~/js/live/library").Include(
                 "~/js/scripts/namespaces.js",
-                "~/js/scripts/maths.js",
+                "~/js/scripts/maths.js", 
                 "~/js/scripts/model/group.js",
                 "~/js/scripts/model/person.js",
                 "~/js/scripts/model/personTotal.js",
@@ -32,11 +32,14 @@ namespace spreaders.web
                 "~/js/scripts/observer.js"
             ));
 
-            bundles.Add(new ScriptBundle("~/js/live/pages/groups").Include("~/js/pages/groups.js"));
-            bundles.Add(new ScriptBundle("~/js/live/pages/people").Include("~/js/pages/people.js"));
-            bundles.Add(new ScriptBundle("~/js/live/pages/person").Include("~/js/pages/person.js"));
-            bundles.Add(new ScriptBundle("~/js/live/pages/transaction").Include("~/js/pages/transaction.js"));
-            bundles.Add(new ScriptBundle("~/js/live/pages/transactions").Include("~/js/pages/transactions.js"));
+            bundles.Add(new Bundle("~/js/live/pages/groupAdd").Include("~/js/pages/groupAdd.js"));
+            bundles.Add(new Bundle("~/js/live/pages/groups").Include("~/js/pages/groups.js"));
+            bundles.Add(new Bundle("~/js/live/pages/people").Include("~/js/pages/people.js"));
+            bundles.Add(new Bundle("~/js/live/pages/person").Include("~/js/pages/person.js"));
+            bundles.Add(new Bundle("~/js/live/pages/transaction").Include("~/js/pages/transaction.js"));
+            bundles.Add(new Bundle("~/js/live/pages/transactions").Include("~/js/pages/transactions.js"));
+
+            BundleTable.EnableOptimizations = true;
         }
     }
 }

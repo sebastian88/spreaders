@@ -2,14 +2,13 @@
 @{
     ViewBag.Title = "Groups";
 }
-<section class="groupContainer"></section>
-<section class="addGroup">
-    <label>
-        group name
-        <input type="text" name="groupName">
-    </label>
-    <button type="button" class="createGroupButton">create group</button>
+<section>
+    <div class="add">
+        <a href="/groups/add" class="addSectionExpand">+</a>
+    </div>
 </section>
+<h1>Groups</h1>
+<section class="groupContainer"></section>
 
 @section scripts {
     @Scripts.Render("~/js/live/pages/groups")

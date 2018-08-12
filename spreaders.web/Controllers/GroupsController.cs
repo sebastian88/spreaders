@@ -13,5 +13,10 @@ namespace spreaders.web.Controllers
         {
             return View();
         }
+        // GET: Groups
+        public ActionResult Add()
+        {
+            return View();
+        }
     }
 }

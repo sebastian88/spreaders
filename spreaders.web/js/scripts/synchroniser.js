@@ -83,8 +83,9 @@
 
   synchroniser.prototype.makeRequest = async function () {
     return new Promise((resolve, reject) => {
-      if (!this.isSyncNeeded())
+      if (!this.isSyncNeeded()){
         resolve()
+      }
       else {
         this.apiService.syncWithFetch(this.apiUpdateJsonModel).then(() => {
           Promise.all(this.setEntitiesToSynced()).then(() => {

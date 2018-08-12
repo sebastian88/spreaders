@@ -85,7 +85,14 @@ fieldset {
 	height: 200px;
 }
 
-button.addSectionExpand {
+a.addSectionExpand {
+	display: block;
+    text-decoration: none;
+    text-align: center;
+    line-height: 2em;
+}
+
+.addSectionExpand {
 	font-size: 6em;
 	font-weight: lighter;
 	color: white;
