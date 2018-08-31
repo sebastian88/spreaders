@@ -27,6 +27,8 @@ _UpgradeReport_Files/
 bin/
 obj/
 TestResults/
+.vs/
+sqlite3/
 ###################
 # Web publish log #
 ###################
