@@ -4,6 +4,7 @@
     this.GroupsPathSection = "groups"
 		this.TransactionsPathSection = "transactions"
 		this.PeoplePathSection = "people"
+		this.PayUpPathSection = "payup"
 	}
 	
 	urlService.prototype.getGroupPage = function() {
@@ -31,6 +32,10 @@
 	
 	urlService.prototype.getPersonEditPage = function(groupId, personId) {
 		return this.getPeoplePage(groupId) + personId + this.forwardSlash
+	}
+
+	urlService.prototype.getPayUpPage = function(groupId) {
+		return this.getGroupPage() + groupId + this.forwardSlash + this.PayUpPathSection + this.forwardSlash
 	}
 
 	return urlService

@@ -3,9 +3,7 @@
     ViewBag.Title = "Groups";
 }
 <a href="/groups/" class="backButton">Back</a>
-<section>
-    <div><ul class="personTotals"></ul></div>
-</section>
+<h1>Payments</h1>
 <div class="transactions"></div>
 <section>
     <div class="add">
@@ -25,6 +23,12 @@
         </button>
     </div>
 </section>
+<div class="mobileNav">
+    @{int dim = 80;}
+    <div><a href="" class="mobileNavItem payments active"><img src="/img/spreaders-logo.svg" height="@dim" width="@dim"/><span><br>Payments</span></a></div>
+    <div><a href="" class="mobileNavItem people"><img src="/img/transaction-icon.svg"  height="@dim" width="@dim"/><span><br>People</span></a></div>
+    <div><a href="" class="mobileNavItem payUp"><img src="/img/spreaders-logo.svg"  height="@dim" width="@dim"/><span><br>Pay up</span></a></div>
+</div>
 <button type="button" class="showUpdates closed">show updates</button>
 
 @section scripts {

@@ -90,19 +90,25 @@ spreaders.view.transaction = (function () {
 
   transaction.prototype.addButtonEventListeners = function() {
     this.deleteButton.addEventListener("click", this.deleteButtonHander)
+    // this.deleteButton.addEventListener("touchend", this.deleteButtonHander)
     this.editButton.addEventListener("click", this.editButtonHandler)
+    // this.editButton.addEventListener("touchend", this.editButtonHandler)
   }
   
   transaction.prototype.removeButtonEventListeners = function() {
     this.deleteButton.removeEventListener("click", this.deleteButtonHander)
+    // this.deleteButton.removeEventListener("touchend", this.deleteButtonHander)
     this.editButton.removeEventListener("click", this.editButtonHandler)
+    // this.editButton.removeEventListener("touchend", this.editButtonHandler)
   }
   
   transaction.prototype.addAccordianEvent = function () {
     this.div.addEventListener("click", this.addAccordianClass.bind(this))
+    // this.div.addEventListener("touchend", this.addAccordianClass.bind(this))
   }
   
-  transaction.prototype.addAccordianClass = function () {
+  transaction.prototype.addAccordianClass = function (e) {
+    e.preventDefault()
     if(this.div.className == "transaction"){
       this.addButtonEventListeners()
       this.div.className = "transaction active"
@@ -115,6 +121,7 @@ spreaders.view.transaction = (function () {
 
   transaction.prototype.deleteTransaction = function (e) {
     e.stopPropagation()
+    e.preventDefault()
     this.transaction.isDeleted = 1
     this.storage.updateTransaction(this.transaction, 1).then(() => {
       this.deleteTransactionCallback()
@@ -128,6 +135,7 @@ spreaders.view.transaction = (function () {
 
   transaction.prototype.editTransaction = function (e) {
     e.stopPropagation()
+    e.preventDefault()
     window.location.href = this.urlService.getTransactionPage(this.pageContext.getCurrentGroupId(), this.transaction.externalId)
   }
 

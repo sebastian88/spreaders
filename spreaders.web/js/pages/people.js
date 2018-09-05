@@ -63,6 +63,7 @@ var storage = new spreaders.storage()
 storage.connect().then(data => {
   var urlService = new spreaders.urlService()
   var pageContext = new spreaders.pageContext(urlService)
+  new spreaders.view.navigation(urlService, pageContext).init()
   var observer = new spreaders.observer()
   var apiService = new spreaders.apiService()
   var synchroniser = new spreaders.sync.synchroniser(storage, apiService)

@@ -17,6 +17,7 @@ namespace spreaders.web
                 "~/js/scripts/model/person.js",
                 "~/js/scripts/model/personTotal.js",
                 "~/js/scripts/model/transaction.js",
+                "~/js/scripts/view/navigation.js",
                 "~/js/scripts/view/personFormList.js",
                 "~/js/scripts/view/addPerson.js",
                 "~/js/scripts/view/editablePerson.js",
