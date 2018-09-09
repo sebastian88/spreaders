@@ -90,6 +90,7 @@ var matchCacheOrFetch = function (cache, request) {
 }
 
 self.addEventListener("sync", event => {
+    console.log("syncing " + event.tag)
     if (event.tag.startsWith("sync-group-")) {
         event.waitUntil(syncGroup(event.tag.slice(11)))
     }
@@ -105,8 +106,8 @@ var syncUpdatedEntities = function () {
             var apiService = new spreaders.apiService()
             var synchroniser = new spreaders.sync.synchroniser(storage, apiService)
             synchroniser.syncEntities()
-                .then(() => { resolve() })
-                .catch(err => { reject(err) })
+                .then(() => { console.log("resolved"); resolve() })
+                .catch(err => {console.log("rejected"); reject(err) })
         })
     })
 }

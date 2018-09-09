@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Pay up";
+}
+
+<h1>Pay up</h1>
+<div class="debts"></div>
+
+
+<div class="mobileNav">
+    @{int dim = 80;}
+    <div><a href="" class="mobileNavItem payments"><img src="/img/spreaders-logo.svg" height="@dim" width="@dim"/><span><br>Payments</span></a></div>
+    <div><a href="" class="mobileNavItem people"><img src="/img/transaction-icon.svg"  height="@dim" width="@dim"/><span><br>People</span></a></div>
+    <div><a href="" class="mobileNavItem payUp active"><img src="/img/spreaders-logo.svg"  height="@dim" width="@dim"/><span><br>Pay up</span></a></div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/js/live/pages/payUp")
+}
+

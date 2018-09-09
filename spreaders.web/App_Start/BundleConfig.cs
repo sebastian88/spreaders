@@ -17,6 +17,9 @@ namespace spreaders.web
                 "~/js/scripts/model/person.js",
                 "~/js/scripts/model/personTotal.js",
                 "~/js/scripts/model/transaction.js",
+                "~/js/scripts/model/transaction.js",
+                "~/js/scripts/model/debt.js",
+                "~/js/scripts/model/debtor.js",
                 "~/js/scripts/view/navigation.js",
                 "~/js/scripts/view/personFormList.js",
                 "~/js/scripts/view/addPerson.js",
@@ -25,6 +28,7 @@ namespace spreaders.web
                 "~/js/scripts/view/payerRadio.js",
                 "~/js/scripts/view/transaction.js",
                 "~/js/scripts/pageContext.js",
+                "~/js/scripts/debtsService.js",
                 "~/js/scripts/urlService.js",
                 "~/js/scripts/apiService.js",
                 "~/js/scripts/storageIndexedDb.js",
@@ -39,6 +43,7 @@ namespace spreaders.web
             bundles.Add(new Bundle("~/js/live/pages/person").Include("~/js/pages/person.js"));
             bundles.Add(new Bundle("~/js/live/pages/transaction").Include("~/js/pages/transaction.js"));
             bundles.Add(new Bundle("~/js/live/pages/transactions").Include("~/js/pages/transactions.js"));
+            bundles.Add(new Bundle("~/js/live/pages/payUp").Include("~/js/pages/payUp.js"));
 
             BundleTable.EnableOptimizations = true;
         }
