@@ -68,16 +68,6 @@ spreaders.pages.transactions = (function () {
   }
 
   transactions.prototype.addClickEvents = function(){
-    var addTransactionButton = document.getElementsByClassName("addTransactionButton")[0]
-    addTransactionButton.addEventListener("click", this.redirectToTransaction.bind(this))
-
-    var addPersonButton = document.getElementsByClassName("addPersonButton")[0]
-    addPersonButton.addEventListener("click", this.redirectToPeople.bind(this))
-
-    var addButton = document.getElementsByClassName("addSectionExpand")[0]
-    addButton.addEventListener("click", this.processAddSectionClick.bind(this))
-    
-    this.opaqueLayer.addEventListener("click", this.opaqueLayerClick.bind(this))
 
     this.showUpdatesButton.addEventListener("click", this.refreshPage.bind(this))
     
@@ -89,16 +79,6 @@ spreaders.pages.transactions = (function () {
     this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
       this.PopulatePage(group)
     })
-  }
-
-  transactions.prototype.processAddSectionClick = function() {
-    this.addSection.className = "addSection active"
-    this.opaqueLayer.className = "opaqueLayer"
-  }
-
-  transactions.prototype.opaqueLayerClick = function() {
-    this.addSection.className = "addSection"
-    this.opaqueLayer.className = "opaqueLayer visuallyHidden"
   }
 
   transactions.prototype.startWorker = function() {
@@ -129,91 +109,6 @@ spreaders.pages.transactions = (function () {
         this.observer);
     }
   }
-
-  // transactions.prototype.refreshPeopleAndPopulateTotals = function() {
-  //   this.storage.getPeopleForGroup(this.group).then((people) => {
-  //     this.refreshPeopleAndPopulateTotalsCallback(people)
-  //   })
-  // }
-
-  // transactions.prototype.refreshPeopleAndPopulateTotalsCallback = function(people) {
-  //   this.people = people
-  //   this.populateTotals()
-  // }
-
-  // transactions.prototype.updateTotalsAndSync = function () {
-  //   this.synchroniser.syncWithServer()
-  //   this.storage.getTransactions(this.currentGroupId).then((transactions) => {
-  //     this.updateTotalsCallback(transactions)
-  //   })
-  // }
-
-  // transactions.prototype.updateTotalsCallback = function (transactions) {
-  //   this.transactions = transactions
-  //   this.populateTotals()
-  // }
-
-  // transactions.prototype.populateTotals = function () {
-  //   this.personTotalsContainer.innerHTML = ""
-  //   var personTotals = this.calculateTotals()
-  //   personTotals = this.sortPersonTotals(personTotals)
-  //   for (var i = 0; i < personTotals.length; i++) {
-  //     this.createPersonTotal(personTotals[i])
-  //   }
-  // }
-
-  // transactions.prototype.sortPersonTotals = function(personTotals) {
-  //   personTotals.sort(function(a, b) { 
-  //     return b.total - a.total;
-  //   })
-  //   return personTotals
-  // }
-
-  // transactions.prototype.calculateTotals = function () {
-  //   var totals = []
-  //   for (var i = 0; i < this.people.length; i++) {
-  //     var personTotal = new spreaders.model.personTotal(this.people[i])
-  //     for (var j = 0; j < this.transactions.length; j++) {
-  //       var transaction = this.transactions[j]
-  //       // payer
-  //       if (transaction.payer == personTotal.person.externalId)
-  //         personTotal.total += Number(transaction.amount)
-  //       //payees
-  //       if (transaction.payees.includes(personTotal.person.externalId) == true)
-  //         personTotal.total -= Number(transaction.amount / transaction.payees.length)
-  //     }
-  //     var personDeletedAndNothingOwed = this.people[i].isDeleted == true && personTotal.total == 0 
-      
-  //     if(!personDeletedAndNothingOwed)
-  //       totals.push(personTotal)  
-  //   }
-  //   return totals
-  // }
-
-  // transactions.prototype.createPersonTotal = function (personTotal) {
-  //   var li = document.createElement("li")
-
-  //   var nameDiv = document.createElement("div")
-  //   nameDiv.className = "personName"
-  //   nameDiv.innerHTML = personTotal.person.name
-  //   li.appendChild(nameDiv)
-
-  //   amountClass = ""
-  //   if(personTotal.total < 0)
-  //     amountClass = " negative"
-
-
-  //   var amountSpan = document.createElement("span")
-  //   amountSpan.className = "amount" + amountClass
-  //   amountSpan.innerHTML = "£" + spreaders.maths.roundAndFormatForCurrency(personTotal.total)
-
-  //   var amountDiv = document.createElement("div")
-  //   amountDiv.className = "amount"
-  //   amountDiv.appendChild(amountSpan)
-  //   li.appendChild(amountDiv)
-
-  //   this.personTotalsContainer.appendChild(li)
-  // }
 
   transactions.prototype.redirectToTransaction = function () {
     window.location.href = this.urlService.getTransactionPage(this.pageContext.getCurrentGroupId())

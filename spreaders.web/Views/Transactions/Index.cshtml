@@ -2,25 +2,12 @@
 @{
     ViewBag.Title = "Transactions";
 }
-<a href="/groups/" class="backButton">Back</a>
+<a href="/groups/" class="homeButton"><img width="100" height="100" src="/img/Home.svg" alt="home"/></a>
 <h1>Payments</h1>
-<div class="transactions"></div>
+<div class="transactions sectionMain"></div>
 <section>
-    <div class="add">
-        <button type="button" class="addSectionExpand">+</button>
-    </div>
-</section>
-<div class="opaqueLayer visuallyHidden"></div>
-<section>
-    <div class="addSection">
-        <button type="button" class="addTransactionButton">
-            <img src="/img/spreaders-logo.svg" width="100" height="100" />
-            add<br />transaction
-        </button>
-        <button type="button" class="addPersonButton">
-            <img src="/img/transaction-icon.svg" width="100" height="100" />
-            add<br />person
-        </button>
+    <div class="add withBottomNav">
+        <a href="add" class="addSectionExpand">+</a>
     </div>
 </section>
 <div class="mobileNav">

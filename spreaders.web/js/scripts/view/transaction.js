@@ -13,7 +13,6 @@ spreaders.view.transaction = (function () {
     this.populateDiv()
     this.addButtons()
     this.addAccordianEvent()
-    //this.div.appendChild(document.createElement("hr"))
   }
 
   // private methods
@@ -51,7 +50,7 @@ spreaders.view.transaction = (function () {
     return payees.map(function (payee) {
       firstLetter = document.createElement("span")
       firstLetter.className = "firstLetter"
-      firstLetter.style.backgroundColor = payee.colour;
+      firstLetter.style.backgroundColor = payee.colour
       firstLetter.innerHTML = payee.name.charAt(0)
       
       remainingLetters = document.createElement("span")

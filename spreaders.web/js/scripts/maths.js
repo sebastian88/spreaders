@@ -14,6 +14,6 @@ spreaders.maths = {
         if( negative ) {    
             number = (number * -1).toFixed(2)
         }
-        return number.replace(/\.(\d+)/, '<span>.$1</span>')
+        return number.replace(/\.(\d+)/, '<span class="afterDecimal">.$1</span>')
     }
 }

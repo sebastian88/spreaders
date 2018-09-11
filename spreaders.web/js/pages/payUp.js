@@ -38,15 +38,22 @@ spreaders.pages.payUp = (function () {
         debtsDiv.appendChild(ul)
         for (var debt of debts) {
             var li = document.createElement('li')
-            li.innerText = debt.payer.name + " pays:"
+            li.className = "creditor"
+            li.innerText = debt.payer.name + " pays"
             var ul2 = document.createElement('ul')
             for (var debtee of debt.debtees) {
-                var li2 = document.createElement('li');
-                li2.innerText = debtee.payee.name + " £" + debtee.amount
-                ul2.appendChild(li2);
+                var name = document.createElement('span')
+                name.className = "debtorName"
+                name.style.backgroundColor = debtee.payee.colour
+                name.innerText = debtee.payee.name  
+                var li2 = document.createElement('li') 
+                li2.appendChild(name)
+                li2.className = "debtor"
+                li2.innerHTML +=  "£" + spreaders.maths.roundAndFormatForCurrency(debtee.amount)
+                ul2.appendChild(li2)
             }
-            li.appendChild(ul2);
-            ul.appendChild(li);
+            li.appendChild(ul2)
+            ul.appendChild(li)
         }
     }
 

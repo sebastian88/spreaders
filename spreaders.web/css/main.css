@@ -67,8 +67,13 @@ fieldset {
 	margin: 30px 0 -60px 30px;
 }
 
+.homeButton {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 .mobileNav {
-	/* background-color: rgb(192, 237, 252); */
 	background-color: white;
 	border-top: solid 1px black;
     overflow: hidden;
@@ -98,6 +103,10 @@ fieldset {
 	filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
 }
 
+.sectionMain {
+	margin-bottom:400px;
+}
+
 
 .groupContainer li {
 	font-size: 5em;
@@ -113,15 +122,20 @@ fieldset {
 	position: fixed;
 	bottom: 50px;
 	right: 50px;
-	width: 200px;
-	height: 200px;
+	width: 150px;
+	height: 150px;
+}
+
+.add.withBottomNav {
+	bottom: 200px;
+	right: 30px;
 }
 
 a.addSectionExpand {
 	display: block;
     text-decoration: none;
     text-align: center;
-    line-height: 2em;
+    line-height: 1.5em;
 }
 
 .addSectionExpand {
@@ -130,9 +144,9 @@ a.addSectionExpand {
 	color: white;
 	background-color: var(--three-color);
 	padding: 0;
-	height: 200px;
-	width:200px;
-	border-radius: 100px;
+	height: 150px;
+	width:150px;
+	border-radius: 75px;
 }
 
 .sync {
@@ -185,7 +199,6 @@ a.addSectionExpand {
 }
 
 .transactions {
-	margin-bottom: 300px;
     margin-top: 60px;
 }
 
@@ -237,7 +250,7 @@ a.addSectionExpand {
 	width:25%;
 	text-align: right;
 }
-.transaction ul.transactionDetails li.amount span {
+span.afterDecimal {
 	font-size: 0.5em;
 }
 
@@ -585,6 +598,28 @@ input.addPersonName{
 	width: 95%;
 	max-width: none;
 	float:right;
+}
+
+li.creditor {
+	font-size: 3em;
+	list-style: none;
+	margin-top: 40px;
+}
+
+li.creditor ul{
+	margin-top: 20px;
+}
+
+li.debtor {
+	list-style: none;
+	font-size: 25px;
+}
+
+li.debtor .debtorName {
+	padding: 2px 10px;
+	border-radius: 20px;
+	margin-right: 20px;
+	color: white;
 }
 
 button.addPersonButton{
