@@ -46,11 +46,17 @@ spreaders.pages.transaction = (function () {
     this.amountInput = document.getElementsByName("amount")[0]
     this.amountInputError = document.getElementsByClassName("error_amount")[0]
     this.descriptionInput = document.getElementsByName("description")[0]
+    this.selectAllButton = document.getElementsByClassName("selectAll")[0]
+    this.selectAllButton.addEventListener("click", this.selectAllPayees.bind(this))
     this.submitButton = document.getElementsByClassName("submit")[0]
     this.addSubmitEvent()
 
   }
 
+  transaction.prototype.selectAllPayees = function(e) {
+    e.preventDefault()
+    this.payeeCheckboxes.selectAll()
+  }
 
   transaction.prototype.payeeCheckboxesRendered = function () {
     this.isPayeeCheckboxesRendered = true

@@ -3,7 +3,7 @@
     ViewBag.Title = "Transaction";
 }
 <a href="/groups/" class="backButton">Back</a>
-<div class="addEditTransaction">
+<div class="addEditTransaction sectionMain">
     <form>
         <section>
             <fieldset>
@@ -13,9 +13,10 @@
                 </div>
             </fieldset>
         </section>
-        <section>
+        <section class="relative">
+            <button class="selectAll small">All</button>
             <fieldset>
-                <legend class="labelHeading">Payees</legend>
+                <legend class="labelHeading payees">Payees</legend>
                 <div class="payees">
                     <div class="payeeCheckboxs"></div>
                 </div>

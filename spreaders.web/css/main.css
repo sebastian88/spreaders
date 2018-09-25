@@ -34,10 +34,15 @@ label, legend {
 
 fieldset {
 	border: 0;
+	padding: 0;
 }
 
 .hidden {
 	display: none;
+}
+
+.relative {
+	position: relative;
 }
 
 .backButton, button {
@@ -45,10 +50,16 @@ fieldset {
 	font-size: 3em;
 	color: black;
 	border: none;
-	padding: 30px 50px;
-	background-color: var(--one-color);
+	padding: 0 50px;
+	background-color: white;
 	cursor: pointer;
 	text-decoration: none;
+	border: 5px solid black;
+}
+
+button.small {
+	height: 100px;
+	padding: 0 35px;
 }
 
 .backButton {
@@ -104,7 +115,9 @@ fieldset {
 }
 
 .sectionMain {
-	margin-bottom:400px;
+	margin:0 auto 400px auto;
+	max-width: 1000px;
+	padding: 0 10px;
 }
 
 
@@ -203,7 +216,7 @@ a.addSectionExpand {
 }
 
 .transaction {
-	width: 98%;
+	width: 100%;
 	max-width: 1000px;
 	height: 200px;
 	margin: 0 auto;
@@ -310,6 +323,11 @@ span.afterDecimal {
 	right: 0px;
 }
 
+button.delete {
+	color: #900;
+	border-color: #900;
+}
+
 .transaction button.delete {
 	left:0px;
 }
@@ -329,9 +347,13 @@ span.afterDecimal {
 }
 
 .labelHeading {
-	display: block;
     font-size: 5em;
-    margin-bottom: 30px;
+}
+
+.addEditTransaction .selectAll {
+	position: absolute;
+	right: 4px;
+	top: 0px;
 }
 
 .payerRadios, .payeeCheckboxes {
@@ -366,6 +388,10 @@ span.afterDecimal {
 	text-align: center;
 }
 
+.addEditTransaction .payees, .addEditTransaction .payers {
+	margin-top: 30px;
+}
+
 .payees input[type="checkbox"]:checked + .firstLetter, .payers input[type="radio"]:checked + .firstLetter {
 	border: 5px solid black;
 }
@@ -393,10 +419,11 @@ input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
 }
 
 .person {
-	margin: 20px 50px;
+	margin: 20px 0px;
 	height: 125px;
 	overflow: hidden;
 	transition: height 0.3s;
+	cursor: pointer;
 }
 
 .person.active {
@@ -596,4 +623,5 @@ button.addPersonButton{
 .showUpdates.closed {
 	max-height: 0px;
 	padding: 0px;
+	border: none;
 }

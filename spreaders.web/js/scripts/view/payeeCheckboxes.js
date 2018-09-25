@@ -31,8 +31,14 @@ spreaders.view.payeeCheckboxes = (function () {
 
 			if (values.indexOf(parseInt(this.inputs[i].value)) > -1
 				|| values.indexOf(this.inputs[i].value) > -1) {
-				this.inputs[i].setAttribute('checked', 'checked')
+				this.inputs[i].checked = true
 			}
+		}
+	}
+
+	payeeCheckboxes.prototype.selectAll = function() {
+		for (var i = 0; i < this.inputs.length; i++) {
+			this.inputs[i].checked = true
 		}
 	}
 	

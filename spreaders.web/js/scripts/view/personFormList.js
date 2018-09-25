@@ -41,13 +41,8 @@ spreaders.view.personFormList = (function () {
 		input.setAttribute('type', this.inputType)
 		input.setAttribute('name', this.inputName)
 		input.setAttribute('value', this.getPersonId(person))
-		input.className = "visuallyHidden"
+		input.className = "hidden"
 		label.appendChild(input)
-		
-		// div = document.createElement("div")
-		// div.className = "box"
-		// div.style.backgroundColor = person.colour
-		// label.appendChild(div)
 		
 		spanfirstLetter = document.createElement("span")
 		spanfirstLetter.className = "firstLetter"
