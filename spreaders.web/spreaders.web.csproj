@@ -153,6 +153,8 @@
   <ItemGroup>
     <Content Include="css\main.css" />
     <Content Include="Global.asax" />
+    <Content Include="img\BackArrow.svg" />
+    <Content Include="img\Home.svg" />
     <Content Include="img\spreaders-logo.svg" />
     <Content Include="img\spreaders-logo144.png" />
     <Content Include="img\spreaders-logo16.png" />
@@ -160,6 +162,36 @@
     <Content Include="img\spreaders-logo512.png" />
     <Content Include="img\transaction-icon.svg" />
     <Content Include="img\transaction-ison.png" />
+    <Content Include="js\pages\groupAdd.js" />
+    <Content Include="js\pages\groups.js" />
+    <Content Include="js\pages\payUp.js" />
+    <Content Include="js\pages\people.js" />
+    <Content Include="js\pages\person.js" />
+    <Content Include="js\pages\transaction.js" />
+    <Content Include="js\pages\transactions.js" />
+    <Content Include="js\scripts\apiService.js" />
+    <Content Include="js\scripts\debtsService.js" />
+    <Content Include="js\scripts\maths.js" />
+    <Content Include="js\scripts\model\debt.js" />
+    <Content Include="js\scripts\model\debtor.js" />
+    <Content Include="js\scripts\model\group.js" />
+    <Content Include="js\scripts\model\person.js" />
+    <Content Include="js\scripts\model\personTotal.js" />
+    <Content Include="js\scripts\model\transaction.js" />
+    <Content Include="js\scripts\namespaces.js" />
+    <Content Include="js\scripts\observer.js" />
+    <Content Include="js\scripts\pageContext.js" />
+    <Content Include="js\scripts\storage.js" />
+    <Content Include="js\scripts\storageIndexedDb.js" />
+    <Content Include="js\scripts\synchroniser.js" />
+    <Content Include="js\scripts\urlService.js" />
+    <Content Include="js\scripts\view\addPerson.js" />
+    <Content Include="js\scripts\view\editablePerson.js" />
+    <Content Include="js\scripts\view\navigation.js" />
+    <Content Include="js\scripts\view\payeeCheckboxes.js" />
+    <Content Include="js\scripts\view\payerRadio.js" />
+    <Content Include="js\scripts\view\personFormList.js" />
+    <Content Include="js\scripts\view\transaction.js" />
     <Content Include="serviceWorker.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -212,7 +244,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="js\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

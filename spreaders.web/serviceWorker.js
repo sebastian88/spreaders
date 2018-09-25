@@ -49,39 +49,39 @@ self.addEventListener('install', function (event) {
                 }
             })
         })).then(function () {
-            return //cache.addAll(newImmutableRequests.concat(mutableRequests)) 
+            return cache.addAll(newImmutableRequests.concat(mutableRequests)) 
         })
     }))
 })
 
-// self.addEventListener("fetch", function(event) {
-//   var url = event.request.url
+self.addEventListener("fetch", function(event) {
+  var url = event.request.url
 
-//   if (url.substr(-1) != '/') 
-//     url += '/'
+  if (url.substr(-1) != '/') 
+    url += '/'
 
-//   if(matchUrl(url, '*/groups/*/transactions/')) 
-//     event.respondWith(matchCacheOrFetch("/groups/transactions/", event.request))
+  if(matchUrl(url, '*/groups/*/transactions/')) 
+    event.respondWith(matchCacheOrFetch("/groups/transactions/", event.request))
 
-//   else if(matchUrl(url, '*/groups/*/transactions/add/'))
-//     event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
+  else if(matchUrl(url, '*/groups/*/transactions/add/'))
+    event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
 
-//   else if(matchUrl(url, '*/groups/*/transactions/*'))
-//     event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
+  else if(matchUrl(url, '*/groups/*/transactions/*'))
+    event.respondWith(matchCacheOrFetch("/groups/transactions/add/", event.request))
 
-//   else if(matchUrl(url, '*/groups/*/people/'))
-//     event.respondWith(matchCacheOrFetch("/groups/people/", event.request))
+  else if(matchUrl(url, '*/groups/*/people/'))
+    event.respondWith(matchCacheOrFetch("/groups/people/", event.request))
 
-//   else if(matchUrl(url, '*/groups/*/people/*'))
-//     event.respondWith(matchCacheOrFetch("/groups/people/edit/", event.request))
+  else if(matchUrl(url, '*/groups/*/people/*'))
+    event.respondWith(matchCacheOrFetch("/groups/people/edit/", event.request))
 
-//   else if(matchUrl(url, '*/groups/'))
-//     event.respondWith(matchCacheOrFetch("/groups/", event.request))
+  else if(matchUrl(url, '*/groups/'))
+    event.respondWith(matchCacheOrFetch("/groups/", event.request))
 
-//   else event.respondWith(caches.match(event.request).then(function(response) {
-//     return response || fetch(event.request)
-//   })) 
-// })
+  else event.respondWith(caches.match(event.request).then(function(response) {
+    return response || fetch(event.request)
+  })) 
+})
 
 var matchCacheOrFetch = function (cache, request) {
     return caches.match(cache).then((response) => {
