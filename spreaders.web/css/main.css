@@ -80,8 +80,7 @@ button.small {
 
 .homeButton {
 	position: absolute;
-	top: 0;
-	left: 0;
+	left: -5px;
 }
 
 .mobileNav {
@@ -112,6 +111,13 @@ button.small {
 	filter: gray; /* IE6-9 */
 	-webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
 	filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
+}
+
+.sectionHeading {
+	margin:0 auto;
+	max-width: 1000px;
+	padding: 0 10px;
+	position: relative;
 }
 
 .sectionMain {
@@ -218,7 +224,7 @@ a.addSectionExpand {
 .transaction {
 	width: 100%;
 	max-width: 1000px;
-	height: 200px;
+	height: 150px;
 	margin: 0 auto;
 	padding: 30px 0px 20px 0px;
 	border-bottom: 1px solid grey;
@@ -270,7 +276,7 @@ span.afterDecimal {
 .transaction ul.transactionDetails li.payees {
 	margin-top: 10px;
 	float: left;
-	width:75%;
+	width:100%;
 	font-size: 2em;
 	line-height: 2em;
 	opacity: 1;

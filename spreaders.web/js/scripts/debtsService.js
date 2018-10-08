@@ -47,19 +47,20 @@ spreaders.debtsService = (function () {
         this.sort(peopleTotals)
 
         for (var personTotal of peopleTotals) {
-            var i = 0
             var debtor = new spreaders.model.debtor(personTotal.person, personTotal.total)
-            while (personTotal.total < 0) {
+            var mostGenerousPerson = peopleOwed[peopleOwed.length - 1]
+            while (personTotal.total < 0 && mostGenerousPerson.total > 0) { 
                 mostGenerousPerson = peopleOwed[peopleOwed.length - 1]
                 owed = Math.min(-personTotal.total, mostGenerousPerson.total)
+                owed = this.roundUp2db(owed)
                 personTotal.total += owed
                 personTotal.total = Math.round(personTotal.total * 100) / 100
                 mostGenerousPerson.total -= owed
                 mostGenerousPerson.total = Math.round(mostGenerousPerson.total * 100) / 100
-
-                i++
-                debtor.debtees.push(new spreaders.model.debt(mostGenerousPerson.person, owed))
+                if(owed > 0.1)
+                    debtor.debtees.push(new spreaders.model.debt(mostGenerousPerson.person, owed))
                 this.sort(peopleOwed)
+                mostGenerousPerson = peopleOwed[peopleOwed.length - 1]
             }
             if (debtor.debtees.length)
                 debts.push(debtor)
@@ -68,9 +69,13 @@ spreaders.debtsService = (function () {
         return debts
     }
 
+    debtsService.prototype.roundUp2db = function(number) {
+        return Math.ceil(number * 100) / 100
+    }
+
     debtsService.prototype.sort = function (peopleTotals) {
         peopleTotals.sort(function (a, b) {
-            return a.total - b.total;
+            return a.total - b.total
         });
     }
 

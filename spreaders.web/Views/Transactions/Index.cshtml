@@ -2,20 +2,17 @@
 @{
     ViewBag.Title = "Transactions";
 }
-<a href="/groups/" class="homeButton"><img width="100" height="100" src="/img/Home.svg" alt="home"/></a>
-<h1>Payments</h1>
+<div class="sectionHeading">
+    <a href="/groups/" class="homeButton"><img width="95" height="95" src="/img/Home.svg" alt="home" /></a>
+    <h1>Payments</h1>
+</div>
 <div class="transactions sectionMain"></div>
 <section>
     <div class="add withBottomNav">
         <a href="add" class="addSectionExpand">+</a>
     </div>
 </section>
-<div class="mobileNav">
-    @{int dim = 80;}
-    <div><a href="" class="mobileNavItem payments active"><img src="/img/spreaders-logo.svg" height="@dim" width="@dim"/><span><br>Payments</span></a></div>
-    <div><a href="" class="mobileNavItem people"><img src="/img/transaction-icon.svg"  height="@dim" width="@dim"/><span><br>People</span></a></div>
-    <div><a href="" class="mobileNavItem payUp"><img src="/img/spreaders-logo.svg"  height="@dim" width="@dim"/><span><br>Pay up</span></a></div>
-</div>
+@Html.Partial("~/Views/Shared/Navigation.cshtml", 1)
 <button type="button" class="showUpdates closed">show updates</button>
 
 @section scripts {

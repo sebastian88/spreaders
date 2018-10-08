@@ -1,0 +1,7 @@
+﻿@model int
+<div class="mobileNav">
+    @{int dim = 80;}
+    <div><a href="" class="mobileNavItem payments @(Model == 1 ? "active" : "")"><img src="/img/spreaders-logo.svg" height="@dim" width="@dim" /><span><br>Payments</span></a></div>
+    <div><a href="" class="mobileNavItem people @(Model == 2 ? "active" : "")"><img src="/img/transaction-icon.svg" height="@dim" width="@dim" /><span><br>People</span></a></div>
+    <div><a href="" class="mobileNavItem payUp @(Model == 3 ? "active" : "")"><img src="/img/spreaders-logo.svg" height="@dim" width="@dim" /><span><br>Pay up</span></a></div>
+</div>
