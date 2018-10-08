@@ -70,8 +70,15 @@ spreaders.view.transaction = (function () {
   }
 
   transaction.prototype.addButtons = function () {
+    var buttonDiv = document.createElement("div")
+    buttonDiv.className = "transactionButtons"
+    this.div.appendChild(buttonDiv)
+
     this.deleteButton = this.addButton("Delete", "delete")
+    buttonDiv.appendChild(this.deleteButton)
     this.editButton = this.addButton("Edit", "edit")
+    buttonDiv.appendChild(this.editButton)
+
     this.deleteButtonHander = this.deleteTransaction.bind(this)
     this.editButtonHandler = this.editTransaction.bind(this)
   }
@@ -82,7 +89,6 @@ spreaders.view.transaction = (function () {
     newButton.innerHTML = label
     newButton.className = cssClass
     newButton.setAttribute('type', 'button')
-    this.div.appendChild(newButton)
 
     return newButton
   }

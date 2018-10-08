@@ -13,7 +13,6 @@ spreaders.pages.transactions = (function () {
 
     this.addSection = document.getElementsByClassName("addSection")[0]
     this.opaqueLayer = document.getElementsByClassName("opaqueLayer")[0]
-    this.personTotalsContainer = document.getElementsByClassName("personTotals")[0]
     this.transactionContainer = document.getElementsByClassName("transactions")[0]
     this.showUpdatesButton = document.getElementsByClassName("showUpdates")[0]
 
