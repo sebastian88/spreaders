@@ -222,8 +222,7 @@ a.addSectionExpand {
 }
 
 .transaction {
-	max-height: 150px;
-	margin: 0 auto;
+	max-height: 200px;
 	padding: 30px 0px 20px 0px;
 	border-bottom: 1px solid grey;
 	overflow: hidden;
@@ -321,6 +320,11 @@ span.afterDecimal {
 .transactionButtons {
 	overflow: hidden;
 	margin: 25px 0;
+	display: none;
+}
+
+.transaction.active .transactionButtons {
+	display: block;
 }
 
 .transaction button {

@@ -1,19 +1,20 @@
 spreaders.view.payerRadio = (function () {
 
 	
-  var payerRadio = function (currentGroup,
+	var payerRadio = function (currentGroup,
+		currentTransaction,
     radioContainer,
 		storage,
 		observer
 		) {
 			
 		spreaders.view.personFormList.call(this, 
-      currentGroup,
+			currentGroup,
+			currentTransaction,
       radioContainer,
 			storage,
 			"radio",
-			"payer",
-      this.payerRadiosRenderedCallback.bind(this));
+			"payer");
 		
 		this.observer = observer
 		this.observer.subscribe("personCreated", this.createRadio, this)
@@ -21,10 +22,6 @@ spreaders.view.payerRadio = (function () {
 	}
 	
 	payerRadio.prototype = new spreaders.view.personFormList()
-
-	payerRadio.prototype.payerRadiosRenderedCallback = function () {
-	  this.observer.fire("payerRadiosRendered")
-	}
 
 	payerRadio.prototype.addSelectedValue = function(value) {
 		for(var i = 0; i < this.inputs.length; i++) {

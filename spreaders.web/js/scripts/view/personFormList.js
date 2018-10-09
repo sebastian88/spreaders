@@ -1,20 +1,20 @@
 spreaders.view.personFormList = (function () {
 
 	
-  var personFormList = function (currentGroup,
+	var personFormList = function (currentGroup,
+		currentTransaction,
     radioContainer, 
 		storage,
 		inputType,
-		inputName,
-    callback
+		inputName
 	) {
-    this.currentGroup = currentGroup
+		this.currentGroup = currentGroup
+		this.currentTransaction = currentTransaction
 		this.radioContainer = radioContainer
 		this.storage = storage
 		this.inputs = []
 		this.inputType = inputType
 		this.inputName = inputName
-		this.callback = callback
 		this.addPersonInput = {}
 		this.addButton = {}
 	}
@@ -29,7 +29,6 @@ spreaders.view.personFormList = (function () {
 	personFormList.prototype.createRadiosCallback = function (people) {
 	  for (var i = 0; i < people.length; i++)
 	    this.createRadio(people[i])
-	  this.callback()
 	}
 	
 	personFormList.prototype.createRadio = function (person) {
@@ -54,6 +53,9 @@ spreaders.view.personFormList = (function () {
 		spanName.className = "name"
 		spanName.innerHTML = person.name
 		label.appendChild(spanName)
+
+		if(this.currentTransaction.payer == this.getPersonId(person))
+			input.setAttribute('checked', 'checked')
 		
 		this.inputs[this.inputs.length] = input
 	}

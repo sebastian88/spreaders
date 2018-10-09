@@ -15,7 +15,6 @@ spreaders.view.transaction = (function () {
     this.addAccordianEvent()
   }
 
-  // private methods
   transaction.prototype.createDiv = function () {
     this.div = document.createElement("div")
     this.div.className = "transaction"
@@ -48,17 +47,17 @@ spreaders.view.transaction = (function () {
 
 
     return payees.map(function (payee) {
-      firstLetter = document.createElement("span")
-      firstLetter.className = "firstLetter"
-      firstLetter.style.backgroundColor = payee.colour
-      firstLetter.innerHTML = payee.name.charAt(0)
+      var name = document.createElement("span")
+      name.className = "name"
+      name.style.backgroundColor = payee.colour
+      name.innerHTML = payee.name
       
-      remainingLetters = document.createElement("span")
-      remainingLetters.className = "remainingLetters"
-      remainingLetters.innerHTML = payee.name.substring(1)
-      firstLetter.appendChild(remainingLetters)
+      // remainingLetters = document.createElement("span")
+      // remainingLetters.className = "remainingLetters"
+      // remainingLetters.innerHTML = payee.name.substring(1)
+      // firstLetter.appendChild(remainingLetters)
 
-      return firstLetter.outerHTML
+      return name.outerHTML
     }).join("")
   }
 

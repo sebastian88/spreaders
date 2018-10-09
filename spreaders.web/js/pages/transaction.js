@@ -15,11 +15,24 @@ spreaders.pages.transaction = (function () {
     this.isPayeeCheckboxesRendered = false
     this.isPayerRadiosRendered = false
     this.currentGroup
+    this.currentTransaction
 
     this.populateBackButton()
+    this.transactionBeingEditedId = this.pageContext.getCurrentTransaction()
 
     this.storage.getGroup(this.pageContext.getCurrentGroupId()).then((group) => {
-      this.populateForm(group)
+      this.currentGroup = group
+      
+      if (this.isGuid(this.transactionBeingEditedId)) {
+        this.storage.getTransaction(this.transactionBeingEditedId).then((currentTransaction) => {
+          this.currentTransaction = currentTransaction
+          this.populateForm() 
+          this.addFormValues()
+        })
+      }
+      else {
+        this.populateForm() 
+      }
     })
 
     this.observer.subscribe("payeeCheckboxesRendered", this.payeeCheckboxesRendered, this)
@@ -33,15 +46,14 @@ spreaders.pages.transaction = (function () {
     backButton.href = this.urlService.getTransactionsPage(this.pageContext.getCurrentGroupId())
   }
 
-  transaction.prototype.populateForm = function (group) {
+  transaction.prototype.populateForm = function () {
 
-    this.currentGroup = group
 
     this.radiosContainer = document.getElementsByClassName("payerRadios")[0]
-    this.payerRadios = new spreaders.view.payerRadio(this.currentGroup, this.radiosContainer, this.storage, this.observer)
+    this.payerRadios = new spreaders.view.payerRadio(this.currentGroup, this.currentTransaction, this.radiosContainer, this.storage, this.observer)
 
-    this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
-    this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroup, this.checkboxsContainer, this.storage, this.observer)
+    // this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
+    // this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroup, this.checkboxsContainer, this.storage, this.observer)
 
     this.amountInput = document.getElementsByName("amount")[0]
     this.amountInputError = document.getElementsByClassName("error_amount")[0]
@@ -58,34 +70,9 @@ spreaders.pages.transaction = (function () {
     this.payeeCheckboxes.selectAll()
   }
 
-  transaction.prototype.payeeCheckboxesRendered = function () {
-    this.isPayeeCheckboxesRendered = true
-    this.addTransactionBeingEdited()
-  }
-
-  transaction.prototype.payerRadiosRendered = function () {
-    this.isPayerRadiosRendered = true
-    this.addTransactionBeingEdited()
-  }
-
-  transaction.prototype.addTransactionBeingEdited = function () {
-    if (!this.isPayeeCheckboxesRendered || !this.isPayerRadiosRendered)
-      return
-    this.transactionBeingEditedId = this.pageContext.getCurrentTransaction()
-    if (this.isGuid(this.transactionBeingEditedId)) {
-      this.storage.getTransaction(this.transactionBeingEditedId).then((transactionBeingEdited) => {
-        this.addTransactionBeingEditedCallback(transactionBeingEdited)
-      })
-    }
-      
-  }
-
-  transaction.prototype.addTransactionBeingEditedCallback = function (transactionBeingEdited) {
-    this.transactionBeingEdited = transactionBeingEdited
-    this.payerRadios.addSelectedValue(this.transactionBeingEdited.payer)
-    this.payeeCheckboxes.addSelectedValues(this.transactionBeingEdited.payees)
-    this.amountInput.value = this.transactionBeingEdited.amount
-    this.descriptionInput.value = this.transactionBeingEdited.description
+  transaction.prototype.addFormValues = function () {
+    this.amountInput.value = this.currentTransaction.amount
+    this.descriptionInput.value = this.currentTransaction.description
     this.submitButton.innerHTML = "Update"
   }
 
@@ -123,12 +110,12 @@ spreaders.pages.transaction = (function () {
     var description = this.descriptionInput.value
 
     if (this.isGuid(this.transactionBeingEditedId)) {
-      this.transactionBeingEdited.payer = payer
-      this.transactionBeingEdited.payees = payees
-      this.transactionBeingEdited.amount = amount
-      this.transactionBeingEdited.description = description
-      this.transactionBeingEdited.updatedOn = this.storage.getUtcUnixTimeStamp()
-      this.storage.updateTransaction(this.transactionBeingEdited, true)
+      this.currentTransaction.payer = payer
+      this.currentTransaction.payees = payees
+      this.currentTransaction.amount = amount
+      this.currentTransaction.description = description
+      this.currentTransaction.updatedOn = this.storage.getUtcUnixTimeStamp()
+      this.storage.updateTransaction(this.currentTransaction, true)
     }
     else {
       var transaction = new spreaders.model.transaction(

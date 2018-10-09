@@ -7,29 +7,29 @@
     <form>
         <section>
             <fieldset>
-                <legend class="labelHeading">Payer</legend>
+                <legend class="labelHeading">Who paid?</legend>
                 <div class="payers">
                     <div class="payerRadios"></div>
                 </div>
             </fieldset>
         </section>
+        <section>
+            <label for="description" class="labelHeading">What did they buy?</label>
+            <textarea name="description" id="description" maxlength="80"></textarea>
+        </section>
+        <section>
+            <label for="amount" class="labelHeading">How much was it?</label>
+            <input type="number" min="0.01" step="0.01" name="amount" id="amount" />
+            <div class="error error_amount" style="display:none;">This field is required</div>
+        </section>
         <section class="relative">
             <button class="selectAll small">All</button>
             <fieldset>
-                <legend class="labelHeading payees">Payees</legend>
+                <legend class="labelHeading payees">Who was it for?</legend>
                 <div class="payees">
                     <div class="payeeCheckboxs"></div>
                 </div>
             </fieldset>
-        </section>
-        <section>
-            <label for="amount" class="labelHeading">Amount</label>
-            <input type="number" min="0.01" step="0.01" name="amount" id="amount" />
-            <div class="error error_amount" style="display:none;">This field is required</div>
-        </section>
-        <section>
-            <label for="description" class="labelHeading">Description</label>
-            <textarea name="description" id="description" maxlength="80"></textarea>
         </section>
         <section>
             <button type="submit" class="submit">Add</button>
