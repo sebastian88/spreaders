@@ -3,7 +3,7 @@ spreaders.view.personFormList = (function () {
 	
 	var personFormList = function (currentGroup,
 		currentTransaction,
-    radioContainer, 
+    	radioContainer, 
 		storage,
 		inputType,
 		inputName

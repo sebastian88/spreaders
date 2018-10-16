@@ -243,6 +243,9 @@ spreaders.storage = (function () {
       this.dbSchema.peopleTable.tableName,
       "groupId",
       groupId)
+      .then((people) => {
+        return this.sortAlphabetically(people)
+      })
   }
 
   storage.prototype.getPerson = function (personId) {
@@ -288,6 +291,15 @@ spreaders.storage = (function () {
   storage.prototype.sortByCreatedDate = function (entities) {
     entities.sort(function (a, b) {
         return b.createdOn - a.createdOn
+    });
+    return entities
+  }
+  
+  storage.prototype.sortAlphabetically = function (entities) {
+    entities.sort(function (a, b) {
+      if(a.name < b.name) return -1;
+      if(a.name > b.name) return 1;
+      return 0;
     });
     return entities
   }
