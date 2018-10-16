@@ -52,8 +52,8 @@ spreaders.pages.transaction = (function () {
     this.radiosContainer = document.getElementsByClassName("payerRadios")[0]
     this.payerRadios = new spreaders.view.payerRadio(this.currentGroup, this.currentTransaction, this.radiosContainer, this.storage, this.observer)
 
-    // this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
-    // this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroup, this.checkboxsContainer, this.storage, this.observer)
+    this.checkboxsContainer = document.getElementsByClassName("payeeCheckboxs")[0]
+    this.payeeCheckboxes = new spreaders.view.payeeCheckboxes(this.currentGroup, this.currentTransaction, this.checkboxsContainer, this.storage, this.observer)
 
     this.amountInput = document.getElementsByName("amount")[0]
     this.amountInputError = document.getElementsByClassName("error_amount")[0]

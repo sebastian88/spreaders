@@ -280,9 +280,9 @@ spreaders.storage = (function () {
 
   storage.prototype.getTransactionsSortedByCreatedDate = function (groupId) {
     return this.getFromIndexStore(this.dbSchema.transactionsTable.tableName, "groupId", groupId)
-      // .then((transactions) => {
-      //   return this.sortTransactionsByCreatedDate(transactions)
-      // })
+      .then((transactions) => {
+        return this.sortByCreatedDate(transactions)
+      })
   }
   
   storage.prototype.sortByCreatedDate = function (entities) {

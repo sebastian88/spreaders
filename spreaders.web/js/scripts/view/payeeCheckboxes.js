@@ -2,6 +2,7 @@ spreaders.view.payeeCheckboxes = (function () {
 
 	
   var payeeCheckboxes = function (currentGroup,
+		currentTransaction,
     radioContainer,
 		storage,
 		observer
@@ -9,11 +10,11 @@ spreaders.view.payeeCheckboxes = (function () {
 			
     spreaders.view.personFormList.call(this,
       currentGroup,
+			currentTransaction,
 			radioContainer, 
 			storage,
 			"checkbox",
-			"payee",
-      this.PayeeCheckboxesRenderedCallback.bind(this));
+			"payee");
 
 		this.observer = observer
 		this.observer.subscribe("personCreated", this.createRadio, this)
@@ -22,18 +23,9 @@ spreaders.view.payeeCheckboxes = (function () {
 	
 	payeeCheckboxes.prototype = new spreaders.view.personFormList()
 	
-	payeeCheckboxes.prototype.PayeeCheckboxesRenderedCallback = function () {
-	  this.observer.fire("payeeCheckboxesRendered")
-	}
-
-	payeeCheckboxes.prototype.addSelectedValues = function(values) {
-		for (var i = 0; i < this.inputs.length; i++) {
-
-			if (values.indexOf(parseInt(this.inputs[i].value)) > -1
-				|| values.indexOf(this.inputs[i].value) > -1) {
-				this.inputs[i].checked = true
-			}
-		}
+	payeeCheckboxes.prototype.isPersonSelected = function(person, transaction)
+	{
+		return transaction.payees.indexOf(this.getPersonId(person)) > -1
 	}
 
 	payeeCheckboxes.prototype.selectAll = function() {

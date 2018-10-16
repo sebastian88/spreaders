@@ -57,7 +57,7 @@ spreaders.pages.transactions = (function () {
         this.people = people
       }))
       promises.push(this.storage.getTransactionsSortedByCreatedDate(this.group.externalId).then(transactions => {
-        this.transactions = this.storage.sortByCreatedDate(transactions)
+        this.transactions = transactions
       }))
       
       Promise.all(promises).then(() => {

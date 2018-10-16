@@ -22,14 +22,10 @@ spreaders.view.payerRadio = (function () {
 	}
 	
 	payerRadio.prototype = new spreaders.view.personFormList()
-
-	payerRadio.prototype.addSelectedValue = function(value) {
-		for(var i = 0; i < this.inputs.length; i++) {
-			if(this.inputs[i].value == value) {
-				this.inputs[i].setAttribute('checked', 'checked')
-			}
-		}
-	}	
+	
+	payerRadio.prototype.isPersonSelected = function(person, transaction) {
+		return transaction.payer == this.getPersonId(person)
+	}
 	
 	return payerRadio;
 }) ()

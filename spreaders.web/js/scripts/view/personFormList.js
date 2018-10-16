@@ -19,19 +19,23 @@ spreaders.view.personFormList = (function () {
 		this.addButton = {}
 	}
 	
-  personFormList.prototype.createRadios = function () {
-    this.storage.getPeopleForGroup(this.currentGroup.externalId).then((people) => {
-			this.createRadiosCallback(people)
+  	personFormList.prototype.createRadios = function () {
+    	this.storage.getPeopleForGroup(this.currentGroup.externalId).then((people) => {
+			this.createRadioscallback(people)
 		})
-	  this.createErrorElement()
+	  	this.createErrorElement()
 	}
 	
-	personFormList.prototype.createRadiosCallback = function (people) {
+	personFormList.prototype.createRadioscallback = function (people) {
 	  for (var i = 0; i < people.length; i++)
 	    this.createRadio(people[i])
 	}
 	
 	personFormList.prototype.createRadio = function (person) {
+		var isPersonSelected = this.isPersonSelected(person, this.currentTransaction)
+		if(!isPersonSelected && person.isDeleted)
+			return
+
 		label = document.createElement("label")
 		label.className = "personSelector"
 		this.radioContainer.appendChild(label)
@@ -54,10 +58,14 @@ spreaders.view.personFormList = (function () {
 		spanName.innerHTML = person.name
 		label.appendChild(spanName)
 
-		if(this.currentTransaction.payer == this.getPersonId(person))
+		if(isPersonSelected)
 			input.setAttribute('checked', 'checked')
 		
 		this.inputs[this.inputs.length] = input
+	}
+
+	personFormList.prototype.isPersonSelected = function(person, transaction) {
+		throw new Error('You must impliment this method.')
 	}
 
 	personFormList.prototype.getPersonId = function (person) {
